@@ -280,6 +280,21 @@ def test_hint_mouse_opens_read_only_explanation_and_returns_without_filling(app)
     assert app.view.hint_panel is None and not app.game.history
 
 
+def test_hint_click_any_canvas_position_closes_it(app):
+    button_click(app, "hint")
+    assert app.game.status == "hint"
+    click(app, 12, 12)
+    assert app.game.status == "playing" and app.view.hint_panel is None
+
+
+def test_hint_click_inside_description_closes_it(app):
+    button_click(app, "hint")
+    text = next(child for child in app.view.hint_panel.winfo_children() if isinstance(child, tk.Text))
+    text.event_generate("<Button-1>", x=5, y=5)
+    app.root.update()
+    assert app.game.status == "playing" and app.view.hint_panel is None
+
+
 def test_hint_shows_source_digits_and_correct_focus_box(app):
     button_click(app, "hint")
     assert color(app, "hint-cell-1-7") == SAME
