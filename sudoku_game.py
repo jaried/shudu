@@ -13,6 +13,8 @@ from typing import Callable
 
 from sudoku_backtracking import DEFAULT_BACKTRACKING_SOLVER
 from sudoku_puzzles import Puzzle, SCREENSHOT_PUZZLE
+from logical_solver import init_candidates
+from sudoku_hints import Hint, make_hint
 
 Cell = tuple[int, int]
 Grid = tuple[tuple[int, ...], ...]
@@ -54,6 +56,7 @@ class Game:
         self.givens = tuple(tuple(row) for row in puzzle.grid())
         self.board = [list(row) for row in self.givens]
         self._init_play_state()
+        self.hint_preview: Hint | None = None
         self._clock = clock
         self._elapsed = 0.0
         self._started = clock()
@@ -102,6 +105,17 @@ class Game:
         self.selected = (row, col)
         self.active_digit = self.value(self.selected)
         self.message = f"第 {row + 1} 行，第 {col + 1} 列" + (" · 题目已知数" if self.given(self.selected) else "")
+
+    def highlighted_cells(self) -> set[Cell]:
+        """合并全部同值大数字的行列宫；空格和笔记只使用当前格。"""
+        digit = self.value(self.selected)
+        anchors = {self.selected}
+        if digit:
+            anchors = {cell for cell in CELLS if self.value(cell) == digit}
+        result = set(anchors)
+        for cell in anchors:
+            result.update(PEERS[cell])
+        return result
 
     def move(self, row_delta: int, col_delta: int) -> None:
         row, col = self.selected
@@ -199,18 +213,34 @@ class Game:
     def hint(self) -> None:
         if self.status != "playing":
             return
-        cell = self._hint_target()
-        if cell is not None:
-            self.select(*cell)
-            self._place(self.solution[cell[0]][cell[1]])
-            self.active_digit = self.value(cell)
-            self.hints_used += 1
-            self.message = f"提示：第 {cell[0] + 1} 行第 {cell[1] + 1} 列填 {self.value(cell)}（依据原题求解）。"
+        self.hint_preview = make_hint(self.board, self.notes, self.wrong_cells())
+        self.hints_used += int(self.hint_preview.step is not None)
+        self._stop("hint")
 
-    def _hint_target(self) -> Cell | None:
-        missing = [cell for cell in CELLS if self.value(cell) != self.solution[cell[0]][cell[1]]]
-        result = self.selected if self.selected in missing else next(iter(missing), None)
-        return result
+    def close_hint(self) -> None:
+        if self.status != "hint":
+            return
+        self.hint_preview = None
+        self.status = "playing"
+        self._started = self._clock()
+        self.message = "提示已关闭；请自行填数或修改笔记。"
+
+    def auto_notes(self) -> None:
+        if self.status != "playing":
+            return
+        if self.wrong_cells():
+            self.message = "请先修正红色错误格，再生成合法候选数。"
+            return
+        candidates = init_candidates(self.board)
+        notes = {cell: set(candidates[cell[0]][cell[1]]) for cell in CELLS if not self.value(cell)}
+        self._replace_notes(notes)
+        self.notes_mode = True
+        self.message = "已重算所有空格的候选笔记；未填写大数字，可一次撤回。"
+
+    def _replace_notes(self, notes: dict[Cell, set[int]]) -> None:
+        if notes != self.notes:
+            self._remember()
+            self.notes = notes
 
     def toggle_pause(self) -> None:
         if self.status == "playing":
@@ -224,7 +254,5 @@ class Game:
         self.status = status
 
     def _check_finished(self) -> None:
-        if self.mistakes >= 3:
-            self._stop("lost")
-        elif all(self.value(cell) == self.solution[cell[0]][cell[1]] for cell in CELLS):
+        if all(self.value(cell) == self.solution[cell[0]][cell[1]] for cell in CELLS):
             self._stop("won")
