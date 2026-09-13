@@ -150,9 +150,18 @@ def _cell_binary(cell: np.ndarray) -> np.ndarray:
     gray = cv2.cvtColor(cell, cv2.COLOR_BGR2GRAY)
     margin = max(6, CELL_PIXELS // 14)
     inner = gray[margin:-margin, margin:-margin]
-    _, inner_binary = cv2.threshold(inner, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+    _, dark_foreground = cv2.threshold(inner, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+    _, light_foreground = cv2.threshold(inner, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    inner_binary = _sparser_foreground(dark_foreground, light_foreground)
     result = np.zeros_like(gray)
     result[margin:-margin, margin:-margin] = inner_binary
+    return result
+
+
+def _sparser_foreground(first: np.ndarray, second: np.ndarray) -> np.ndarray:
+    first_count = cv2.countNonZero(first)
+    second_count = cv2.countNonZero(second)
+    result = first if first_count <= second_count else second
     return result
 
 
@@ -170,7 +179,7 @@ def _large_component(stats: np.ndarray, centroids: np.ndarray) -> int | None:
     best = None
     best_area = 0
     for label in range(1, len(stats)):
-        x, y, width, height, area = stats[label]
+        _, _, _, height, area = stats[label]
         center_x, center_y = centroids[label]
         centered = 0.20 * CELL_PIXELS <= center_x <= 0.80 * CELL_PIXELS and 0.18 * CELL_PIXELS <= center_y <= 0.82 * CELL_PIXELS
         large = height >= CELL_PIXELS * LARGE_HEIGHT_RATIO and area >= cell_area * LARGE_AREA_RATIO
