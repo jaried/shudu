@@ -1,6 +1,6 @@
 """启动数独图形化游戏。
 使用 Tkinter 接收鼠标和键盘输入。
-可从命令行指定截图文件，直接恢复正式大数字与候选小数字后启动游戏。
+命令行或关卡菜单都可指定截图文件，直接恢复正式大数字与候选小数字。
 窗口关闭时取消计时回调，不创建后台线程或写入用户文件。
 """
 
@@ -9,7 +9,7 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import filedialog, messagebox
 
 from sudoku_game import Game
 from sudoku_puzzles import PUZZLES, Puzzle, SCREENSHOT_PUZZLE, puzzle_from_text
@@ -31,9 +31,15 @@ HELP_TEXT = (
     "Hidden Pair、Box-Line、X-Wing、XY-Wing 不自动执行。\n"
     "提示只展示推理，不自动填数或删笔记。\n"
     "关闭自动简单算法后，A 自动笔记只按基础行、列、宫规则重算候选。\n"
-    "启动时可把游戏截图文件作为参数传给 sudoku_gui.py；正式大数字进入题面，"
+    "左上角关卡菜单可随时选择“从截图导入…”；正式大数字进入题面，"
     "3×3 位置中的候选小数字恢复为笔记。\n"
+    "启动时也可把游戏截图文件作为参数传给 sudoku_gui.py。\n"
     "关闭窗口不保存进度；左上角可选择其他关卡。"
+)
+
+IMAGE_FILE_TYPES = (
+    ("图片文件", "*.png *.jpg *.jpeg *.bmp *.webp"),
+    ("所有文件", "*.*"),
 )
 
 
@@ -132,17 +138,26 @@ class SudokuWindow:
     def restart(self) -> None:
         self._change_puzzle(self.game.puzzle)
 
-    def _change_puzzle(self, puzzle: Puzzle) -> None:
+    def _confirm_replace_progress(self) -> bool:
         dirty = bool(self.game.history or self.game.mistakes)
-        if dirty and self.game.status in ("playing", "paused"):
-            if not messagebox.askyesno("开始新游戏", "放弃当前进度并重新开始？", parent=self.root):
-                return
+        if not dirty or self.game.status not in ("playing", "paused"):
+            return True
+        result = messagebox.askyesno("开始新游戏", "放弃当前进度并重新开始？", parent=self.root)
+        return result
+
+    def _change_puzzle(self, puzzle: Puzzle) -> None:
+        if not self._confirm_replace_progress():
+            return
         auto_clean = self.game.auto_clean
         auto_simple = self.game.auto_simple
-        self.game = Game(puzzle, auto_simple=auto_simple)
-        self.game.auto_clean = auto_clean
-        self.game.auto_solve_simple()
-        self.view.game = self.game
+        game = Game(puzzle, auto_simple=auto_simple)
+        game.auto_clean = auto_clean
+        game.auto_solve_simple()
+        self._install_game(game)
+
+    def _install_game(self, game: Game) -> None:
+        self.game = game
+        self.view.game = game
         self._bind_commands()
         self.view.draw()
 
@@ -161,8 +176,25 @@ class SudokuWindow:
     def show_levels(self) -> None:
         menu = self._menu()
         menu.add_command(label="选择关卡", state=tk.DISABLED)
+        menu.add_command(label="从截图导入…", command=self.import_screenshot)
+        menu.add_separator()
         self._add_levels(menu)
         self._popup(menu)
+
+    def import_screenshot(self) -> None:
+        path = filedialog.askopenfilename(parent=self.root, title="导入数独截图", filetypes=IMAGE_FILE_TYPES)
+        if not path or not self._confirm_replace_progress():
+            return
+        self._load_screenshot(path)
+
+    def _load_screenshot(self, path: str) -> None:
+        try:
+            game = game_from_screenshot(path, auto_simple=self.game.auto_simple)
+        except ValueError as error:
+            messagebox.showerror("截图导入失败", str(error), parent=self.root)
+            return
+        game.auto_clean = self.game.auto_clean
+        self._install_game(game)
 
     def show_settings(self) -> None:
         menu = self._menu()
@@ -175,6 +207,7 @@ class SudokuWindow:
         self._auto_clean = tk.BooleanVar(value=self.game.auto_clean)
         menu.add_checkbutton(label="正确填数后，清理关联笔记", variable=self._auto_clean, command=self._set_auto_clean)
         menu.add_separator()
+        menu.add_command(label="从截图导入…", command=self.import_screenshot)
         menu.add_command(label="重新开始当前关卡", command=self.restart)
         self._add_levels(menu)
         menu.add_separator()
@@ -192,10 +225,10 @@ class SudokuWindow:
         messagebox.showinfo("操作说明", HELP_TEXT, parent=self.root)
 
 
-def game_from_screenshot(path: str | Path) -> Game:
+def game_from_screenshot(path: str | Path, auto_simple: bool = True) -> Game:
     """从指定截图恢复游戏；GUI 不接触图像识别实现。"""
     imported = load_screenshot_game(path)
-    game = Game(imported.puzzle, auto_simple=True)
+    game = Game(imported.puzzle, auto_simple=auto_simple)
     game.notes = imported.note_map()
     game.notes_mode = bool(game.notes)
     game.message = "已从截图恢复正式数字和候选笔记。"
