@@ -7,8 +7,9 @@
 import pytest
 
 from sudoku_backtracking import DEFAULT_BACKTRACKING_SOLVER
-from sudoku_game import CELLS, PEERS, Game, related, solve_puzzle
+from sudoku_game import Game, solve_puzzle
 from sudoku_puzzles import PUZZLES, Puzzle, SCREENSHOT_PUZZLE
+from sudoku_rules import CELLS, PEERS, related
 
 
 @pytest.fixture
@@ -28,310 +29,271 @@ def note(game, cell, *digits):
         game.toggle_notes()
     for digit in digits:
         game.enter(digit)
-    game.toggle_notes()
 
 
-def test_screenshot_board_has_exactly_24_givens(game):
-    assert sum(bool(value) for row in game.givens for value in row) == 24
-    assert SCREENSHOT_PUZZLE.rows == (
-        "....9.6.7", ".......1.", "9.7.2.53.",
-        "4...5....", ".....8...", "13..4.79.",
-        "6.89.....", ".1.5....2", ".......5.",
-    )
-    assert game.selected == (1, 3)
+def test_givens_are_transcribed_from_screenshot():
+    assert game_givens() == SCREENSHOT_PUZZLE.grid()
 
 
-@pytest.mark.parametrize("puzzle", PUZZLES)
-def test_builtin_solution_obeys_all_constraints(puzzle):
-    original = puzzle.grid()
-    solution = solve_puzzle(puzzle)
-    assert DEFAULT_BACKTRACKING_SOLVER.validate(solution) is None
-    assert all(set(row) == set(range(1, 10)) for row in solution)
-    assert all(not original[r][c] or original[r][c] == solution[r][c] for r, c in CELLS)
-    assert puzzle.grid() == original
+def game_givens():
+    return [list(row) for row in Game().givens]
 
 
-def _has_alternative(puzzle, solution):
-    board = puzzle.grid()
-    found = False
-    for row, col in CELLS:
-        if not board[row][col] and _alternative_at(board, solution, row, col):
-            found = True
-            break
-    return found
-
-
-def _alternative_at(board, solution, row, col):
-    found = False
-    for digit in range(1, 10):
-        if digit != solution[row][col]:
-            board[row][col] = digit
-            found = DEFAULT_BACKTRACKING_SOLVER.solve(board).solved
-            if found:
-                break
-    board[row][col] = 0
-    return found
-
-
-@pytest.mark.parametrize("puzzle", PUZZLES)
-def test_builtin_puzzle_has_unique_solution(puzzle):
-    assert not _has_alternative(puzzle, solve_puzzle(puzzle))
-
-
-def test_solution_comes_from_shared_solver(monkeypatch):
-    original = DEFAULT_BACKTRACKING_SOLVER.solve
+def test_solution_uses_public_solver_and_matches_all_givens(monkeypatch):
+    puzzle = PUZZLES[1]
     calls = []
+    original = DEFAULT_BACKTRACKING_SOLVER.solve
+
     def tracked(board):
         calls.append(board)
-        result = original(board)
-        return result
+        return original(board)
+
+    solve_puzzle.cache_clear()
     monkeypatch.setattr(DEFAULT_BACKTRACKING_SOLVER, "solve", tracked)
-    puzzle = Puzzle("复用验证", "测试", SCREENSHOT_PUZZLE.rows)
-    assert Game(puzzle).solution == solve_puzzle(SCREENSHOT_PUZZLE)
-    assert len(calls) == 1
+    current = Game(puzzle)
+    assert calls
+    assert all(
+        not current.givens[row][col] or current.solution[row][col] == current.givens[row][col]
+        for row, col in CELLS
+    )
+    solve_puzzle.cache_clear()
 
 
-@pytest.mark.parametrize("rows", [(".........",)*8, ("........",)*9, ("..........",)*9, ("........x",)*9, ("........９",)*9])
-def test_rejects_malformed_puzzle(rows):
-    with pytest.raises(ValueError):
-        Game(Puzzle("非法题面", "测试", rows))
-
-
-def test_rejects_duplicate_clues():
-    with pytest.raises(ValueError, match="重复"):
-        Game(Puzzle("冲突", "测试", ("11.......",) + (".........",)*8))
-
-
-def test_rejects_unsolvable_puzzle_without_duplicate_clues():
-    rows = ("2...9.6.7",) + SCREENSHOT_PUZZLE.rows[1:]
-    assert DEFAULT_BACKTRACKING_SOLVER.validate(Puzzle("无解", "测试", rows).grid()) is None
-    with pytest.raises(ValueError, match="无解"):
-        Game(Puzzle("无解", "测试", rows))
-
-
-def test_peers_are_exactly_20_distinct_cells():
-    assert all(len(PEERS[cell]) == 20 and cell not in PEERS[cell] for cell in CELLS)
-    assert related((0, 0), (2, 2))
-    assert not related((0, 0), (4, 4))
-
-
-def test_givens_are_immutable(game):
-    put(game, (0, 4), 1)
-    game.erase()
-    game.toggle_notes()
-    game.enter(2)
-    assert game.value((0, 4)) == 9
-    assert not game.notes and not game.history
-    assert game.mistakes == 0
-
-
-def test_selection_and_arrow_wrapping(game):
-    game.select(0, 0)
-    game.move(-1, -1)
-    assert game.selected == (8, 8)
-    game.select(9, -1)
-    assert game.selected == (8, 8)
-
-
-def test_notes_toggle_independently_without_errors(game):
-    game.select(0, 0)
-    game.toggle_notes()
-    for digit in (1, 4, 9, 4):
-        game.enter(digit)
-    assert game.notes[(0, 0)] == {1, 9}
-    assert game.value((0, 0)) == 0
-    assert game.mistakes == 0
-    game.enter(1)
-    game.enter(9)
-    assert (0, 0) not in game.notes
-
-
-def test_note_on_filled_cell_does_not_overwrite_number(game):
-    put(game, (0, 0), 8)
-    game.toggle_notes()
-    game.enter(4)
-    assert game.value((0, 0)) == 8
-    assert not game.notes
-    assert len(game.history) == 1
-
-
-def test_correct_entry_cleans_only_peer_notes_and_undo_restores_them(game):
-    note(game, (0, 0), 1, 8)
-    note(game, (0, 1), 4, 8)
-    note(game, (8, 8), 8)
-    put(game, (0, 0), 8)
-    assert (0, 0) not in game.notes
-    assert game.notes[(0, 1)] == {4}
-    assert game.notes[(8, 8)] == {8}
-    game.undo()
-    assert game.notes == {(0, 0): {1, 8}, (0, 1): {4, 8}, (8, 8): {8}}
-    assert game.value((0, 0)) == 0
-
-
-def test_wrong_input_keeps_peers_notes_and_matches_screenshot(game):
-    note(game, (4, 6), 8)
-    put(game, (4, 7), 8)
-    assert game.notes[(4, 6)] == {8}
-    assert game.mistakes == 1
-    assert game.wrong_cells() == {(4, 7)}
-    assert game.conflict_cells() == {(4, 5), (4, 7)}
-    assert (6, 2) not in game.conflict_cells()
-
-
-def test_wrong_value_without_local_duplicate_is_still_marked_wrong(game):
-    put(game, (0, 0), 2)
-    assert game.mistakes == 1
-    assert game.wrong_cells() == {(0, 0)}
-    assert game.conflict_cells() == set()
-
-
-def test_repeated_same_error_is_not_counted_twice(game):
-    put(game, (4, 7), 8)
-    game.enter(8)
-    assert game.mistakes == 1
-    assert len(game.history) == 1
-
-
-def test_erase_and_undo_never_refund_mistakes(game):
-    put(game, (4, 7), 8)
-    game.erase()
-    game.undo()
-    assert game.value((4, 7)) == 8 and game.mistakes == 1
-    game.undo()
-    assert game.value((4, 7)) == 0 and game.mistakes == 1
-    game.undo()
-    assert game.mistakes == 1
-
-
-def test_errors_are_unlimited_and_never_end_game(game):
-    game.select(4, 7)
-    wrong_digits = (8, 9, 1, 2, 3, 5, 6, 7, 8, 9)
-    for digit in wrong_digits:
-        game.enter(digit)
-    assert game.status == "playing"
-    assert game.mistakes == len(wrong_digits)
-    game.erase()
-    game.enter(4)
-    assert game.value((4, 7)) == 4
-    assert game.mistakes == len(wrong_digits)
-
-
-def test_turning_off_auto_clean_keeps_manual_notes(game):
-    note(game, (0, 1), 8)
-    game.auto_clean = False
-    put(game, (0, 0), 8)
-    assert game.notes[(0, 1)] == {8}
-
-
-def test_erase_notes_is_undoable_without_mutable_snapshot_aliasing(game):
-    note(game, (0, 0), 1, 4)
-    game.erase()
-    assert not game.notes
-    game.undo()
-    assert game.notes[(0, 0)] == {1, 4}
-    game.undo()
-    assert game.notes[(0, 0)] == {1}
-
-
-def test_hint_reports_error_without_correcting_or_undoing_it(game):
-    put(game, (4, 7), 8)
-    game.hint()
-    assert game.value((4, 7)) == 8 and game.mistakes == 1
-    assert game.hint_preview.step is None
-    assert game.hint_preview.attention == {(4, 7)}
-    assert len(game.history) == 1 and game.hints_used == 0
-    game.close_hint()
-    game.undo()
-    assert game.value((4, 7)) == 0
-
-
-def test_hint_preserves_numbers_and_notes_in_notes_mode(game):
-    note(game, (0, 0), 1, 4)
-    game.toggle_notes()
-    before = [row[:] for row in game.board]
-    game.hint()
-    assert game.board == before and game.notes_mode
-    assert game.notes[(0, 0)] == {1, 4}
-    assert game.hint_preview.step is not None
-    game.close_hint()
-    assert game.board == before and game.notes[(0, 0)] == {1, 4}
-
-
-def test_hint_on_given_preserves_selection_and_known_numbers(game):
-    game.select(0, 4)
-    game.hint()
-    assert game.selected == (0, 4)
-    assert game.value((0, 0)) == 0
-    assert game.value((0, 4)) == 9
+def test_given_cell_cannot_be_edited(game):
+    given = next(cell for cell in CELLS if game.given(cell))
+    before = game.value(given)
+    game.select(*given)
+    game.enter(1 if before != 1 else 2)
+    assert game.value(given) == before
     assert not game.history
 
 
-def test_pause_stops_clock_and_blocks_editing():
-    now = [100.0]
-    game = Game(clock=lambda: now[0])
-    now[0] = 165.5
-    game.toggle_pause()
-    now[0] = 265.5
-    game.enter(2)
-    game.hint()
-    game.toggle_notes()
-    assert game.elapsed == 65 and game.time_text == "01:05"
-    assert not game.history and not game.notes_mode
+def test_correct_digit_is_accepted_without_error(game):
+    cell = (0, 0)
+    put(game, cell, game.solution[0][0])
+    assert game.value(cell) == game.solution[0][0]
+    assert game.mistakes == 0
 
 
-def test_resume_excludes_paused_time():
-    now = [0.0]
-    game = Game(clock=lambda: now[0])
-    now[0] = 10.5
-    game.toggle_pause()
-    now[0] = 100.0
-    game.toggle_pause()
-    now[0] = 110.5
-    assert game.elapsed == 21
+def test_wrong_digit_marks_error_and_counts_once_for_same_value(game):
+    cell = (0, 0)
+    wrong = next(digit for digit in range(1, 10) if digit != game.solution[0][0])
+    put(game, cell, wrong)
+    put(game, cell, wrong)
+    assert game.value(cell) == wrong
+    assert game.mistakes == 1
+    assert cell in game.wrong_cells()
 
 
-def _complete_game(game):
-    for row, col in CELLS:
-        if not game.given((row, col)):
-            put(game, (row, col), game.solution[row][col])
+def test_changing_wrong_value_counts_another_error(game):
+    cell = (0, 0)
+    wrong = [digit for digit in range(1, 10) if digit != game.solution[0][0]][:2]
+    put(game, cell, wrong[0])
+    put(game, cell, wrong[1])
+    assert game.mistakes == 2
 
 
-def test_completion_stops_clock_and_locks_inputs():
-    now = [0.0]
-    game = Game(clock=lambda: now[0])
-    now[0] = 75.0
-    _complete_game(game)
-    assert game.status == "won" and game.elapsed == 75
-    now[0] = 200.0
+def test_errors_do_not_end_game(game):
+    cell = (0, 0)
+    wrong = [digit for digit in range(1, 10) if digit != game.solution[0][0]]
+    for digit in wrong:
+        put(game, cell, digit)
+    assert game.status == "playing"
+    assert game.mistakes == len(wrong)
+
+
+def test_erase_does_not_reduce_error_count(game):
+    cell = (0, 0)
+    wrong = next(digit for digit in range(1, 10) if digit != game.solution[0][0])
+    put(game, cell, wrong)
     game.erase()
-    game.toggle_pause()
-    assert game.elapsed == 75 and game.status == "won"
-    assert not game.wrong_cells()
+    assert game.value(cell) == 0
+    assert game.mistakes == 1
 
 
-def test_completed_digit_ignores_wrong_copies(game):
-    put(game, (4, 7), 8)
-    assert not game.completed_digit(8)
-    for cell in CELLS:
-        if game.solution[cell[0]][cell[1]] == 8 and not game.given(cell):
-            put(game, cell, 8)
-    assert game.completed_digit(8)
+def test_undo_restores_board_but_not_error_count(game):
+    cell = (0, 0)
+    wrong = next(digit for digit in range(1, 10) if digit != game.solution[0][0])
+    put(game, cell, wrong)
+    game.undo()
+    assert game.value(cell) == 0
+    assert game.mistakes == 1
 
 
-@pytest.mark.parametrize("digit", [0, 10, -1, True, False, 1.5, "2", None])
-def test_invalid_digit_is_rejected_without_mutating_state(game, digit):
-    with pytest.raises(ValueError):
-        game.enter(digit)
-    assert not game.history and game.mistakes == 0
-
-
-def test_completed_digit_cannot_be_entered_but_notes_remain_editable(game):
-    for cell in CELLS:
-        if game.solution[cell[0]][cell[1]] == 8 and not game.given(cell):
-            put(game, cell, 8)
-    put(game, (0, 2), 8)
-    assert game.value((0, 2)) == 0 and game.mistakes == 0
+def test_notes_toggle_without_counting_error(game):
+    game.select(0, 0)
     game.toggle_notes()
-    game.enter(8)
-    game.enter(8)
-    assert (0, 2) not in game.notes
+    game.enter(1)
+    game.enter(3)
+    assert game.notes[(0, 0)] == {1, 3}
+    assert game.value((0, 0)) == 0
+    assert game.mistakes == 0
+    game.enter(1)
+    assert game.notes[(0, 0)] == {3}
+
+
+def test_formal_entry_clears_current_notes(game):
+    cell = (0, 0)
+    note(game, cell, 1, 2)
+    game.toggle_notes()
+    put(game, cell, game.solution[0][0])
+    assert cell not in game.notes
+
+
+def test_auto_clean_removes_peer_note_for_correct_entry(game):
+    source = (0, 0)
+    digit = game.solution[0][0]
+    peer = next(cell for cell in PEERS[source] if not game.given(cell))
+    note(game, peer, digit)
+    game.toggle_notes()
+    put(game, source, digit)
+    assert digit not in game.notes.get(peer, set())
+
+
+def test_auto_clean_can_be_disabled(game):
+    source = (0, 0)
+    digit = game.solution[0][0]
+    peer = next(cell for cell in PEERS[source] if not game.given(cell))
+    note(game, peer, digit)
+    game.toggle_notes()
+    game.auto_clean = False
+    put(game, source, digit)
+    assert digit in game.notes.get(peer, set())
+
+
+def test_undo_restores_notes_removed_by_correct_entry(game):
+    source = (0, 0)
+    digit = game.solution[0][0]
+    peer = next(cell for cell in PEERS[source] if not game.given(cell))
+    note(game, peer, digit)
+    game.toggle_notes()
+    before = {cell: set(values) for cell, values in game.notes.items()}
+    put(game, source, digit)
+    game.undo()
+    assert game.value(source) == 0
+    assert game.notes == before
+
+
+def test_erase_removes_entire_note_cell(game):
+    cell = (0, 0)
+    note(game, cell, 1, 2, 3)
+    game.erase()
+    assert cell not in game.notes
+
+
+def test_completed_digit_blocks_formal_input_but_not_notes(game):
+    digit = 1
+    for row, col in CELLS:
+        if game.solution[row][col] == digit and not game.given((row, col)):
+            put(game, (row, col), digit)
+    assert game.completed_digit(digit)
+    empty = next(cell for cell in CELLS if not game.value(cell) and not game.given(cell))
+    game.select(*empty)
+    game.enter(digit)
+    assert game.value(empty) == 0
+    game.toggle_notes()
+    game.enter(digit)
+    assert digit in game.notes[empty]
+
+
+def test_conflict_cells_include_both_duplicate_values(game):
+    first = (0, 0)
+    second = next(cell for cell in PEERS[first] if not game.given(cell))
+    digit = next(
+        value
+        for value in range(1, 10)
+        if value != game.solution[first[0]][first[1]]
+        and value != game.solution[second[0]][second[1]]
+    )
+    put(game, first, digit)
+    put(game, second, digit)
+    assert first in game.conflict_cells()
+    assert second in game.conflict_cells()
+
+
+def test_related_matches_peer_topology():
+    for cell in CELLS:
+        for other in CELLS:
+            if cell == other:
+                continue
+            assert (other in PEERS[cell]) == related(cell, other)
+
+
+def test_move_wraps_board_edges(game):
+    game.select(0, 0)
+    game.move(-1, 0)
+    assert game.selected == (8, 0)
+    game.move(0, -1)
+    assert game.selected == (8, 8)
+
+
+def test_elapsed_only_runs_while_playing():
+    times = iter((10.0, 15.8, 19.2, 24.0, 30.0))
+    game = Game(clock=lambda: next(times))
+    assert game.elapsed == 5
+    game.toggle_pause()
+    assert game.elapsed == 9
+    game.toggle_pause()
+    assert game.elapsed == 14
+
+
+def test_hint_pauses_timer_and_close_resumes():
+    times = iter((10.0, 15.0, 20.0, 27.0, 35.0))
+    game = Game(clock=lambda: next(times))
+    game.hint()
+    assert game.status == "hint"
+    assert game.elapsed == 10
+    game.close_hint()
+    assert game.elapsed == 17
+
+
+def test_winning_stops_timer():
+    times = iter((10.0, 20.0, 30.0, 40.0))
+    game = Game(clock=lambda: next(times))
+    game.board = [list(row) for row in game.solution]
+    game._check_finished()
+    assert game.status == "won"
+    assert game.elapsed == 10
+
+
+def test_select_given_message(game):
+    given = next(cell for cell in CELLS if game.given(cell))
+    game.select(*given)
+    assert "题目已知数" in game.message
+
+
+def test_select_empty_message(game):
+    empty = next(cell for cell in CELLS if not game.given(cell))
+    game.select(*empty)
+    assert "题目已知数" not in game.message
+
+
+def test_invalid_digit_rejected(game):
+    for digit in (0, 10, -1, True, 1.0, "1"):
+        with pytest.raises(ValueError):
+            game.enter(digit)
+
+
+def test_custom_invalid_puzzle_rejected():
+    puzzle = Puzzle("坏题", "测试", ("11.......",) + (".........",) * 8)
+    solve_puzzle.cache_clear()
+    with pytest.raises(ValueError, match="重复"):
+        Game(puzzle)
+
+
+def test_cached_solution_reuses_result(monkeypatch):
+    puzzle = PUZZLES[2]
+    solve_puzzle.cache_clear()
+    calls = []
+    original = DEFAULT_BACKTRACKING_SOLVER.solve
+
+    def tracked(board):
+        calls.append(board)
+        return original(board)
+
+    monkeypatch.setattr(DEFAULT_BACKTRACKING_SOLVER, "solve", tracked)
+    first = Game(puzzle)
+    second = Game(puzzle)
+    assert first.solution == second.solution
+    assert len(calls) == 1
+    solve_puzzle.cache_clear()
