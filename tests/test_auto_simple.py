@@ -1,6 +1,6 @@
 """验证简单算法自动求解的边界与设置行为。
-只覆盖 Naked Pair 及以下技巧，不允许 Hidden Pair 及更高技巧混入自动路径。
-所有简单算法造成的候选删除都需要同步到当前小数字笔记。
+自动范围包含 Single、Naked Pair、Naked Triple、Pointing Pair。
+所有自动简单算法造成的候选删除都需要同步到当前小数字笔记。
 自动求解不得把用户笔记作为算法推理前提或增加错误次数。
 """
 
@@ -12,17 +12,17 @@ from sudoku_njit_core import ALL_DIGITS_MASK
 from sudoku_rules import CELLS, candidate_grid
 
 
-def test_simple_techniques_stop_at_naked_pair():
+def test_simple_techniques_include_triple_and_pointing():
     solver = ShuduSolver(Game().board)
     names = [technique.__name__ for technique in solver.simple_techniques()]
     assert names == [
         "hidden_single",
         "naked_single",
         "naked_pair",
+        "naked_triple",
+        "pointing_pair",
     ]
     assert "hidden_pair" not in names
-    assert "naked_triple" not in names
-    assert "pointing_pair" not in names
     assert "box_line_reduction" not in names
     assert "x_wing" not in names
     assert "xy_wing" not in names
@@ -78,6 +78,34 @@ def test_simple_result_records_real_naked_pair_candidate_eliminations():
     assert (0, 2, 1) in result.eliminations
     assert (0, 2, 2) in result.eliminations
     assert all(len(change) == 3 for change in result.eliminations)
+
+
+def test_simple_result_records_naked_triple_eliminations():
+    solver = ShuduSolver([[0] * 9 for _ in range(9)])
+    solver._masks[:, :] = ALL_DIGITS_MASK
+    solver._masks[0, 0] = (1 << 1) | (1 << 2)
+    solver._masks[0, 1] = (1 << 1) | (1 << 3)
+    solver._masks[0, 2] = (1 << 2) | (1 << 3)
+    solver.simple_techniques = lambda: [solver.naked_triple]
+    result = solver.solve_simple_result()
+    assert (0, 3, 1) in result.eliminations
+    assert (0, 3, 2) in result.eliminations
+    assert (0, 3, 3) in result.eliminations
+
+
+def test_simple_result_records_pointing_pair_eliminations():
+    solver = ShuduSolver([[0] * 9 for _ in range(9)])
+    solver._masks[:, :] = ALL_DIGITS_MASK
+    bit = 1 << 1
+    for row in range(3):
+        for col in range(3):
+            solver._masks[row, col] &= ~bit
+    solver._masks[0, 0] |= bit
+    solver._masks[0, 1] |= bit
+    solver.simple_techniques = lambda: [solver.pointing_pair]
+    result = solver.solve_simple_result()
+    assert (0, 3, 1) in result.eliminations
+    assert (0, 8, 1) in result.eliminations
 
 
 def test_all_simple_eliminations_remove_matching_small_notes(monkeypatch):
