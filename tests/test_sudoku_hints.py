@@ -6,7 +6,7 @@ import pytest
 
 from logical_solver import LogicSolver, parse
 from test_logical_solver import SECOND_PUZZLE
-from sudoku_puzzles import Puzzle
+from sudoku_puzzles import Puzzle, puzzle_from_text
 from sudoku_game import CELLS, PEERS, Game
 from sudoku_hints import make_hint, pending_step
 from sudoku_puzzles import PUZZLES
@@ -177,3 +177,36 @@ def test_hint_message_keeps_existing_technique_name():
 """)
     step = pending_step(board, {})
     assert step is not None and ":" in step.message
+
+
+def test_naked_pair_marks_both_source_cells():
+    solver = LogicSolver(Game().board)
+    pair_board = None
+    for _ in range(81):
+        before = deepcopy(solver.board)
+        assert solver._apply_next_step()
+        if "Naked Pair:" in solver.steps[-1]:
+            pair_board = before
+            break
+    hint = make_hint(pair_board, {}, set())
+    assert hint.step is not None and hint.step.name == "Naked Pair"
+    assert len(hint.sources) == 2
+    assert all(hint.step.candidates[r][c] == hint.step.candidates[next(iter(hint.sources))[0]][next(iter(hint.sources))[1]]
+               for r, c in hint.sources)
+
+
+def test_custom_puzzle_text_accepts_dots_zeroes_and_spacing():
+    puzzle = puzzle_from_text("""
+        . . . . 9 . 6 . 7
+        0 0 0 0 0 0 0 1 0
+        9 . 7 . 2 . 5 3 .
+        4 . . . 5 . . . .
+        . . . . . 8 . . .
+        1 3 . . 4 . 7 9 .
+        6 . 8 9 . . . . .
+        . 1 . 5 . . . . 2
+        . . . . . . . 5 .
+    """)
+    game = Game(puzzle)
+    assert game.givens[0][4] == 9 and game.givens[1][7] == 1
+    assert game.puzzle.title == "自定义局"
