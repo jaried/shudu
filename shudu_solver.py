@@ -28,11 +28,13 @@ class ShuduSolver(NumbaLogicSolver):
         return result
 
     def simple_techniques(self):
-        """返回 Naked Pair 及以下简单算法；Hidden Pair 起不自动执行。"""
+        """返回自动简单算法；Hidden Pair、Box-Line 及以上不自动执行。"""
         result = [
             self.hidden_single,
             self.naked_single,
             self.naked_pair,
+            self.naked_triple,
+            self.pointing_pair,
         ]
         return result
 
