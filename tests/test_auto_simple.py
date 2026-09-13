@@ -1,5 +1,5 @@
 """验证简单算法自动求解的边界与设置行为。
-只覆盖 X-Wing 之前的技巧，不允许高级技巧混入自动路径。
+只覆盖 Naked Pair 及以下技巧，不允许 Hidden Pair 及更高技巧混入自动路径。
 Game 单元测试显式控制开关，产品入口负责默认开启。
 自动求解不得读取用户笔记或增加错误次数。
 """
@@ -10,18 +10,18 @@ from shudu_solver import ShuduSolver
 from sudoku_game import Game
 
 
-def test_simple_techniques_stop_before_x_wing():
+def test_simple_techniques_stop_at_naked_pair():
     solver = ShuduSolver(Game().board)
     names = [technique.__name__ for technique in solver.simple_techniques()]
     assert names == [
         "hidden_single",
         "naked_single",
         "naked_pair",
-        "hidden_pair",
-        "naked_triple",
-        "pointing_pair",
-        "box_line_reduction",
     ]
+    assert "hidden_pair" not in names
+    assert "naked_triple" not in names
+    assert "pointing_pair" not in names
+    assert "box_line_reduction" not in names
     assert "x_wing" not in names
     assert "xy_wing" not in names
 
