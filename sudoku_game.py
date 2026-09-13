@@ -42,7 +42,7 @@ class Game:
         self,
         puzzle: Puzzle = SCREENSHOT_PUZZLE,
         clock: Callable[[], float] = monotonic,
-        auto_simple: bool = True,
+        auto_simple: bool = False,
     ):
         self.puzzle = puzzle
         self.solution = solve_puzzle(puzzle)
@@ -53,7 +53,6 @@ class Game:
         self._started = clock()
         self._init_play_state(auto_simple)
         self.hint_preview: Hint | None = None
-        self._auto_solve_simple(remember=False)
         return
 
     def _init_play_state(self, auto_simple: bool) -> None:
@@ -165,7 +164,7 @@ class Game:
         if self.auto_clean:
             self._clean_notes_for(self.selected, digit)
         self.message = f"已填入 {digit}。"
-        self._auto_solve_simple(remember=False)
+        self.auto_solve_simple(remember=False)
 
     def _clean_notes_for(self, source: Cell, digit: int) -> None:
         for cell in PEERS[source]:
@@ -180,11 +179,12 @@ class Game:
         changed = enabled != self.auto_simple
         self.auto_simple = enabled
         if changed and enabled:
-            self._auto_solve_simple(remember=True)
+            self.auto_solve_simple(remember=True)
         elif changed:
             self.message = "已关闭简单算法自动求解。"
 
-    def _auto_solve_simple(self, remember: bool) -> int:
+    def auto_solve_simple(self, remember: bool = False) -> int:
+        """连续执行 X-Wing 之前的简单算法；X-Wing 与 XY-Wing 不自动执行。"""
         if not self.auto_simple or self.status != "playing" or self.wrong_cells():
             return 0
         solver = ShuduSolver(self.board)
