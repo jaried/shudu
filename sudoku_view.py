@@ -11,30 +11,19 @@ from math import cos, pi, sin
 from tkinter import font
 from typing import Callable
 
-from sudoku_game import CELLS, Cell, Game, related
+from sudoku_game import CELLS, Cell, Game
 
-WIDTH, HEIGHT = 660, 940
-LEFT, TOP, SIDE = 60, 146, 540
-CELL = SIDE / 9
-BG = "#FFFCE5"
-INK = "#9C5B2B"
-ACCENT = "#CA751C"
-PEER = "#FCECCF"
-SELECTED = "#FFD084"
-SAME = "#75AF13"
-LINE = "#F4D69A"
-BORDER = "#D58B28"
-BLUE = "#4C83E9"
-MUTED = "#A7ACA4"
-ERROR = "#F26674"
-ERROR_LIGHT = "#FFE0D9"
-ERROR_INK = "#FF5B26"
-WHITE = "#FFFFFF"
+from sudoku_theme import (
+    WIDTH, HEIGHT, LEFT, TOP, SIDE, CELL, BG, INK, ACCENT, PEER,
+    SELECTED, SAME, LINE, BORDER, BLUE, MUTED, ERROR, ERROR_LIGHT, ERROR_INK, WHITE,
+)
+from sudoku_hint_view import draw_hint
+
 Rect = tuple[float, float, float, float]
 
 
-def cell_background(game: Game, cell: Cell, wrong: set[Cell], conflicts: set[Cell]) -> str:
-    color = PEER if related(game.selected, cell) else BG
+def cell_background(game: Game, cell: Cell, wrong: set[Cell], conflicts: set[Cell], highlighted: set[Cell]) -> str:
+    color = PEER if cell in highlighted else BG
     if game.active_digit and game.value(cell) == game.active_digit and cell not in conflicts:
         color = SAME
     if cell == game.selected:
@@ -69,6 +58,7 @@ class SudokuView(tk.Canvas):
         self.targets: dict[str, tuple[Rect, bool]] = {}
         self.scale_factor = 1.0
         self.offset = (0.0, 0.0)
+        self.hint_panel: tk.Frame | None = None
         self._init_fonts()
         self._bind_events()
         return
@@ -123,9 +113,21 @@ class SudokuView(tk.Canvas):
         return result
 
     def draw(self) -> None:
+        self._clear_hint_panel()
         self.delete("all")
         self.targets.clear()
         self._draw_header()
+        if self.game.status == "hint":
+            draw_hint(self)
+        else:
+            self._draw_play_surface()
+
+    def _clear_hint_panel(self) -> None:
+        if self.hint_panel is not None:
+            self.hint_panel.destroy()
+            self.hint_panel = None
+
+    def _draw_play_surface(self) -> None:
         if self.game.status == "playing":
             self._draw_board()
         else:
@@ -147,8 +149,7 @@ class SudokuView(tk.Canvas):
     def _draw_mistakes(self) -> None:
         color = SAME if self.game.mistakes == 0 else ERROR_INK
         self.text(296, 107, "错误：", 23, ACCENT, anchor="e")
-        self.text(309, 107, str(self.game.mistakes), 26, color, numeric=True)
-        self.text(337, 107, "/3", 26, ACCENT, numeric=True)
+        self.text(318, 107, str(self.game.mistakes), 26, color, numeric=True, tags="mistake-count")
 
     def _draw_pause(self) -> None:
         enabled = self.game.status in ("playing", "paused")
@@ -171,14 +172,15 @@ class SudokuView(tk.Canvas):
     def _draw_board(self) -> None:
         wrong = self.game.wrong_cells()
         conflicts = self.game.conflict_cells()
+        highlighted = self.game.highlighted_cells()
         for cell in CELLS:
-            self._draw_cell(cell, wrong, conflicts)
+            self._draw_cell(cell, wrong, conflicts, highlighted)
         self._draw_grid_lines()
 
-    def _draw_cell(self, cell: Cell, wrong: set[Cell], conflicts: set[Cell]) -> None:
+    def _draw_cell(self, cell: Cell, wrong: set[Cell], conflicts: set[Cell], highlighted: set[Cell]) -> None:
         row, col = cell
         x, y = LEFT + col * CELL, TOP + row * CELL
-        background = cell_background(self.game, cell, wrong, conflicts)
+        background = cell_background(self.game, cell, wrong, conflicts, highlighted)
         foreground = cell_foreground(self.game, cell, wrong, conflicts)
         self.rectangle((x,y,x+CELL,y+CELL), background, tags=f"cell-{row}-{col}")
         if self.game.value(cell):
@@ -189,7 +191,7 @@ class SudokuView(tk.Canvas):
     def _draw_notes(self, cell: Cell, x: float, y: float) -> None:
         for digit in sorted(self.game.notes.get(cell, ())):
             note_row, note_col = divmod(digit - 1, 3)
-            color = SAME if self.game.notes_mode and digit == self.game.active_digit else INK
+            color = SAME if digit == self.game.active_digit and self.game.active_digit else INK
             tag = f"note-{cell[0]}-{cell[1]}-{digit}"
             self.text(x+(note_col+0.5)*CELL/3, y+(note_row+0.5)*CELL/3, str(digit), 18, color, numeric=True, tags=tag)
 
@@ -205,11 +207,12 @@ class SudokuView(tk.Canvas):
         game = self.game
         playing = game.status == "playing"
         erasable = game.editable and bool(game.value(game.selected) or game.notes.get(game.selected))
-        result = {"erase": erasable, "undo": playing and bool(game.history), "notes": playing, "hint": playing}
+        result = {"erase": erasable, "undo": playing and bool(game.history), "notes": playing, "auto-notes": playing and not game.wrong_cells(), "hint": playing}
         return result
 
     def _draw_controls(self) -> None:
-        controls = (("erase", "擦除", 127), ("undo", "撤回", 262), ("notes", "笔记", 397), ("hint", "提示", 532))
+        controls = (("erase", "擦除", 100), ("undo", "撤回", 212), ("notes", "笔记", 324),
+                    ("auto-notes", "自动笔记", 436), ("hint", "提示", 548))
         enabled = self._control_state()
         for action, label, x in controls:
             self._draw_tool(action, label, x, enabled[action])
@@ -224,7 +227,7 @@ class SudokuView(tk.Canvas):
         self.round_box((x-28,717,x+28,773), color)
         self._draw_icon(action, x, 745)
         self.text(x, 793, label, 18, ACCENT if enabled else MUTED)
-        self.targets[action] = ((x-48, 708, x+48, 810), enabled)
+        self.targets[action] = ((x-44, 708, x+44, 810), enabled)
 
     def _draw_icon(self, action: str, x: float, y: float) -> None:
         if action == "erase":
@@ -233,6 +236,8 @@ class SudokuView(tk.Canvas):
             self._undo_icon(x, y)
         elif action == "notes":
             self._pen_icon(x, y)
+        elif action == "auto-notes":
+            self._auto_notes_icon(x, y)
         else:
             self._hint_icon(x, y)
 
@@ -253,6 +258,11 @@ class SudokuView(tk.Canvas):
         self.oval((x-2,y-2,x+4,y+4), WHITE)
         self.line((x+1,y-14,x+14,y-1), WHITE, 5)
 
+    def _auto_notes_icon(self, x: float, y: float) -> None:
+        for digit in range(1, 10):
+            row, col = divmod(digit - 1, 3)
+            self.text(x + (col - 1) * 14, y + (row - 1) * 15, str(digit), 13, WHITE, numeric=True)
+
     def _hint_icon(self, x: float, y: float) -> None:
         self.line((x-15,y-17,x+15,y-17,x+15,y+17,x-15,y+17,x-15,y-17), WHITE, 3, joinstyle=tk.ROUND)
         self.text(x, y, "?", 30, WHITE, numeric=True)
@@ -260,10 +270,10 @@ class SudokuView(tk.Canvas):
     def _draw_note_switch(self) -> None:
         enabled = self.game.status == "playing"
         color = BLUE if self.game.notes_mode and enabled else MUTED
-        self.round_box((427,717,463,737), color, 10)
-        x = 453 if self.game.notes_mode else 437
+        self.round_box((348,717,382,737), color, 10)
+        x = 372 if self.game.notes_mode else 358
         self.oval((x-8,719,x+8,735), WHITE)
-        self.targets["notes-switch"] = ((425, 707, 466, 745), enabled)
+        self.targets["notes-switch"] = ((346, 707, 386, 745), enabled)
 
     def _digit_enabled(self, digit: int) -> bool:
         game = self.game
@@ -284,12 +294,12 @@ class SudokuView(tk.Canvas):
 
     def _draw_footer(self) -> None:
         self.text(WIDTH/2, 905, self.game.message, 12, INK, width=590*self.scale_factor)
-        self.text(WIDTH/2, 928, "N 笔记  ·  Delete 擦除  ·  Ctrl+Z 撤回  ·  空格 暂停", 10, MUTED)
+        self.text(WIDTH/2, 928, "N 笔记  ·  A 自动笔记  ·  H 提示  ·  Ctrl+Z 撤回  ·  空格 暂停", 10, MUTED)
 
     def _draw_overlay(self) -> None:
         status = self.game.status
-        title = {"paused": "已暂停", "won": "挑战完成", "lost": "本局结束"}[status]
-        message = {"paused": "休息一下，回来继续。", "won": "每一格，都找到了自己的位置。", "lost": "已累计 3 次错误，再试一次吧。"}[status]
+        title = {"paused": "已暂停", "won": "挑战完成"}[status]
+        message = {"paused": "休息一下，回来继续。", "won": "每一格，都找到了自己的位置。"}[status]
         self.round_box((LEFT,TOP,LEFT+SIDE,TOP+SIDE), PEER, 18)
         self.text(WIDTH/2, 344, title, 36, SAME if status == "won" else ACCENT)
         self.text(WIDTH/2, 402, message, 18)
