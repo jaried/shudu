@@ -128,10 +128,10 @@ class SudokuView(tk.Canvas):
             self.hint_panel = None
 
     def _draw_play_surface(self) -> None:
-        if self.game.status == "playing":
-            self._draw_board()
-        else:
+        if self.game.status == "paused":
             self._draw_overlay()
+        else:
+            self._draw_board()
         self._draw_controls()
         self._draw_footer()
 
@@ -293,28 +293,24 @@ class SudokuView(tk.Canvas):
         self.targets[f"digit:{digit}"] = ((x-29, 818, x+29, 884), enabled)
 
     def _draw_footer(self) -> None:
-        self.text(WIDTH/2, 905, self.game.message, 12, INK, width=590*self.scale_factor)
-        self.text(WIDTH/2, 928, "N 笔记  ·  A 自动笔记  ·  H 提示  ·  Ctrl+Z 撤回  ·  空格 暂停", 10, MUTED)
+        if self.game.status == "won":
+            self.text(WIDTH/2, 905, "挑战完成", 15, SAME, tags="completion-status")
+            detail = f"用时 {self.game.time_text}  ·  提示 {self.game.hints_used} 次"
+            self.text(WIDTH/2, 928, detail, 11, INK, tags="completion-detail")
+        else:
+            self.text(WIDTH/2, 905, self.game.message, 12, INK, width=590*self.scale_factor)
+            self.text(WIDTH/2, 928, "N 笔记  ·  A 自动笔记  ·  H 提示  ·  Ctrl+Z 撤回  ·  空格 暂停", 10, MUTED)
 
     def _draw_overlay(self) -> None:
-        status = self.game.status
-        title = {"paused": "已暂停", "won": "挑战完成"}[status]
-        message = {"paused": "休息一下，回来继续。", "won": "每一格，都找到了自己的位置。"}[status]
         self.round_box((LEFT,TOP,LEFT+SIDE,TOP+SIDE), PEER, 18)
-        self.text(WIDTH/2, 344, title, 36, SAME if status == "won" else ACCENT)
-        self.text(WIDTH/2, 402, message, 18)
-        self.text(WIDTH/2, 446, f"用时 {self.game.time_text}  ·  提示 {self.game.hints_used} 次", 17)
-        self._overlay_buttons(status)
+        self.text(WIDTH/2, 344, "已暂停", 36, ACCENT)
+        self.text(WIDTH/2, 402, "休息一下，回来继续。", 18)
+        self._overlay_buttons()
 
-    def _overlay_buttons(self, status: str) -> None:
-        action = "pause" if status == "paused" else "restart"
-        label = "继续游戏" if status == "paused" else "重新开始"
+    def _overlay_buttons(self) -> None:
         self.round_box((230,491,430,545), INK)
-        self.text(WIDTH/2, 518, label, 20, WHITE)
-        self.targets["overlay:" + action] = ((230, 491, 430, 545), True)
-        if status != "paused":
-            self.text(WIDTH/2, 582, "选择其他关卡", 17, ACCENT)
-            self.targets["overlay:levels"] = ((230, 559, 430, 605), True)
+        self.text(WIDTH/2, 518, "继续游戏", 20, WHITE)
+        self.targets["overlay:pause"] = ((230, 491, 430, 545), True)
 
     def _logical_pointer(self, event: tk.Event) -> tuple[float, float]:
         result = ((event.x-self.offset[0])/self.scale_factor, (event.y-self.offset[1])/self.scale_factor)
