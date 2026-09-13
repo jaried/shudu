@@ -333,6 +333,9 @@ class SudokuView(tk.Canvas):
 
     def _click(self, event: tk.Event) -> None:
         self.focus_set()
+        if self.game.status == "hint":
+            self.dispatch("close-hint")
+            return
         action = self.action_at(*self._logical_pointer(event))
         if action is not None:
             self.dispatch(action.removeprefix("overlay:"))
