@@ -4,7 +4,7 @@
 
 from typing import List, Optional
 
-from sudoku_backtracking import DEFAULT_BACKTRACKING_SOLVER
+from shudu.sudoku_backtracking import DEFAULT_BACKTRACKING_SOLVER
 
 Board = List[List[Optional[int]]]
 
@@ -43,25 +43,20 @@ def solve_with_candidates(board: Board) -> bool:
     return solve(board)
 
 
-# ── 测试用例 ────────────────────────────────────────
-
 def empty_board() -> Board:
     """造一个 9×9 空棋盘"""
     return [[None] * 9 for _ in range(9)]
 
 
 def parse(text: str) -> Board:
-    """
-    从文本解析数独，支持 0/. 表示空格，其他数字为已知数。
-    示例 9 行文本，每行 9 个字符。
-    """
+    """从文本解析数独，支持 0/. 表示空格。"""
     board = empty_board()
     lines = [ln.strip() for ln in text.strip().splitlines() if ln.strip()]
     for i in range(min(9, len(lines))):
         row = lines[i]
         for j in range(min(9, len(row))):
             ch = row[j]
-            if ch.isdigit() and ch != '0':
+            if ch.isdigit() and ch != "0":
                 board[i][j] = int(ch)
             else:
                 board[i][j] = None
@@ -69,7 +64,6 @@ def parse(text: str) -> Board:
 
 
 if __name__ == "__main__":
-    # ── 世界最难数独之一 ──
     hardest = """
 4......2.
 ..792..61
@@ -81,23 +75,19 @@ if __name__ == "__main__":
 ...4...8.
 ..6...5.3
     """
-
     print("═" * 30)
     print(" 基础回溯法")
     print("═" * 30)
-
     b1 = parse(hardest)
     print_board(b1)
     ok = solve(b1)
     print(f"\n→ {'有解' if ok else '无解'}")
     if ok:
         print_board(b1)
-
     print()
     print("═" * 30)
     print(" 候选数法（MRV 优化）")
     print("═" * 30)
-
     b2 = parse(hardest)
     ok2 = solve_with_candidates(b2)
     print(f"\n→ {'有解' if ok2 else '无解'}")

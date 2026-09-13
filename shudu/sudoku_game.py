@@ -18,11 +18,11 @@ from shudu_solver import (
     DEFAULT_AUTO_TECHNIQUES,
     ShuduSolver,
 )
-from sudoku_backtracking import DEFAULT_BACKTRACKING_SOLVER
-from sudoku_hints import Hint, make_hint
-from sudoku_puzzles import Puzzle, SCREENSHOT_PUZZLE
-from sudoku_rules import CELLS, PEERS, Cell, candidate_grid, related
-from sudoku_step import Change
+from shudu.sudoku_backtracking import DEFAULT_BACKTRACKING_SOLVER
+from shudu.sudoku_hints import Hint, make_hint
+from shudu.sudoku_puzzles import Puzzle, SCREENSHOT_PUZZLE
+from shudu.sudoku_rules import CELLS, PEERS, Cell, candidate_grid
+from shudu.sudoku_step import Change
 
 Grid = tuple[tuple[int, ...], ...]
 

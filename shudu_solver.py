@@ -1,7 +1,7 @@
-"""提供 shudu 使用的项目级逻辑求解器。
+"""提供 shudu 使用的项目级逻辑求解器入口。
 核心候选与所有技巧搜索继承共享 Numba 实现。
-本层定义项目技巧目录、自动求解优先级、结构化一步 API 和命令行入口。
-算法候选独立于 GUI 用户笔记，不复制高级数独规则。
+本层定义项目技巧目录、自动求解优先级和结构化 next_step() Interface。
+算法执行时直接产出提示证据，提示层不再复制高级数独规则。
 """
 
 from __future__ import annotations
@@ -9,9 +9,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from logical_solver import parse, print_board
-from sudoku_logic import NumbaLogicSolver
-from sudoku_rules import box_cells, col_cells, row_cells
-from sudoku_step import Change, LogicStep, capture_candidates, step_changes
+from shudu.sudoku_logic import NumbaLogicSolver
+from shudu.sudoku_step import Change, LogicStep, capture_candidates, step_changes
 
 AUTO_TECHNIQUE_SPECS = (
     ("hidden_single", "Hidden Single", True),
@@ -111,7 +110,7 @@ class ShuduSolver(NumbaLogicSolver):
         return result
 
     def next_step(self) -> LogicStep | None:
-        """执行且返回一个结构化逻辑步骤；不使用回溯。"""
+        """执行并返回完整一步事实；不使用回溯，也不要求提示层重建证据。"""
         before = [row[:] for row in self.board]
         candidates = capture_candidates(self.cands)
         result = None
@@ -121,21 +120,14 @@ class ShuduSolver(NumbaLogicSolver):
                 self._last_message(),
                 placements,
                 eliminations,
-                (),
-                self._placement_units(placements),
+                self._last_sources,
+                self._last_units,
                 candidates,
             )
         return result
 
     def _last_message(self) -> str:
         result = self.steps[-1].split("] ", 1)[-1] if self.steps else ""
-        return result
-
-    def _placement_units(self, placements) -> tuple:
-        result = ()
-        if placements:
-            row, col, _ = placements[0]
-            result = (row_cells(row), col_cells(col), box_cells(row, col))
         return result
 
 

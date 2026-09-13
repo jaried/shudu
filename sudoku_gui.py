@@ -1,7 +1,7 @@
 """启动数独图形化游戏。
 使用 Tkinter 接收鼠标和键盘输入。
 命令行或关卡菜单都可指定截图文件，直接恢复正式大数字与候选小数字。
-自动求解算法在设置菜单逐项控制，窗口层不实现算法规则。
+根目录仅保留 GUI 入口；游戏状态、截图识别与绘制实现位于 shudu 包中。
 """
 
 from __future__ import annotations
@@ -11,10 +11,10 @@ from pathlib import Path
 import tkinter as tk
 from tkinter import filedialog, messagebox
 
-from sudoku_game import Game
-from sudoku_puzzles import PUZZLES, Puzzle, SCREENSHOT_PUZZLE, puzzle_from_text
-from sudoku_screenshot import load_screenshot_game
-from sudoku_view import BG, HEIGHT, WIDTH, SudokuView
+from shudu.sudoku_game import Game
+from shudu.sudoku_puzzles import PUZZLES, Puzzle, SCREENSHOT_PUZZLE, puzzle_from_text
+from shudu.sudoku_screenshot import load_screenshot_game
+from shudu.sudoku_view import BG, HEIGHT, WIDTH, SudokuView
 
 
 HELP_TEXT = (
@@ -266,7 +266,6 @@ if __name__ == "__main__":
     if args.screenshot:
         main(screenshot_path=args.screenshot)
     else:
-        # 未提供截图时仍可直接修改这里自定义开局；`.` 或 `0` 表示空格。
         CUSTOM_BOARD = """
 ...7...3.
 8......5.

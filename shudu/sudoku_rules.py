@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 
-from sudoku_njit_core import candidate_sets, masks_from_board
+from shudu.sudoku_njit_core import candidate_sets, masks_from_board
 
 SIZE = 9
 BOX_SIZE = 3

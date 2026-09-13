@@ -2,158 +2,111 @@
 
 ## Status
 
-COMPLETE — 2026-09-13
+COMPLETE — 2026-09-14
 
-本轮按 `improve-codebase-design` 继续审查整个仓库，并在前一轮职责拆分基础上完成逻辑核心的 Numba 收敛。目标仍然是：单一真源、稳定 API、低耦合、低重复、可验证，而不是为了“优化”机械拆文件。
+本轮按 `.claude/skills/engineering/codebase-design` 对提示链和目录结构做深化。目标是让算法知识只存在于真正执行算法的 Module 中，让调用方只消费稳定的 Interface，并把非入口实现从仓库根目录收进 `shudu/` 包。
 
-## 当前结论
-
-此前最大的剩余技术债是：回溯已经 `njit`，但人类逻辑技巧仍运行在 Python `set` / 列表组合热路径中，而且 `logical_solver.py` 与项目级 `ShuduSolver` 仍存在两套执行层。现在已经收敛为：
+## 当前结构
 
 ```text
-sudoku_njit_core.py    纯计算热路径：位掩码 + njit
-        ↑
-sudoku_logic.py        共享 orchestration / 日志 / fallback
-        ↑
-logical_solver.py      兼容旧 API 与旧优先级
-shudu_solver.py        项目优先级 + next_step()
-        ↑
-sudoku_hints.py        只读提示
-        ↑
-sudoku_game.py         游戏状态
-        ↑
-sudoku_view.py / sudoku_gui.py
+根目录
+├─ sudoku_gui.py       GUI 可执行入口
+├─ shudu_solver.py     项目级逻辑 solver seam / CLI
+├─ logical_solver.py   legacy 兼容入口 / CLI
+├─ solver.py           回溯演示入口
+└─ techniques.py       技巧演示入口
+
+shudu/
+├─ sudoku_njit_core.py      Numba 纯计算核心
+├─ sudoku_rules.py          行、列、宫与基础候选规则
+├─ sudoku_backtracking.py   公共完整解能力
+├─ sudoku_logic.py          solver 状态、技巧编排、算法证据
+├─ sudoku_step.py           LogicStep Interface
+├─ sudoku_hints.py          LogicStep → Hint 语义适配
+├─ sudoku_game.py           游戏状态机
+├─ sudoku_screenshot.py     截图输入深模块
+├─ sudoku_view.py           普通游戏绘制
+├─ sudoku_hint_view.py      统一提示效果绘制
+├─ sudoku_theme.py          主题常量
+└─ sudoku_puzzles.py        题面
 ```
 
-`sudoku_rules.py` 继续提供拓扑真源，但基础候选计算也已经复用 `sudoku_njit_core`，从而避免自动笔记和 solver 各自维护候选算法。
+根目录不再承载普通实现文件。`tests/test_architecture.py` 会直接失败于新的根级非入口 Python 文件，防止结构重新摊平。
 
-## 已完成的结构优化
+## 1. solver 拥有算法证据
 
-### 1. `sudoku_rules.py` 保持纯领域边界
+此前 `ShuduSolver.next_step()` 只返回 placements / eliminations，`sudoku_hints.py` 为了画绿色依据和蓝框，又根据候选重新识别 Naked Pair、Hidden Pair、Naked Triple、Pointing、Box-Line、X-Wing、XY-Wing。
 
-统一定义：
+这违反 Locality：修改算法时，需要同时维护 solver 与提示层中的两套模式知识。
 
-- `Cell`、`CELLS`；
-- 行、列、宫及 `UNITS`；
-- `PEERS` / `related()`；
-- `unit_name()`。
+现在每个技巧在真正命中时就记录：
 
-它不依赖 GUI、Game、Hint 或 solver orchestration。基础 `candidate_grid()` 只负责把 Numba 位掩码结果转换为兼容的候选集合。
+- `sources`：该步依据格；
+- `units`：需要观察的行、列、宫；
+- `placements` / `eliminations`：实际动作；
+- `candidates`：动作前候选快照。
 
-### 2. 新增 `sudoku_njit_core.py` 作为唯一计算热路径
+`ShuduSolver.next_step()` 通过一个 `LogicStep` 一次返回完整事实。提示层不再扫描候选来重新证明算法。
 
-候选数统一使用 1–9 的整数位掩码，核心函数全部使用 `@numba.njit(cache=True)`：
+这使 `LogicStep` 成为 solver 与提示之间唯一的步骤 Interface：实现复杂度留在 solver，调用方获得更高 Leverage。
 
-- 基础候选计算；
-- 落子后的候选传播；
-- Hidden Single；
-- Naked Single；
-- Naked Pair；
-- Hidden Pair；
-- Naked Triple；
-- Pointing Pair；
-- Box-Line Reduction；
-- X-Wing；
-- XY-Wing。
+## 2. Hint Module 只做语义适配
 
-该模块不生成中文日志、不读取用户笔记、不依赖 GUI，也不执行回溯。
+`sudoku_hints.py` 现在只负责：
 
-### 3. 新增 `sudoku_logic.py` 收敛共享 solver 状态
+1. 跳过玩家已经手动完成的合法排除；
+2. 将 `LogicStep.sources / units / targets` 转为统一视觉语义；
+3. 生成用户可读的中文说明。
 
-`NumbaLogicSolver` 以 `_masks: numpy.ndarray[int64]` 作为算法候选唯一内部状态。Python `set` 网格只在兼容接口、测试和 GUI 提示边界临时生成，不再作为核心模式搜索的数据结构。
+已删除提示层中的 `_x_wing_context()`、`_pointing_context()`、`_xy_wing_context()` 等二次识别实现。
 
-这一层负责：
+算法名字、模式判定和证据所有权因此集中在 solver 一处；提示文案可以独立调整而不会改变数独规则。
 
-- 技巧编排；
-- 中文步骤日志；
-- `solve()` 控制流；
-- 卡住后的共享回溯 fallback；
-- 与旧 `cands` 读取接口兼容。
+## 3. Hint View 不跨越私有 Interface
 
-计算密集循环与日志/UI 语义因此分层，不把字符串和可变 Python 容器硬塞进 nopython 内核。
+此前 `sudoku_hint_view.py` 直接调用 `SudokuView._draw_header()` 和 `_draw_grid_lines()`。这让私有实现事实上变成跨 Module 契约。
 
-### 4. `LogicSolver` 与 `ShuduSolver` 不再复制算法
+现在复用能力被明确为两个公开绘制 Interface：
 
-`logical_solver.py` 现在是兼容 facade，保留旧 helpers、CLI 和 Naked Single → Hidden Single 优先级。
+- `SudokuView.draw_header()`；
+- `SudokuView.draw_grid_lines()`。
 
-`shudu_solver.py` 只保留项目差异：
+提示效果只通过公开绘制 Interface 与通用 Canvas primitives 工作，不再访问 `SudokuView` 私有方法。没有为此增加 Protocol、Adapter 注册表或第二套 View abstraction，因为当前没有第二个真实实现需要那个 seam。
 
-1. Hidden Single；
-2. Naked Single；
-3. 其余技巧继承共享 Numba 实现；
-4. 提供公开 `next_step()` 结构化 API。
+## 4. 非入口实现集中到包目录
 
-因此两套公开 solver 共享同一核心算法实现，不再出现“项目版本修了、legacy 版本没修”的漂移。
+目录调整不是按“每个类一个文件”机械拆分，而是把仓库根目录定义为可执行入口层，把内部实现集中到 `shudu/`。
 
-### 5. 自动笔记与逻辑候选共享基础计算
+这样做的收益：
 
-`sudoku_rules.candidate_grid()` 改为复用 Numba 候选位掩码内核。Game 的一键自动笔记、`LogicSolver` 和 `ShuduSolver` 因而共享正式大数字 → 基础候选这一条规则真源。
+- 根目录直接表达“怎么运行”；
+- 内部依赖使用显式 `shudu.*` 路径，不依赖工作目录偶然性；
+- 测试和维护者可快速区分入口 Interface 与内部 Implementation；
+- 不新增无真实变化需求的 Adapter 或抽象基类。
 
-用户手工笔记仍然是独立状态：
+## 5. 可执行架构门禁
 
-- `Game.notes`：用户可编辑；
-- `_masks`：算法内部候选；
-- 二者绝不互相偷读。
+`tests/test_architecture.py` 现在锁定：
 
-### 6. 提示层保持只依赖公共 API
+- 根目录只允许五个 Python 可执行入口；
+- rules 不向 GUI / Game / Hint / solver orchestration 反向依赖；
+- Hint 只依赖项目级 `ShuduSolver` Interface；
+- Hint 不调用 solver 私有 step 方法；
+- Hint 不重新实现高级算法模式识别；
+- Hint View 不调用 View 私有绘制方法；
+- 截图深模块不依赖 GUI、Game 或 solver；
+- GUI 只通过截图 loader Interface 使用图像识别。
 
-`sudoku_hints.py` 继续只调用 `ShuduSolver.next_step()`，不访问 `_apply_next_step()`，也不直接依赖 `sudoku_njit_core`。Numba 属于 solver 内部实现细节，不泄漏到 UI。
+这些测试描述的是 seam 和依赖方向，而不是具体函数内部写法。
 
-### 7. 增加 Numba 架构门禁
+## 明确不做
 
-新增 `tests/test_njit_core.py`：
-
-- 主动调用全部九个核心 finder；
-- 断言每个 Numba dispatcher 都生成 `nopython_signatures`；
-- 断言 `LogicSolver` / `ShuduSolver` 都共享 `NumbaLogicSolver`；
-- 锁定两者各自的 Single 技巧优先级。
-
-现有架构测试继续防止 rules / hints / game 依赖方向回退。
-
-## 为什么不是“所有代码都 njit”
-
-`njit` 只用于适合 nopython 的计算核心。以下部分明确保留 Python：
-
-- Tkinter 绘制；
-- 中文日志字符串；
-- 用户笔记字典；
-- 撤回快照；
-- `LogicStep` / `Hint` 结构化 UI 数据；
-- 菜单和键鼠事件。
-
-这些不是性能热点，强行 JIT 会扩大边界复杂度却没有实际收益。当前做法把 Numba 放在真正的 O(81×技巧扫描) 热路径上，符合 KISS 和第一性原理。
-
-## 明确不做的伪优化
-
-### 不为每个技巧创建一个 Python 类
-
-九种技巧现在已经是独立 njit kernel。再套一层 Strategy class 只会增加对象和注册表，没有第二种运行时组合需求。
-
-### 不让 UI 直接持有 NumPy 位掩码
-
-GUI 只需要语义化候选和步骤。把 `_masks` 暴露到 UI 会破坏 solver 边界并让撤回/提示与计算表示绑定。
-
-### 不删除兼容 `cands` 读取接口
-
-当前测试、提示快照和潜在外部调用仍需要 set 形式。它现在是按需快照，不再控制内部算法状态，因此兼容成本很低。
+- 不为九种技巧各建 Strategy class；现有 Numba finder 已经是内聚的计算实现。
+- 不引入 View Protocol；只有一个真实 Canvas 实现，没有第二个 Adapter。
+- 不把 NumPy 位掩码暴露给 Hint 或 GUI。
+- 不让用户笔记成为 solver 候选真源。
+- 不因为移动目录改变现有启动命令和 GUI 行为。
 
 ## 验证
 
-GitHub Actions 使用 Python 3.12 + Tk + Xvfb 执行完整回归。全核心 Numba 改造后的最新验证结果：
-
-```text
-141 passed in 8.35s
-```
-
-其中新增测试明确验证全部核心 finder 进入 Numba nopython 模式。
-
-## 后续触发条件
-
-只有出现以下事实时再继续结构拆分：
-
-1. 需要第二种候选编码或第二种 JIT 后端；
-2. GUI 之外出现新的前端并需要共享完整 Game 状态机；
-3. 需要持久化 solver session 或跨进程复用中间候选；
-4. 性能 profiling 证明 Python 包装层而不是 njit kernel 成为新瓶颈。
-
-在这些触发条件出现前，继续增加抽象不会带来可测收益。
+GitHub Actions 使用 Python 3.12 + Tk + Xvfb 执行完整回归。架构、逻辑、GUI、截图输入与 Numba nopython 门禁都在同一测试套件中验证。
