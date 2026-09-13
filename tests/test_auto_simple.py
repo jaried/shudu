@@ -1,13 +1,15 @@
 """验证简单算法自动求解的边界与设置行为。
 只覆盖 Naked Pair 及以下技巧，不允许 Hidden Pair 及更高技巧混入自动路径。
-Game 单元测试显式控制开关，产品入口负责默认开启。
-自动求解不得读取用户笔记或增加错误次数。
+所有简单算法造成的候选删除都需要同步到当前小数字笔记。
+自动求解不得把用户笔记作为算法推理前提或增加错误次数。
 """
 
 from copy import deepcopy
 
-from shudu_solver import ShuduSolver
+from shudu_solver import ShuduSolver, SimpleSolveResult
 from sudoku_game import Game
+from sudoku_njit_core import ALL_DIGITS_MASK
+from sudoku_rules import CELLS, candidate_grid
 
 
 def test_simple_techniques_stop_at_naked_pair():
@@ -63,3 +65,55 @@ def test_auto_solver_ignores_user_notes():
     second.auto_solve_simple()
     assert second.board == first.board
     assert second.mistakes == 0
+
+
+def test_simple_result_records_real_naked_pair_candidate_eliminations():
+    solver = ShuduSolver([[0] * 9 for _ in range(9)])
+    solver._masks[:, :] = ALL_DIGITS_MASK
+    pair_mask = (1 << 1) | (1 << 2)
+    solver._masks[0, 0] = pair_mask
+    solver._masks[0, 1] = pair_mask
+    solver._masks[0, 2] = pair_mask | (1 << 3)
+    result = solver.solve_simple_result()
+    assert (0, 2, 1) in result.eliminations
+    assert (0, 2, 2) in result.eliminations
+    assert all(len(change) == 3 for change in result.eliminations)
+
+
+def test_all_simple_eliminations_remove_matching_small_notes(monkeypatch):
+    class FakeSolver:
+        def __init__(self, board):
+            self.board = [row[:] for row in board]
+
+        def solve_simple_result(self):
+            return SimpleSolveResult(0, ((0, 0, 1), (0, 0, 2), (0, 1, 2)))
+
+    monkeypatch.setattr("sudoku_game.ShuduSolver", FakeSolver)
+    game = Game(auto_simple=True)
+    game.auto_clean = False
+    game.notes = {(0, 0): {1, 2, 4}, (0, 1): {2, 3}, (8, 8): {9}}
+    before = deepcopy(game.notes)
+    count = game.auto_solve_simple(remember=True)
+    assert count == 0
+    assert game.notes == {(0, 0): {4}, (0, 1): {3}, (8, 8): {9}}
+    assert "简单算法自动删除" in game.message
+    assert len(game.history) == 1
+    game.undo()
+    assert game.notes == before
+
+
+def test_real_simple_solver_syncs_every_reported_elimination_even_when_auto_clean_off():
+    game = Game(auto_simple=False)
+    candidates = candidate_grid(game.board)
+    game.notes = {
+        cell: set(candidates[cell[0]][cell[1]])
+        for cell in CELLS
+        if not game.value(cell)
+    }
+    solver = ShuduSolver(game.board)
+    expected = solver.solve_simple_result()
+    assert expected.eliminations
+    game.auto_clean = False
+    game.set_auto_simple(True)
+    for row, col, digit in expected.eliminations:
+        assert digit not in game.notes.get((row, col), set())

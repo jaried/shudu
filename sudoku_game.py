@@ -184,22 +184,48 @@ class Game:
             self.message = "已关闭简单算法自动求解。"
 
     def auto_solve_simple(self, remember: bool = False) -> int:
-        """连续执行 X-Wing 之前的简单算法；X-Wing 与 XY-Wing 不自动执行。"""
+        """自动执行 Naked Pair 及以下，并同步全部算法候选删除到小数字。"""
         if not self.auto_simple or self.status != "playing" or self.wrong_cells():
             return 0
         solver = ShuduSolver(self.board)
-        count = solver.solve_simple()
-        if count == 0:
+        result = solver.solve_simple_result()
+        note_removals = self._matching_note_eliminations(result.eliminations)
+        if result.placements == 0 and note_removals == 0:
             return 0
         if remember:
             self._remember()
         previous = [row[:] for row in self.board]
         self.board = [row[:] for row in solver.board]
         self._clean_auto_notes(previous)
+        removed = self._remove_candidate_notes(result.eliminations)
         self.active_digit = self.value(self.selected)
-        self.message = f"简单算法自动填入 {count} 格；X-Wing 及以上算法未自动执行。"
+        self._set_auto_simple_message(result.placements, removed)
         self._check_finished()
-        return count
+        return result.placements
+
+    def _matching_note_eliminations(self, eliminations) -> int:
+        result = sum(digit in self.notes.get((row, col), set()) for row, col, digit in eliminations)
+        return result
+
+    def _remove_candidate_notes(self, eliminations) -> int:
+        removed = 0
+        for row, col, digit in eliminations:
+            cell = (row, col)
+            values = self.notes.get(cell)
+            if values is not None and digit in values:
+                values.remove(digit)
+                removed += 1
+                if not values:
+                    self.notes.pop(cell)
+        return removed
+
+    def _set_auto_simple_message(self, placements: int, removed: int) -> None:
+        if placements and removed:
+            self.message = f"简单算法自动填入 {placements} 格，并同步删除 {removed} 个候选小数字。"
+        elif placements:
+            self.message = f"简单算法自动填入 {placements} 格；Hidden Pair 及以上算法未自动执行。"
+        else:
+            self.message = f"简单算法自动删除 {removed} 个候选小数字。"
 
     def _clean_auto_notes(self, previous) -> None:
         for cell in CELLS:
