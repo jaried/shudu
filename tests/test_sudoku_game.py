@@ -75,7 +75,6 @@ def _alternative_at(board, solution, row, col):
 
 @pytest.mark.parametrize("puzzle", PUZZLES)
 def test_builtin_puzzle_has_unique_solution(puzzle):
-    # 任意另一解至少有一格与已知解不同；逐格强制其他数字检查有无解。
     assert not _has_alternative(puzzle, solve_puzzle(puzzle))
 
 
@@ -204,17 +203,17 @@ def test_erase_and_undo_never_refund_mistakes(game):
     assert game.mistakes == 1
 
 
-def test_third_error_locks_game(game):
+def test_errors_are_unlimited_and_never_end_game(game):
     game.select(4, 7)
-    for digit in (8, 9, 1):
+    wrong_digits = (8, 9, 1, 2, 3, 5, 6, 7, 8, 9)
+    for digit in wrong_digits:
         game.enter(digit)
-    assert game.status == "lost" and game.mistakes == 3
-    before = game.board[4][7]
+    assert game.status == "playing"
+    assert game.mistakes == len(wrong_digits)
     game.erase()
-    game.undo()
-    game.hint()
     game.enter(4)
-    assert game.value((4, 7)) == before and game.mistakes == 3
+    assert game.value((4, 7)) == 4
+    assert game.mistakes == len(wrong_digits)
 
 
 def test_turning_off_auto_clean_keeps_manual_notes(game):
@@ -234,33 +233,37 @@ def test_erase_notes_is_undoable_without_mutable_snapshot_aliasing(game):
     assert game.notes[(0, 0)] == {1}
 
 
-def test_hint_corrects_error_using_original_puzzle(game):
+def test_hint_reports_error_without_correcting_or_undoing_it(game):
     put(game, (4, 7), 8)
     game.hint()
-    assert game.value((4, 7)) == 4
-    assert game.mistakes == 1 and game.hints_used == 1
-    assert not game.wrong_cells()
+    assert game.value((4, 7)) == 8 and game.mistakes == 1
+    assert game.hint_preview.step is None
+    assert game.hint_preview.attention == {(4, 7)}
+    assert len(game.history) == 1 and game.hints_used == 0
+    game.close_hint()
     game.undo()
-    assert game.value((4, 7)) == 8
-    assert game.hints_used == 1
+    assert game.value((4, 7)) == 0
 
 
-def test_hint_fills_one_number_even_in_notes_mode(game):
+def test_hint_preserves_numbers_and_notes_in_notes_mode(game):
     note(game, (0, 0), 1, 4)
     game.toggle_notes()
+    before = [row[:] for row in game.board]
     game.hint()
-    assert game.value((0, 0)) == 8 and game.notes_mode
-    assert (0, 0) not in game.notes
-    game.undo()
+    assert game.board == before and game.notes_mode
     assert game.notes[(0, 0)] == {1, 4}
+    assert game.hint_preview.step is not None
+    game.close_hint()
+    assert game.board == before and game.notes[(0, 0)] == {1, 4}
 
 
-def test_hint_on_given_selects_first_unfinished_cell(game):
+def test_hint_on_given_preserves_selection_and_known_numbers(game):
     game.select(0, 4)
     game.hint()
-    assert game.selected == (0, 0)
-    assert game.value((0, 0)) == 8
+    assert game.selected == (0, 4)
+    assert game.value((0, 0)) == 0
     assert game.value((0, 4)) == 9
+    assert not game.history
 
 
 def test_pause_stops_clock_and_blocks_editing():
