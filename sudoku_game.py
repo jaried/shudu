@@ -1,17 +1,23 @@
 """实现与图形界面解耦的数独游戏状态。
 原题答案统一通过仓库的公共回溯求解器获得。
 候选笔记、撤销、错误累计和计时均在本模块管理。
-基础规则复用 sudoku_rules，不把手工笔记当作求解约束。
+自动算法按独立开关组合执行，不把手工笔记当作求解约束。
 """
 
 from __future__ import annotations
 
+from collections.abc import Iterable
 from dataclasses import dataclass
 from functools import lru_cache
 from time import monotonic
 from typing import Callable
 
-from shudu_solver import ShuduSolver
+from shudu_solver import (
+    AUTO_TECHNIQUE_NAMES,
+    AUTO_TECHNIQUE_SPECS,
+    DEFAULT_AUTO_TECHNIQUES,
+    ShuduSolver,
+)
 from sudoku_backtracking import DEFAULT_BACKTRACKING_SOLVER
 from sudoku_hints import Hint, make_hint
 from sudoku_puzzles import Puzzle, SCREENSHOT_PUZZLE
@@ -31,6 +37,14 @@ def solve_puzzle(puzzle: Puzzle) -> Grid:
     return solution
 
 
+def _validated_auto_techniques(names: Iterable[str]) -> set[str]:
+    result = set(names)
+    unknown = result.difference(AUTO_TECHNIQUE_NAMES)
+    if unknown:
+        raise ValueError(f"未知自动算法：{', '.join(sorted(unknown))}")
+    return result
+
+
 @dataclass(frozen=True)
 class Snapshot:
     board: Grid
@@ -45,6 +59,7 @@ class Game:
         puzzle: Puzzle = SCREENSHOT_PUZZLE,
         clock: Callable[[], float] = monotonic,
         auto_simple: bool = False,
+        auto_techniques: Iterable[str] | None = None,
     ):
         self.puzzle = puzzle
         self.solution = solve_puzzle(puzzle)
@@ -53,23 +68,48 @@ class Game:
         self._clock = clock
         self._elapsed = 0.0
         self._started = clock()
-        self._init_play_state(auto_simple)
+        self._init_play_state(auto_simple, auto_techniques)
         self.hint_preview: Hint | None = None
         return
 
-    def _init_play_state(self, auto_simple: bool) -> None:
+    def _init_play_state(self, auto_simple: bool, auto_techniques: Iterable[str] | None) -> None:
         self.notes: dict[Cell, set[int]] = {}
         self.history: list[Snapshot] = []
         self.simple_eliminations: set[Change] = set()
+        self.auto_techniques = self._initial_auto_techniques(auto_simple, auto_techniques)
         self.selected: Cell = (1, 3)
         self.active_digit = 0
         self.notes_mode = False
         self.auto_clean = True
-        self.auto_simple = auto_simple
         self.mistakes = 0
         self.hints_used = 0
         self.status = "playing"
         self.message = "先选择一个格子，再输入数字。"
+
+    def _initial_auto_techniques(self, auto_simple: bool, names: Iterable[str] | None) -> set[str]:
+        if names is not None:
+            return _validated_auto_techniques(names)
+        result = set(DEFAULT_AUTO_TECHNIQUES) if auto_simple else set()
+        return result
+
+    @property
+    def auto_simple(self) -> bool:
+        """兼容旧开关：有任一自动算法启用时视为开启。"""
+        result = bool(self.auto_techniques)
+        return result
+
+    @auto_simple.setter
+    def auto_simple(self, enabled: bool) -> None:
+        """兼容旧赋值：True 恢复默认简单算法，False 关闭全部自动算法。"""
+        self.auto_techniques = set(DEFAULT_AUTO_TECHNIQUES) if enabled else set()
+
+    def auto_technique_settings(self) -> tuple[tuple[str, str, bool], ...]:
+        """返回 GUI 可直接渲染的算法名称、标签与勾选状态。"""
+        result = tuple(
+            (name, label, name in self.auto_techniques)
+            for name, label, _ in AUTO_TECHNIQUE_SPECS
+        )
+        return result
 
     def value(self, cell: Cell) -> int:
         result = self.board[cell[0]][cell[1]]
@@ -168,7 +208,7 @@ class Game:
         if self.auto_clean:
             self._clean_notes_for(self.selected, digit)
         self.message = f"已填入 {digit}。"
-        self.auto_solve_simple(remember=False)
+        self.auto_solve_enabled(remember=False)
 
     def _clean_notes_for(self, source: Cell, digit: int) -> None:
         for cell in PEERS[source]:
@@ -177,29 +217,57 @@ class Game:
                 if not self.notes[cell]:
                     self.notes.pop(cell)
 
-    def set_auto_simple(self, enabled: bool) -> None:
-        """切换简单算法自动求解；开启时同时生成并维护算法候选笔记。"""
+    def set_auto_technique(self, name: str, enabled: bool) -> None:
+        """独立切换一个自动算法；开启时立即推进全部已启用算法到固定点。"""
+        if name not in AUTO_TECHNIQUE_NAMES:
+            raise ValueError(f"未知自动算法：{name}")
         enabled = bool(enabled)
-        changed = enabled != self.auto_simple
-        self.auto_simple = enabled
-        if changed and enabled:
-            self.auto_solve_simple(remember=True)
-        elif changed:
-            self.message = "已关闭简单算法自动求解。"
+        changed = (name in self.auto_techniques) != enabled
+        if not changed:
+            return
+        if enabled:
+            self.auto_techniques.add(name)
+            self.auto_solve_enabled(remember=True)
+        else:
+            self.auto_techniques.remove(name)
+            self.message = f"已关闭 {self._technique_label(name)} 自动求解。"
 
-    def auto_solve_simple(self, remember: bool = False) -> int:
-        """持续执行简单算法到固定点，并用最终算法候选同步全部小数字。"""
-        if not self.auto_simple or self.status != "playing" or self.wrong_cells():
+    def _technique_label(self, name: str) -> str:
+        result = next(label for key, label, _ in AUTO_TECHNIQUE_SPECS if key == name)
+        return result
+
+    def set_auto_simple(self, enabled: bool) -> None:
+        """兼容旧总开关；True 启用默认集合，False 关闭全部自动算法。"""
+        target = set(DEFAULT_AUTO_TECHNIQUES) if enabled else set()
+        changed = target != self.auto_techniques
+        self.auto_techniques = target
+        if changed and enabled:
+            self.auto_solve_enabled(remember=True)
+        elif changed:
+            self.message = "已关闭全部自动算法。"
+
+    def auto_solve_enabled(self, remember: bool = False) -> int:
+        """执行全部已启用算法到固定点，并同步最终算法候选小数字。"""
+        if not self.auto_techniques or self.status != "playing" or self.wrong_cells():
             return 0
         solver = ShuduSolver(self.board)
         solver.apply_candidate_eliminations(self.simple_eliminations)
-        result = solver.solve_simple_result()
+        result = solver.solve_techniques_result(self.auto_techniques)
+        changed = self._apply_auto_result(solver, result, remember)
+        return result.placements if changed else 0
+
+    def auto_solve_simple(self, remember: bool = False) -> int:
+        """兼容既有调用；实际执行当前勾选的全部自动算法。"""
+        result = self.auto_solve_enabled(remember)
+        return result
+
+    def _apply_auto_result(self, solver: ShuduSolver, result, remember: bool) -> bool:
         next_board = [row[:] for row in solver.board]
         next_notes = self._solver_notes(solver)
         next_eliminations = self.simple_eliminations | set(result.eliminations)
-        changed = next_board != self.board or next_notes != self.notes or next_eliminations != self.simple_eliminations
+        changed = self._auto_result_changed(next_board, next_notes, next_eliminations)
         if not changed:
-            return 0
+            return False
         if remember:
             self._remember()
         self.board = next_board
@@ -207,9 +275,13 @@ class Game:
         self.simple_eliminations = next_eliminations
         self.notes_mode = True
         self.active_digit = self.value(self.selected)
-        self._set_auto_simple_message(result.placements)
+        self._set_auto_message(result.placements)
         self._check_finished()
-        return result.placements
+        return True
+
+    def _auto_result_changed(self, board, notes, eliminations) -> bool:
+        result = board != self.board or notes != self.notes or eliminations != self.simple_eliminations
+        return result
 
     def _solver_notes(self, solver: ShuduSolver) -> dict[Cell, set[int]]:
         candidates = solver.algorithm_candidates()
@@ -220,11 +292,12 @@ class Game:
         }
         return result
 
-    def _set_auto_simple_message(self, placements: int) -> None:
+    def _set_auto_message(self, placements: int) -> None:
+        count = len(self.auto_techniques)
         if placements:
-            self.message = f"简单算法自动填入 {placements} 格，并已同步全部候选小数字。"
+            self.message = f"{count} 个自动算法填入 {placements} 格，并已同步全部候选小数字。"
         else:
-            self.message = "简单算法已推进到固定点，并已同步全部候选小数字。"
+            self.message = f"{count} 个自动算法已推进到固定点，并已同步全部候选小数字。"
 
     def erase(self) -> None:
         if not self.editable or (not self.value(self.selected) and self.selected not in self.notes):
@@ -281,8 +354,8 @@ class Game:
         if self.wrong_cells():
             self.message = "请先修正红色错误格，再生成合法候选数。"
             return
-        if self.auto_simple:
-            self.auto_solve_simple(remember=True)
+        if self.auto_techniques:
+            self.auto_solve_enabled(remember=True)
             return
         candidates = candidate_grid(self.board)
         notes = {cell: set(candidates[cell[0]][cell[1]]) for cell in CELLS if not self.value(cell)}

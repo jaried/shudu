@@ -33,7 +33,11 @@ def test_levels_menu_contains_screenshot_import(app, monkeypatch):
     monkeypatch.setattr(app, "_popup", lambda menu: captured.setdefault("menu", menu))
     app.show_levels()
     menu = captured["menu"]
-    labels = [menu.entrycget(index, "label") for index in range(menu.index("end") + 1)]
+    labels = [
+        menu.entrycget(index, "label")
+        for index in range(menu.index("end") + 1)
+        if menu.type(index) != "separator"
+    ]
     assert "从截图导入…" in labels
 
 
