@@ -134,6 +134,7 @@ class SudokuWindow:
         auto_simple = self.game.auto_simple
         self.game = Game(puzzle, auto_simple=auto_simple)
         self.game.auto_clean = auto_clean
+        self.game.auto_solve_simple()
         self.view.game = self.game
         self._bind_commands()
         self.view.draw()
@@ -185,7 +186,8 @@ class SudokuWindow:
 
 
 def main(puzzle: Puzzle = SCREENSHOT_PUZZLE) -> None:
-    game = Game(puzzle)
+    game = Game(puzzle, auto_simple=True)
+    game.auto_solve_simple()
     root = tk.Tk()
     SudokuWindow(root, game)
     root.mainloop()
