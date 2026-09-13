@@ -8,7 +8,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from logical_solver import LogicSolver, UNITS, box_cells, col_cells, row_cells, unit_name
+from logical_solver import UNITS, box_cells, col_cells, row_cells, unit_name
+from shudu_solver import ShuduSolver
 from sudoku_step import Cell, LogicStep, capture_candidates, step_changes
 
 CELLS = tuple((r, c) for r in range(9) for c in range(9))
@@ -50,7 +51,7 @@ def already_noted(step: LogicStep, notes: dict[Cell, set[int]]) -> bool:
     return result
 
 
-def _message(solver: LogicSolver) -> str:
+def _message(solver: ShuduSolver) -> str:
     result = solver.steps[-1].split("] ", 1)[-1] if solver.steps else ""
     return result
 
@@ -83,7 +84,7 @@ def _step_sources(message: str, candidates, eliminations) -> tuple[Cell, ...]:
     return result
 
 
-def _solver_step(solver: LogicSolver) -> LogicStep | None:
+def _solver_step(solver: ShuduSolver) -> LogicStep | None:
     before = [row[:] for row in solver.board]
     candidates = capture_candidates(solver.cands)
     result = None
@@ -97,7 +98,7 @@ def _solver_step(solver: LogicSolver) -> LogicStep | None:
 
 
 def pending_step(board, notes: dict[Cell, set[int]]) -> LogicStep | None:
-    solver = LogicSolver(board)
+    solver = ShuduSolver(board)
     result = None
     for _ in range(729):
         result = _solver_step(solver)
