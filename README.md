@@ -13,7 +13,7 @@ python sudoku_gui.py
 
 建议使用 Python 3.12。代码要求 Python 3.10 或更新版本，运行环境需要 `tkinter`；可先执行 `python -m tkinter` 检查是否能打开测试窗口。Windows 的 Python 安装应包含 Tcl/Tk 组件。Linux 缺少该组件时需安装与所用 Python 环境匹配的 Tk 支持，例如系统 Python 的 `python3-tk` 包。
 
-首次运行公共求解器会有 Numba 编译开销。求解只发生在载入题目时，计时从题目就绪后开始；填写数字、点击和重绘不执行搜索。
+首次运行会有 Numba JIT 编译开销；核心逻辑内核全部使用 `@numba.njit(cache=True)`，后续进程可复用编译缓存。填写数字、点击和普通重绘不会执行完整求解搜索。
 
 Windows 配好同一 Python 环境后，也可双击 `run_gui.bat`。游戏完全在本地运行，不需要网络或账号。
 
@@ -41,7 +41,7 @@ Windows 配好同一 Python 环境后，也可双击 `run_gui.bat`。游戏完�
 
 点击「提示」或按 `H`，进入只读提示界面：绿色显示依据数字，浅蓝色显示相关区域，蓝框标出观察的行、列或宫。候选排除步骤会把建议删除的小数字标红并加删除线。下方显示技巧名称与完整推理；长说明可以滚动。提示界面点击任意位置即可返回棋盘。
 
-提示通过 `shudu_solver.ShuduSolver` 复用既有逻辑技巧：**隐性唯一数优先**，随后才检查唯一候选数、显性数对、隐性数对、显性三数组、宫指向行列、行列指向宫、X-Wing、XY-Wing。隐性唯一数使用算法自己根据正式大数字计算的候选，不读取用户手工笔记；某行、列或宫中某个数字只剩一个候选位置时，shudu-solver 会直接落子，GUI 提示则只展示这一步而不替用户执行。
+提示通过 `shudu_solver.ShuduSolver` 复用共享 Numba 逻辑核心：**隐性唯一数优先**，随后才检查唯一候选数、显性数对、隐性数对、显性三数组、宫指向行列、行列指向宫、X-Wing、XY-Wing。隐性唯一数使用算法自己根据正式大数字计算的候选，不读取用户手工笔记；某行、列或宫中某个数字只剩一个候选位置时，shudu-solver 会直接落子，GUI 提示则只展示这一步而不替用户执行。
 
 GUI 提示只调用 `ShuduSolver.next_step()` 公共接口，不直接访问求解器私有方法。没有手动执行时，再次点击会显示同一步。对于候选排除，只有程序已证明该整步、且其所有删除都已体现在非空手工笔记中时，才会在求解副本中重放这一步并寻找下一条建议；任意手工漏标都不会被当成推理前提。当前有错误数字时先指出错误，既不自动纠正，也不在错误盘面上继续推理。现有技巧无法推进时会明确显示「暂无逻辑提示」。
 
@@ -51,7 +51,7 @@ GUI 提示只调用 `ShuduSolver.next_step()` 公共接口，不直接访问求�
 
 该按钮不要求选中空格；选中已知数时同样可用。完成后开启笔记模式，方便继续手动增删。它会**覆盖现有笔记，恢复按基本规则仍可填写的候选数**，包括此前手动删除的候选；按一次撤回即可恢复整个操作之前的笔记。候选未变化时重复点击不会堆积撤回记录。
 
-基础候选统一由 `sudoku_rules.candidate_grid()` 计算；Game、提示层与求解器不再各自维护一套行、列、宫规则。错误盘面上暂停自动生成候选，先修正红色错误格；暂停、提示和完成状态也不执行此操作。平时的手工笔记仍允许标记任意 1–9，笔记开关本身的行为不变。
+基础候选统一由 `sudoku_rules.candidate_grid()` 调用 Numba 位掩码内核计算；Game、提示层与求解器不再各自维护一套行、列、宫规则。错误盘面上暂停自动生成候选，先修正红色错误格；暂停、提示和完成状态也不执行此操作。平时的手工笔记仍允许标记任意 1–9，笔记开关本身的行为不变。
 
 ## 键盘
 
@@ -81,9 +81,11 @@ GUI 提示只调用 `ShuduSolver.next_step()` 公共接口，不直接访问求�
 
 | 文件 | 职责 |
 | --- | --- |
-| `sudoku_rules.py` | **纯领域规则内核**：行、列、宫、peer、坐标类型与基础候选 |
-| `logical_solver.py` | 既有逻辑技巧实现库 |
-| `shudu_solver.py` | 项目级求解入口、技巧优先级、稳定 `next_step()` API |
+| `sudoku_njit_core.py` | **Numba 计算核心**：候选位掩码、落子传播、9 种逻辑技巧的 nopython 模式搜索 |
+| `sudoku_logic.py` | 共享 solver orchestration：位掩码状态、日志、技巧编排、回溯 fallback |
+| `sudoku_rules.py` | **纯领域规则层**：行、列、宫、peer、坐标类型；基础候选复用 Numba 内核 |
+| `logical_solver.py` | 兼容旧公开 API/CLI，保留旧 Naked Single → Hidden Single 优先级 |
+| `shudu_solver.py` | 项目级求解入口，Hidden Single 优先，提供稳定 `next_step()` API |
 | `sudoku_step.py` | 不可变的结构化一步结果 |
 | `sudoku_hints.py` | 把 `LogicStep` 转成只读提示语义，不访问 solver 私有 API |
 | `sudoku_game.py` | 游戏状态、用户笔记、撤回、计时、错误与胜负 |
@@ -91,10 +93,10 @@ GUI 提示只调用 `ShuduSolver.next_step()` 公共接口，不直接访问求�
 | `sudoku_hint_view.py` | 只读提示棋盘和说明面板 |
 | `sudoku_gui.py` | 窗口、菜单、键盘和操作分发 |
 | `sudoku_puzzles.py` | 内置题面和自定义文本题面 |
-| `sudoku_backtracking.py` | 公共完整解/校验能力，仅在需要完整答案时使用 |
+| `sudoku_backtracking.py` | 公共完整解/校验能力；回溯搜索本身也已 njit |
 | `solver.py` / `techniques.py` | 兼容与教学演示入口 |
 
-详细的依赖审查、已做优化及明确不做的伪优化见 [`docs/codebase-design-review.md`](docs/codebase-design-review.md)。
+详细依赖审查见 [`docs/codebase-design-review.md`](docs/codebase-design-review.md)，Numba 核心决策见 [`docs/adr/ADR-003-njit-logical-core.md`](docs/adr/ADR-003-njit-logical-core.md)。
 
 ## 测试与 CI
 
@@ -113,6 +115,6 @@ xvfb-run -a -s "-screen 0 1400x1200x24" python -m pytest -q
 
 仓库已加入 `.github/workflows/tests.yml`，每次 push / pull request 都在 Python 3.12 + Tk + Xvfb 环境运行完整回归，GUI 测试不会因无显示环境而静默跳过。
 
-2026-09-13 本轮 `improve-codebase-design` 优化后的首个 GitHub Actions 回归结果：**134 passed in 4.28s**。覆盖原有逻辑求解、项目级 solver、共享规则等价性、游戏状态、提示、高亮、自动笔记以及真实 Tk 鼠标键盘交互。
+2026-09-13 全核心 Numba 改造后的 GitHub Actions 回归结果：**141 passed in 8.35s**。新增 `tests/test_njit_core.py` 会主动执行全部核心 finder，并断言每个 dispatcher 都生成 `nopython_signatures`，防止未来无意退回 object/Python 路径。
 
 Windows 字体、系统显示缩放及双击启动仍属于实机验收项；操作复现见 [GUI 验收说明](docs/gui-acceptance.md)。
