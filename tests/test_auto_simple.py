@@ -151,3 +151,26 @@ def test_real_simple_solver_syncs_every_reported_elimination_even_when_auto_clea
     game.set_auto_simple(True)
     for row, col, digit in expected.eliminations:
         assert digit not in game.notes.get((row, col), set())
+
+
+def test_auto_notes_reapplies_simple_eliminations(monkeypatch):
+    game = Game(auto_simple=False)
+    candidates = candidate_grid(game.board)
+    target = next(cell for cell in CELLS if candidates[cell[0]][cell[1]])
+    digit = min(candidates[target[0]][target[1]])
+
+    class FakeSolver:
+        def __init__(self, board):
+            self.board = [row[:] for row in board]
+
+        def solve_simple_result(self):
+            return SimpleSolveResult(0, ((target[0], target[1], digit),))
+
+    monkeypatch.setattr("sudoku_game.ShuduSolver", FakeSolver)
+    game.auto_simple = True
+    game.auto_notes()
+    assert digit not in game.notes.get(target, set())
+    assert game.notes_mode
+    assert len(game.history) == 1
+    game.undo()
+    assert not game.notes
