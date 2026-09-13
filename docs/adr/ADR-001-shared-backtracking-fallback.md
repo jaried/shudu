@@ -1,38 +1,34 @@
-# ADR-001 Shared Backtracking Fallback
+# ADR-001 共享回溯兜底求解器
 
-## Status
+## 状态
 
-Accepted
+已接受
 
-## Context
+## 背景
 
-`logical_solver.py` previously stopped when the implemented logic techniques
-could not continue. That made it impossible to distinguish between:
+`logical_solver.py` 过去在现有逻辑技巧无法继续推进时会直接停止。这样无法区分两种情况：
 
-- a valid puzzle that simply needs search
-- an invalid puzzle with no solution
+- 题目本身有效，只是当前已实现的逻辑技巧不足以继续求解；
+- 当前盘面无解，属于无效题面或输入错误。
 
-`solver.py` already had a separate backtracking implementation, but it was not
-shared.
+`solver.py` 当时已经有一套独立的回溯实现，但这套能力没有被其他模块复用。
 
-## Decision
+## 决策
 
-Introduce a shared module `sudoku_backtracking.py` with these responsibilities:
+新增共享模块 `sudoku_backtracking.py`，统一承担以下职责：
 
-- validate the input board
-- solve with MRV backtracking
-- accelerate the core search with `numba.njit`
-- return structured results to callers
+- 校验输入棋盘；
+- 使用 MRV（最少剩余值）策略进行回溯求解；
+- 使用 `numba.njit` 加速核心搜索路径；
+- 向调用方返回结构化求解结果。
 
-`logical_solver.py` now uses this shared solver as a fallback when logic stalls.
-If the fallback finds no solution, it prints an error indicating the input may
-be wrong.
+当逻辑求解无法继续推进时，`logical_solver.py` 使用该共享回溯求解器作为兜底。如果回溯仍然无法找到解，则明确报告当前输入可能存在错误或题面无解。
 
-`solver.py` now reuses the same shared module instead of keeping a separate
-backtracking path.
+`solver.py` 也统一复用该共享模块，不再保留另一套独立的回溯求解路径。
 
-## Consequences
+## 影响
 
-- backtracking behavior is centralized and easier to regression-test
-- invalid boards now produce an explicit error path
-- logical solving remains the primary path, with search only as a fallback
+- 回溯行为集中到单一实现，避免重复逻辑和行为漂移；
+- 无效棋盘拥有明确的错误路径，更容易定位输入问题；
+- 逻辑求解仍然是主路径，只有逻辑技巧无法继续推进时才使用回溯兜底；
+- 公共回溯实现可以被测试和其他调用方独立复用。
