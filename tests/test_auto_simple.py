@@ -1,7 +1,7 @@
 """验证简单算法自动求解的边界与设置行为。
 自动范围包含 Single、Naked Pair、Naked Triple、Pointing Pair。
 所有自动简单算法造成的候选删除都需要同步到当前小数字笔记。
-自动求解不得把用户笔记作为算法推理前提或增加错误次数。
+自动求解必须持续到所有简单算法都不可执行，且不得增加错误次数。
 """
 
 from copy import deepcopy
@@ -36,6 +36,12 @@ def test_simple_solver_advances_board_without_backtracking():
     assert game.board != before
     assert game.mistakes == 0
     assert not game.history
+
+
+def test_simple_solver_runs_until_no_simple_step_remains():
+    solver = ShuduSolver(Game(auto_simple=False).board)
+    solver.solve_simple_result()
+    assert not solver.apply_simple_step()
 
 
 def test_enabling_switch_runs_simple_solver_as_one_undoable_action():
