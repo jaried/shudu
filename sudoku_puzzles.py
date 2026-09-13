@@ -48,3 +48,11 @@ CHALLENGE_PUZZLE = Puzzle("回溯挑战", "挑战", (
 ))
 
 PUZZLES = (SCREENSHOT_PUZZLE, PRACTICE_PUZZLE, CHALLENGE_PUZZLE)
+
+
+def puzzle_from_text(text: str, title: str = "自定义局", difficulty: str = "自定义") -> Puzzle:
+    """把 main 中便于手工编辑的 9 行文本转换为严格题面。"""
+    rows = tuple("".join(line.split()) for line in text.strip().splitlines() if line.strip())
+    puzzle = Puzzle(title, difficulty, rows)
+    puzzle.grid()
+    return puzzle
