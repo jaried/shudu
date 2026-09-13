@@ -5,16 +5,16 @@
 ## 启动
 
 ```bash
-python -m pip install -r requirements.txt
-python sudoku_gui.py
+uv sync
+uv run python sudoku_gui.py
 ```
 
-Windows 也可以运行 `run_gui.bat`。建议 Python 3.12，GUI 环境需要 `tkinter`。
+Windows 也可以运行 `run_gui.bat`。项目要求 Python 3.12 或更高版本，GUI 环境需要 `tkinter`。
 
 可以直接把游戏截图作为启动输入：
 
 ```bash
-python sudoku_gui.py "D:\screenshots\sudoku.png"
+uv run python sudoku_gui.py "D:\screenshots\sudoku.png"
 ```
 
 运行中也可以从左上角关卡菜单或设置菜单选择 **“从截图导入…”**，同一个窗口可反复导入不同截图。
@@ -150,14 +150,14 @@ sudoku_screenshot → Puzzle + notes → GUI/Game
 ## 测试
 
 ```bash
-python -m pip install -r requirements-dev.txt
-python -m pytest -q
+uv sync
+uv run python -m pytest -q
 ```
 
 完整 GUI 测试使用 Tk + Xvfb：
 
 ```bash
-xvfb-run -a -s "-screen 0 1400x1200x24" python -m pytest -q
+xvfb-run -a -s "-screen 0 1400x1200x24" uv run python -m pytest -q
 ```
 
 GitHub Actions 在 Python 3.12 下执行完整回归，并包含架构依赖、Numba nopython、GUI、截图导入和提示行为门禁。
