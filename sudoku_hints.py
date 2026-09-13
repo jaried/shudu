@@ -9,7 +9,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from shudu_solver import ShuduSolver
-from sudoku_rules import CELLS, UNITS, Cell, box_cells, col_cells, row_cells, unit_name
+from sudoku_rules import CELLS, UNITS, Cell, box_cells, col_cells, related, row_cells, unit_name
 from sudoku_step import LogicStep
 
 NAMES = {
@@ -23,6 +23,7 @@ NAMES = {
     "X-Wing": "X-Wing",
     "XY-Wing": "XY-Wing",
 }
+MAX_LOGIC_TRANSITIONS = len(CELLS) * 9
 
 
 @dataclass(frozen=True)
@@ -53,7 +54,7 @@ def already_noted(step: LogicStep, notes: dict[Cell, set[int]]) -> bool:
 def pending_step(board, notes: dict[Cell, set[int]]) -> LogicStep | None:
     solver = ShuduSolver(board)
     result = None
-    for _ in range(729):
+    for _ in range(MAX_LOGIC_TRANSITIONS):
         result = solver.next_step()
         if result is None or not already_noted(result, notes):
             break
@@ -132,7 +133,7 @@ def _hidden_single_unit(step: LogicStep) -> tuple[tuple[Cell, ...], ...]:
 
 def single_sources(board, step: LogicStep, units) -> frozenset[Cell]:
     row, col, digit = step.placements[0]
-    sources = {cell for cell in CELLS if board[cell[0]][cell[1]] and _shares_unit((row, col), cell)}
+    sources = {cell for cell in CELLS if board[cell[0]][cell[1]] and related((row, col), cell)}
     if step.name == "Hidden Single" and units:
         sources = _hidden_single_sources(board, units[0], (row, col), digit)
     result = frozenset(sources)
@@ -145,15 +146,8 @@ def _hidden_single_sources(board, unit, target: Cell, digit: int) -> set[Cell]:
         cell
         for cell in CELLS
         if board[cell[0]][cell[1]] == digit
-        and any(_shares_unit(cell, other) for other in empty_others)
+        and any(related(cell, other) for other in empty_others)
     }
-    return result
-
-
-def _shares_unit(first: Cell, second: Cell) -> bool:
-    row, col = first
-    other_row, other_col = second
-    result = row == other_row or col == other_col or (row // 3, col // 3) == (other_row // 3, other_col // 3)
     return result
 
 
