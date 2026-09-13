@@ -1,6 +1,6 @@
 """提供 shudu 使用的项目级逻辑求解器。
 核心候选与所有技巧搜索继承共享 Numba 实现。
-本层定义项目技巧优先级、简单算法边界、结构化一步 API 和命令行入口。
+本层定义项目技巧目录、自动求解优先级、结构化一步 API 和命令行入口。
 算法候选独立于 GUI 用户笔记，不复制高级数独规则。
 """
 
@@ -13,6 +13,22 @@ from sudoku_logic import NumbaLogicSolver
 from sudoku_rules import box_cells, col_cells, row_cells
 from sudoku_step import Change, LogicStep, capture_candidates, step_changes
 
+AUTO_TECHNIQUE_SPECS = (
+    ("hidden_single", "Hidden Single", True),
+    ("naked_single", "Naked Single", True),
+    ("naked_pair", "Naked Pair", True),
+    ("hidden_pair", "Hidden Pair", False),
+    ("naked_triple", "Naked Triple", True),
+    ("pointing_pair", "Pointing Pair", True),
+    ("box_line_reduction", "Box-Line Reduction", False),
+    ("x_wing", "X-Wing", False),
+    ("xy_wing", "XY-Wing", False),
+)
+AUTO_TECHNIQUE_NAMES = tuple(name for name, _, _ in AUTO_TECHNIQUE_SPECS)
+DEFAULT_AUTO_TECHNIQUES = frozenset(
+    name for name, _, enabled_by_default in AUTO_TECHNIQUE_SPECS if enabled_by_default
+)
+
 
 @dataclass(frozen=True)
 class SimpleSolveResult:
@@ -21,40 +37,48 @@ class SimpleSolveResult:
 
 
 class ShuduSolver(NumbaLogicSolver):
-    """shudu 项目求解器：行、列、宫唯一落点优先。"""
+    """shudu 项目求解器：按统一目录选择并执行逻辑算法。"""
 
     def _non_marking_techniques(self):
         result = [self.hidden_single, self.naked_single]
         return result
 
+    def techniques_for(self, names) -> list:
+        """按固定优先级返回指定算法，未知名称立即失败。"""
+        selected = set(names)
+        unknown = selected.difference(AUTO_TECHNIQUE_NAMES)
+        if unknown:
+            raise ValueError(f"未知自动算法：{', '.join(sorted(unknown))}")
+        result = [getattr(self, name) for name in AUTO_TECHNIQUE_NAMES if name in selected]
+        return result
+
     def simple_techniques(self):
-        """返回自动简单算法；Hidden Pair、Box-Line 及以上不自动执行。"""
-        result = [
-            self.hidden_single,
-            self.naked_single,
-            self.naked_pair,
-            self.naked_triple,
-            self.pointing_pair,
-        ]
+        """兼容既有简单算法接口；内容等于默认自动算法集合。"""
+        result = self.techniques_for(DEFAULT_AUTO_TECHNIQUES)
         return result
 
     def apply_candidate_eliminations(self, eliminations) -> None:
-        """恢复此前由自动简单算法证明的候选删除，不读取用户手工笔记。"""
+        """恢复此前自动算法已证明的候选删除，不读取用户手工笔记。"""
         for row, col, digit in eliminations:
             if not self.board[row][col]:
                 self._masks[row, col] = int(self._masks[row, col]) & ~(1 << digit)
         return
 
-    def apply_simple_step(self) -> bool:
-        """执行一个简单算法步骤；没有可执行步骤时返回 False。"""
-        result, _ = self._apply_simple_step_with_eliminations()
+    def apply_technique_step(self, names) -> bool:
+        """执行指定自动算法中的一步；没有可执行步骤时返回 False。"""
+        result, _ = self._apply_technique_step_with_eliminations(names)
         return result
 
-    def _apply_simple_step_with_eliminations(self) -> tuple[bool, tuple[Change, ...]]:
+    def apply_simple_step(self) -> bool:
+        """兼容既有简单算法接口。"""
+        result = self.apply_technique_step(DEFAULT_AUTO_TECHNIQUES)
+        return result
+
+    def _apply_technique_step_with_eliminations(self, names) -> tuple[bool, tuple[Change, ...]]:
         """执行一步并返回这一步在算法候选中产生的全部删除。"""
         result = False
         eliminations: tuple[Change, ...] = ()
-        for technique in self.simple_techniques():
+        for technique in self.techniques_for(names):
             before = capture_candidates(self.cands)
             if technique():
                 result = True
@@ -62,12 +86,13 @@ class ShuduSolver(NumbaLogicSolver):
                 break
         return result, eliminations
 
-    def solve_simple_result(self) -> SimpleSolveResult:
-        """反复从最高优先级扫描，直到全部自动简单算法都无法继续。"""
+    def solve_techniques_result(self, names) -> SimpleSolveResult:
+        """反复从最高优先级扫描，直到所选自动算法都无法继续。"""
+        selected = tuple(names)
         before = sum(bool(value) for row in self.board for value in row)
         removed: list[Change] = []
         while True:
-            progressed, eliminations = self._apply_simple_step_with_eliminations()
+            progressed, eliminations = self._apply_technique_step_with_eliminations(selected)
             if not progressed:
                 break
             removed.extend(eliminations)
@@ -75,8 +100,13 @@ class ShuduSolver(NumbaLogicSolver):
         result = SimpleSolveResult(after - before, tuple(dict.fromkeys(removed)))
         return result
 
+    def solve_simple_result(self) -> SimpleSolveResult:
+        """兼容既有简单算法接口，执行默认自动算法直到固定点。"""
+        result = self.solve_techniques_result(DEFAULT_AUTO_TECHNIQUES)
+        return result
+
     def solve_simple(self) -> int:
-        """连续执行简单算法直到稳定，返回本轮自动填入的大数字数量。"""
+        """连续执行默认自动算法直到稳定，返回本轮自动填入数量。"""
         result = self.solve_simple_result().placements
         return result
 
