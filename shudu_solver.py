@@ -10,6 +10,7 @@ from dataclasses import dataclass
 
 from logical_solver import parse, print_board
 from shudu.sudoku_logic import NumbaLogicSolver
+from shudu.sudoku_rules import CELLS, box_cells, col_cells, related, row_cells
 from shudu.sudoku_step import Change, LogicStep, capture_candidates, step_changes
 
 AUTO_TECHNIQUE_SPECS = (
@@ -116,14 +117,53 @@ class ShuduSolver(NumbaLogicSolver):
         result = None
         if self._apply_next_step():
             placements, eliminations = step_changes(before, self.board, candidates, self.cands)
+            message = self._last_message()
+            sources, units = self._step_context(message, before, candidates, placements)
             result = LogicStep(
-                self._last_message(),
+                message,
                 placements,
                 eliminations,
-                self._last_sources,
-                self._last_units,
+                sources,
+                units,
                 candidates,
             )
+        return result
+
+    def _step_context(self, message, board, candidates, placements):
+        sources = self._last_sources
+        units = self._last_units
+        if placements and message.startswith("Hidden Single:"):
+            row, col, digit = placements[0]
+            unit = self._preferred_hidden_single_unit(candidates, row, col, digit)
+            units = (unit,)
+            sources = self._hidden_single_evidence(board, unit, (row, col), digit)
+        result = (sources, units)
+        return result
+
+    def _preferred_hidden_single_unit(self, candidates, row: int, col: int, digit: int):
+        preferred = (box_cells(row, col), row_cells(row), col_cells(col))
+        result = next(
+            (
+                unit
+                for unit in preferred
+                if sum(digit in candidates[item_row][item_col] for item_row, item_col in unit) == 1
+            ),
+            self._last_units[0],
+        )
+        return result
+
+    def _hidden_single_evidence(self, board, unit, target, digit: int) -> tuple:
+        empty_others = tuple(
+            cell
+            for cell in unit
+            if cell != target and not board[cell[0]][cell[1]]
+        )
+        result = tuple(
+            cell
+            for cell in CELLS
+            if board[cell[0]][cell[1]] == digit
+            and any(related(cell, other) for other in empty_others)
+        )
         return result
 
     def _last_message(self) -> str:
