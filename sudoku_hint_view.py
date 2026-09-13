@@ -86,6 +86,8 @@ def outline(view: SudokuView, cells, width: int, color: str) -> None:
 def draw_outlines(view: SudokuView, hint: Hint) -> None:
     for unit in hint.units:
         outline(view, unit, 3, BLUE)
+    for cell in hint.sources:
+        outline(view, (cell,), 2, SAME)
     for cell in hint.targets:
         outline(view, (cell,), 2, BLUE)
     for cell in hint.attention:
@@ -108,11 +110,17 @@ def create_description(view: SudokuView, message: str) -> None:
     view.hint_panel = panel
     text = description_text(view, panel, message)
     scroll = tk.Scrollbar(panel, command=text.yview)
+    _bind_click_to_close(view, panel, text, scroll)
     scroll.pack(side=tk.RIGHT, fill=tk.Y)
     text.configure(yscrollcommand=scroll.set)
     text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
     view.create_window(*view.screen(LEFT + 16, 739), window=panel, anchor="nw",
                        width=508 * view.scale_factor, height=98 * view.scale_factor, tags="hint-description")
+
+
+def _bind_click_to_close(view: SudokuView, *widgets) -> None:
+    for widget in widgets:
+        widget.bind("<Button-1>", lambda event: view.dispatch("close-hint"))
 
 
 def description_text(view: SudokuView, panel, message: str) -> tk.Text:
