@@ -10,7 +10,7 @@ import tkinter as tk
 from tkinter import messagebox
 
 from sudoku_game import Game
-from sudoku_puzzles import PUZZLES, Puzzle, SCREENSHOT_PUZZLE
+from sudoku_puzzles import PUZZLES, Puzzle, SCREENSHOT_PUZZLE, puzzle_from_text
 from sudoku_view import BG, HEIGHT, WIDTH, SudokuView
 
 
@@ -171,12 +171,24 @@ class SudokuWindow:
         messagebox.showinfo("操作说明", HELP_TEXT, parent=self.root)
 
 
-def main() -> None:
-    game = Game(SCREENSHOT_PUZZLE)
+def main(puzzle: Puzzle = SCREENSHOT_PUZZLE) -> None:
+    game = Game(puzzle)
     root = tk.Tk()
     SudokuWindow(root, game)
     root.mainloop()
 
 
 if __name__ == "__main__":
-    main()
+    # 直接修改这里即可自定义开局；`.` 或 `0` 表示空格，也可在数字间加空格。
+    CUSTOM_BOARD = """
+    ....9.6.7
+    .......1.
+    9.7.2.53.
+    4...5....
+    .....8...
+    13..4.79.
+    6.89.....
+    .1.5....2
+    .......5.
+    """
+    main(puzzle_from_text(CUSTOM_BOARD))
