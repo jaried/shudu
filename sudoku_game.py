@@ -1,7 +1,7 @@
 """实现与图形界面解耦的数独游戏状态。
 原题答案统一通过仓库的公共回溯求解器获得。
 候选笔记、撤销、错误累计和计时均在本模块管理。
-不读取文件，不修改原始题面，不把手工笔记当作求解约束。
+基础规则复用 sudoku_rules，不把手工笔记当作求解约束。
 """
 
 from __future__ import annotations
@@ -12,24 +12,11 @@ from time import monotonic
 from typing import Callable
 
 from sudoku_backtracking import DEFAULT_BACKTRACKING_SOLVER
-from sudoku_puzzles import Puzzle, SCREENSHOT_PUZZLE
-from logical_solver import init_candidates
 from sudoku_hints import Hint, make_hint
+from sudoku_puzzles import Puzzle, SCREENSHOT_PUZZLE
+from sudoku_rules import CELLS, PEERS, Cell, candidate_grid, related
 
-Cell = tuple[int, int]
 Grid = tuple[tuple[int, ...], ...]
-CELLS = tuple((row, col) for row in range(9) for col in range(9))
-
-
-def related(first: Cell, second: Cell) -> bool:
-    """判断同一行、列或宫；同格也视为关联。"""
-    row, col = first
-    other_row, other_col = second
-    result = row == other_row or col == other_col or (row // 3, col // 3) == (other_row // 3, other_col // 3)
-    return result
-
-
-PEERS = {cell: frozenset(other for other in CELLS if other != cell and related(cell, other)) for cell in CELLS}
 
 
 @lru_cache(maxsize=16)
@@ -231,7 +218,7 @@ class Game:
         if self.wrong_cells():
             self.message = "请先修正红色错误格，再生成合法候选数。"
             return
-        candidates = init_candidates(self.board)
+        candidates = candidate_grid(self.board)
         notes = {cell: set(candidates[cell[0]][cell[1]]) for cell in CELLS if not self.value(cell)}
         self._replace_notes(notes)
         self.notes_mode = True
