@@ -22,6 +22,8 @@ HELP_TEXT = (
     "方向键移动；N 切换笔记；Delete / 0 擦除；\n"
     "Ctrl+Z 撤回；A 自动笔记；H 展示一步提示。\n"
     "空格暂停 / 继续；提示中用 Esc / 空格返回。\n\n"
+    "设置中的“自动解决简单算法”默认开启：自动连续执行 Hidden Single、Naked Single、Naked Pair，"
+    "从 Hidden Pair 开始不自动执行。\n"
     "提示只展示推理，不自动填数或删笔记。\n"
     "自动笔记重算全部空格的行、列、宫合法候选，可一次撤回。\n"
     "关闭窗口不保存进度；左上角可选择其他关卡。"
@@ -129,8 +131,10 @@ class SudokuWindow:
             if not messagebox.askyesno("开始新游戏", "放弃当前进度并重新开始？", parent=self.root):
                 return
         auto_clean = self.game.auto_clean
-        self.game = Game(puzzle)
+        auto_simple = self.game.auto_simple
+        self.game = Game(puzzle, auto_simple=auto_simple)
         self.game.auto_clean = auto_clean
+        self.game.auto_solve_simple()
         self.view.game = self.game
         self._bind_commands()
         self.view.draw()
@@ -155,6 +159,12 @@ class SudokuWindow:
 
     def show_settings(self) -> None:
         menu = self._menu()
+        self._auto_simple = tk.BooleanVar(value=self.game.auto_simple)
+        menu.add_checkbutton(
+            label="自动解决简单算法（Naked Pair 及以下）",
+            variable=self._auto_simple,
+            command=self._set_auto_simple,
+        )
         self._auto_clean = tk.BooleanVar(value=self.game.auto_clean)
         menu.add_checkbutton(label="正确填数后，清理关联笔记", variable=self._auto_clean, command=self._set_auto_clean)
         menu.add_separator()
@@ -164,6 +174,10 @@ class SudokuWindow:
         menu.add_command(label="操作说明", command=self.show_help)
         self._popup(menu)
 
+    def _set_auto_simple(self) -> None:
+        self.game.set_auto_simple(self._auto_simple.get())
+        self.view.draw()
+
     def _set_auto_clean(self) -> None:
         self.game.auto_clean = self._auto_clean.get()
 
@@ -172,7 +186,8 @@ class SudokuWindow:
 
 
 def main(puzzle: Puzzle = SCREENSHOT_PUZZLE) -> None:
-    game = Game(puzzle)
+    game = Game(puzzle, auto_simple=True)
+    game.auto_solve_simple()
     root = tk.Tk()
     SudokuWindow(root, game)
     root.mainloop()

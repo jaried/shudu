@@ -1,6 +1,6 @@
 """提供 shudu 使用的项目级逻辑求解器。
 核心候选与所有技巧搜索继承共享 Numba 实现。
-本层只定义 Hidden Single 优先级、结构化一步 API 和命令行入口。
+本层定义项目技巧优先级、简单算法边界、结构化一步 API 和命令行入口。
 算法候选独立于 GUI 用户笔记，不复制高级数独规则。
 """
 
@@ -17,6 +17,33 @@ class ShuduSolver(NumbaLogicSolver):
 
     def _non_marking_techniques(self):
         result = [self.hidden_single, self.naked_single]
+        return result
+
+    def simple_techniques(self):
+        """返回 Naked Pair 及以下简单算法；Hidden Pair 起不自动执行。"""
+        result = [
+            self.hidden_single,
+            self.naked_single,
+            self.naked_pair,
+        ]
+        return result
+
+    def apply_simple_step(self) -> bool:
+        """执行一个简单算法步骤；没有可执行步骤时返回 False。"""
+        result = False
+        for technique in self.simple_techniques():
+            if technique():
+                result = True
+                break
+        return result
+
+    def solve_simple(self) -> int:
+        """连续执行简单算法直到稳定，返回本轮自动填入的大数字数量。"""
+        before = sum(bool(value) for row in self.board for value in row)
+        while self.apply_simple_step():
+            pass
+        after = sum(bool(value) for row in self.board for value in row)
+        result = after - before
         return result
 
     def next_step(self) -> LogicStep | None:

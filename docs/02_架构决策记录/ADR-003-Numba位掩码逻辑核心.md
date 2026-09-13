@@ -1,10 +1,10 @@
 # ADR-003 Numba 位掩码逻辑核心
 
-## Status
+## 状态
 
-Accepted — 2026-09-13
+已接受 — 2026-09-13
 
-## Context
+## 背景
 
 此前回溯搜索已经由 `numba.njit` 加速，但人类逻辑技巧仍以 Python `set`、列表推导和 `combinations` 在解释器中执行。随着 GUI 提示、`shudu_solver.py` 和命令行逻辑求解器共用这些技巧，继续保留两套候选表示会产生性能和规则漂移风险。
 
@@ -20,7 +20,7 @@ Accepted — 2026-09-13
 - X-Wing
 - XY-Wing
 
-## Decision
+## 决策
 
 新增 `sudoku_njit_core.py`，将正式大数字推导出的候选统一编码为 1–9 的整数位掩码，并用 `@numba.njit(cache=True)` 实现基础候选计算、落子传播以及上述九种模式搜索。
 
@@ -35,7 +35,7 @@ Accepted — 2026-09-13
 
 `sudoku_rules.candidate_grid()` 也改为复用同一候选位掩码内核，因此 GUI 的自动笔记与逻辑求解器不会维护两套基础候选算法。
 
-## Consequences
+## 影响
 
 ### 正面
 
@@ -51,6 +51,6 @@ Accepted — 2026-09-13
 - 日志字符串和 GUI 结构化结果保留在 Python 层，因为这些并非计算热点，也不适合放入 nopython 内核；
 - `cands` 属性现在返回快照，调用方不应通过修改该快照来改变 solver 内部状态。
 
-## Verification
+## 验证
 
 `tests/test_njit_core.py` 会主动调用全部九种核心 finder，并断言每个 dispatcher 都产生 `nopython_signatures`。完整 GitHub Actions 回归继续在 Python 3.12 + Xvfb 下运行。
