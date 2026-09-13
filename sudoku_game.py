@@ -11,6 +11,7 @@ from functools import lru_cache
 from time import monotonic
 from typing import Callable
 
+from shudu_solver import ShuduSolver
 from sudoku_backtracking import DEFAULT_BACKTRACKING_SOLVER
 from sudoku_hints import Hint, make_hint
 from sudoku_puzzles import Puzzle, SCREENSHOT_PUZZLE
@@ -37,25 +38,32 @@ class Snapshot:
 
 
 class Game:
-    def __init__(self, puzzle: Puzzle = SCREENSHOT_PUZZLE, clock: Callable[[], float] = monotonic):
+    def __init__(
+        self,
+        puzzle: Puzzle = SCREENSHOT_PUZZLE,
+        clock: Callable[[], float] = monotonic,
+        auto_simple: bool = True,
+    ):
         self.puzzle = puzzle
         self.solution = solve_puzzle(puzzle)
         self.givens = tuple(tuple(row) for row in puzzle.grid())
         self.board = [list(row) for row in self.givens]
-        self._init_play_state()
-        self.hint_preview: Hint | None = None
         self._clock = clock
         self._elapsed = 0.0
         self._started = clock()
+        self._init_play_state(auto_simple)
+        self.hint_preview: Hint | None = None
+        self._auto_solve_simple(remember=False)
         return
 
-    def _init_play_state(self) -> None:
+    def _init_play_state(self, auto_simple: bool) -> None:
         self.notes: dict[Cell, set[int]] = {}
         self.history: list[Snapshot] = []
         self.selected: Cell = (1, 3)
         self.active_digit = 0
         self.notes_mode = False
         self.auto_clean = True
+        self.auto_simple = auto_simple
         self.mistakes = 0
         self.hints_used = 0
         self.status = "playing"
@@ -155,15 +163,52 @@ class Game:
 
     def _correct_entry(self, digit: int) -> None:
         if self.auto_clean:
-            self._clean_notes(digit)
+            self._clean_notes_for(self.selected, digit)
         self.message = f"已填入 {digit}。"
+        self._auto_solve_simple(remember=False)
 
-    def _clean_notes(self, digit: int) -> None:
-        for cell in PEERS[self.selected]:
+    def _clean_notes_for(self, source: Cell, digit: int) -> None:
+        for cell in PEERS[source]:
             if cell in self.notes:
                 self.notes[cell].discard(digit)
                 if not self.notes[cell]:
                     self.notes.pop(cell)
+
+    def set_auto_simple(self, enabled: bool) -> None:
+        """切换简单算法自动求解；从关闭切到开启时立即推进当前盘面。"""
+        enabled = bool(enabled)
+        changed = enabled != self.auto_simple
+        self.auto_simple = enabled
+        if changed and enabled:
+            self._auto_solve_simple(remember=True)
+        elif changed:
+            self.message = "已关闭简单算法自动求解。"
+
+    def _auto_solve_simple(self, remember: bool) -> int:
+        if not self.auto_simple or self.status != "playing" or self.wrong_cells():
+            return 0
+        solver = ShuduSolver(self.board)
+        count = solver.solve_simple()
+        if count == 0:
+            return 0
+        if remember:
+            self._remember()
+        previous = [row[:] for row in self.board]
+        self.board = [row[:] for row in solver.board]
+        self._clean_auto_notes(previous)
+        self.active_digit = self.value(self.selected)
+        self.message = f"简单算法自动填入 {count} 格；X-Wing 及以上算法未自动执行。"
+        self._check_finished()
+        return count
+
+    def _clean_auto_notes(self, previous) -> None:
+        for cell in CELLS:
+            row, col = cell
+            digit = self.board[row][col]
+            if not previous[row][col] and digit:
+                self.notes.pop(cell, None)
+                if self.auto_clean:
+                    self._clean_notes_for(cell, digit)
 
     def erase(self) -> None:
         if not self.editable or (not self.value(self.selected) and self.selected not in self.notes):
