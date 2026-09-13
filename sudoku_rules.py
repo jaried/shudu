@@ -1,12 +1,14 @@
 """数独的共享拓扑与基础候选规则。
 本模块不依赖 GUI、求解器状态或用户手工笔记。
-所有调用方共享同一套行、列、宫与候选定义，避免规则漂移。
-只处理确定性基础约束，不实现高级逻辑技巧。
+行、列、宫拓扑是纯 Python 常量，候选热路径统一调用 Numba 位掩码内核。
+这里只处理确定性基础约束，不实现高级逻辑技巧。
 """
 
 from __future__ import annotations
 
 from collections.abc import Sequence
+
+from sudoku_njit_core import candidate_sets, masks_from_board
 
 SIZE = 9
 BOX_SIZE = 3
@@ -80,41 +82,5 @@ def unit_name(cells: Sequence[Cell]) -> str:
 
 def candidate_grid(board: BoardLike) -> Candidates:
     """仅依据正式大数字计算每个空格的基础合法候选。"""
-    row_used = _row_used(board)
-    col_used = _col_used(board)
-    box_used = _box_used(board)
-    result = [
-        [
-            set() if board[row][col] else set(DIGITS - row_used[row] - col_used[col] - box_used[_box_index(row, col)])
-            for col in range(SIZE)
-        ]
-        for row in range(SIZE)
-    ]
-    return result
-
-
-def _row_used(board: BoardLike) -> list[set[int]]:
-    result = [{value for value in board[row] if value} for row in range(SIZE)]
-    return result
-
-
-def _col_used(board: BoardLike) -> list[set[int]]:
-    result = [
-        {board[row][col] for row in range(SIZE) if board[row][col]}
-        for col in range(SIZE)
-    ]
-    return result
-
-
-def _box_used(board: BoardLike) -> list[set[int]]:
-    result = [set() for _ in range(SIZE)]
-    for row, col in CELLS:
-        value = board[row][col]
-        if value:
-            result[_box_index(row, col)].add(value)
-    return result
-
-
-def _box_index(row: int, col: int) -> int:
-    result = row // BOX_SIZE * BOX_SIZE + col // BOX_SIZE
+    result = candidate_sets(masks_from_board(board))
     return result
