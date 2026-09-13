@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from logical_solver import LogicSolver, box_cells, col_cells, row_cells, unit_name
+from logical_solver import LogicSolver, UNITS, box_cells, col_cells, row_cells, unit_name
 from sudoku_step import Cell, LogicStep, capture_candidates, step_changes
 
 CELLS = tuple((r, c) for r in range(9) for c in range(9))
@@ -63,13 +63,35 @@ def _placement_units(placements) -> tuple[tuple[Cell, ...], ...]:
     return result
 
 
+def _naked_pair_sources(candidates, eliminations) -> tuple[Cell, ...]:
+    digits = {digit for _, _, digit in eliminations}
+    targets = {(r, c) for r, c, _ in eliminations}
+    result = ()
+    for unit in UNITS:
+        if targets and targets <= set(unit):
+            sources = tuple(cell for cell in unit if set(candidates[cell[0]][cell[1]]) == digits)
+            if len(sources) == 2:
+                result = sources
+                break
+    return result
+
+
+def _step_sources(message: str, candidates, eliminations) -> tuple[Cell, ...]:
+    result = ()
+    if message.startswith("Naked Pair:"):
+        result = _naked_pair_sources(candidates, eliminations)
+    return result
+
+
 def _solver_step(solver: LogicSolver) -> LogicStep | None:
     before = [row[:] for row in solver.board]
     candidates = capture_candidates(solver.cands)
     result = None
     if solver._apply_next_step():
         placements, eliminations = step_changes(before, solver.board, candidates, solver.cands)
-        result = LogicStep(_message(solver), placements, eliminations, (),
+        message = _message(solver)
+        sources = _step_sources(message, candidates, eliminations)
+        result = LogicStep(message, placements, eliminations, sources,
                            _placement_units(placements), candidates)
     return result
 
