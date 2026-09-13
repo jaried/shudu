@@ -1,3 +1,4 @@
 # 公共求解器的既有依赖；图形层使用 Python 自带的 tkinter。
 numpy>=1.24,<3
 numba>=0.60,<1
+opencv-python-headless>=4.10,<5

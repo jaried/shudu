@@ -1,16 +1,19 @@
 """启动数独图形化游戏。
 使用 Tkinter 接收鼠标和键盘输入。
-默认加载截图中的关卡 108，并复用现有公共求解器。
+可从命令行指定截图文件，直接恢复正式大数字与候选小数字后启动游戏。
 窗口关闭时取消计时回调，不创建后台线程或写入用户文件。
 """
 
 from __future__ import annotations
 
+import argparse
+from pathlib import Path
 import tkinter as tk
 from tkinter import messagebox
 
 from sudoku_game import Game
 from sudoku_puzzles import PUZZLES, Puzzle, SCREENSHOT_PUZZLE, puzzle_from_text
+from sudoku_screenshot import load_screenshot_game
 from sudoku_view import BG, HEIGHT, WIDTH, SudokuView
 
 
@@ -28,6 +31,8 @@ HELP_TEXT = (
     "Hidden Pair、Box-Line、X-Wing、XY-Wing 不自动执行。\n"
     "提示只展示推理，不自动填数或删笔记。\n"
     "关闭自动简单算法后，A 自动笔记只按基础行、列、宫规则重算候选。\n"
+    "启动时可把游戏截图文件作为参数传给 sudoku_gui.py；正式大数字进入题面，"
+    "3×3 位置中的候选小数字恢复为笔记。\n"
     "关闭窗口不保存进度；左上角可选择其他关卡。"
 )
 
@@ -187,25 +192,49 @@ class SudokuWindow:
         messagebox.showinfo("操作说明", HELP_TEXT, parent=self.root)
 
 
-def main(puzzle: Puzzle = SCREENSHOT_PUZZLE) -> None:
-    game = Game(puzzle, auto_simple=True)
-    game.auto_solve_simple()
+def game_from_screenshot(path: str | Path) -> Game:
+    """从指定截图恢复游戏；GUI 不接触图像识别实现。"""
+    imported = load_screenshot_game(path)
+    game = Game(imported.puzzle, auto_simple=True)
+    game.notes = imported.note_map()
+    game.notes_mode = bool(game.notes)
+    game.message = "已从截图恢复正式数字和候选笔记。"
+    return game
+
+
+def main(puzzle: Puzzle = SCREENSHOT_PUZZLE, screenshot_path: str | Path | None = None) -> None:
+    if screenshot_path is None:
+        game = Game(puzzle, auto_simple=True)
+        game.auto_solve_simple()
+    else:
+        game = game_from_screenshot(screenshot_path)
     root = tk.Tk()
     SudokuWindow(root, game)
     root.mainloop()
 
 
+def _parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="shudu 数独游戏")
+    parser.add_argument("screenshot", nargs="?", help="数独游戏截图文件；提供后直接从截图恢复游戏")
+    result = parser.parse_args()
+    return result
+
+
 if __name__ == "__main__":
-    # 直接修改这里即可自定义开局；`.` 或 `0` 表示空格，也可在数字间加空格。
-    CUSTOM_BOARD = """
-....8....
-....29..1
-65....8..
-..9.3..1.
-1....4.6.
-.34..7...
-.4.1.2.7.
-......4.5
-.2......8
-    """
-    main(puzzle_from_text(CUSTOM_BOARD))
+    args = _parse_args()
+    if args.screenshot:
+        main(screenshot_path=args.screenshot)
+    else:
+        # 未提供截图时仍可直接修改这里自定义开局；`.` 或 `0` 表示空格。
+        CUSTOM_BOARD = """
+...7...3.
+8......5.
+..2..8.74
+.37...6.9
+..4......
+1..93.7..
+.9...2..7
+.6.....1.
+...51....
+        """
+        main(puzzle_from_text(CUSTOM_BOARD))

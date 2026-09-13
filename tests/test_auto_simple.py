@@ -9,7 +9,14 @@ from copy import deepcopy
 from shudu_solver import ShuduSolver
 from sudoku_game import Game
 from sudoku_njit_core import ALL_DIGITS_MASK
+from sudoku_puzzles import Puzzle
 from sudoku_rules import CELLS, candidate_grid
+
+AUTO_NOTES_PUZZLE = Puzzle(
+    "自动笔记测试",
+    "测试",
+    ("12345678.",) + (".........",) * 8,
+)
 
 
 def test_simple_techniques_include_triple_and_pointing():
@@ -29,10 +36,10 @@ def test_simple_techniques_include_triple_and_pointing():
 
 
 def test_simple_solver_advances_board_and_generates_notes():
-    game = Game(auto_simple=True)
+    game = Game(AUTO_NOTES_PUZZLE, auto_simple=True)
     before = deepcopy(game.board)
     count = game.auto_solve_simple()
-    assert count > 0
+    assert count == 1
     assert game.board != before
     assert game.notes
     assert game.notes_mode
@@ -47,7 +54,7 @@ def test_simple_solver_runs_until_no_simple_step_remains():
 
 
 def test_enabling_switch_runs_solver_and_auto_notes_as_one_undoable_action():
-    game = Game(auto_simple=False)
+    game = Game(AUTO_NOTES_PUZZLE, auto_simple=False)
     before = deepcopy(game.board)
     game.set_auto_simple(True)
     assert game.auto_simple

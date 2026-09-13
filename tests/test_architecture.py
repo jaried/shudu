@@ -37,3 +37,25 @@ def test_hint_adapter_depends_on_project_solver_not_legacy_solver():
 def test_hint_adapter_does_not_call_private_solver_step_api():
     source = (ROOT / "sudoku_hints.py").read_text(encoding="utf-8")
     assert "._apply_next_step(" not in source
+
+
+def test_screenshot_import_is_below_gui_and_game():
+    modules = imported_modules("sudoku_screenshot.py")
+    forbidden = {
+        "sudoku_gui",
+        "sudoku_view",
+        "sudoku_game",
+        "sudoku_hints",
+        "shudu_solver",
+        "logical_solver",
+    }
+    assert modules.isdisjoint(forbidden)
+    assert "sudoku_puzzles" in modules
+    assert "sudoku_rules" in modules
+
+
+def test_gui_uses_screenshot_module_through_public_loader():
+    modules = imported_modules("sudoku_gui.py")
+    source = (ROOT / "sudoku_gui.py").read_text(encoding="utf-8")
+    assert "sudoku_screenshot" in modules
+    assert "load_screenshot_game(" in source
