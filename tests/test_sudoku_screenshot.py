@@ -8,6 +8,7 @@ from pathlib import Path
 
 import cv2
 import numpy as np
+import pytest
 
 from sudoku_gui import game_from_screenshot
 from sudoku_screenshot import load_screenshot_game
@@ -93,9 +94,5 @@ def test_gui_startup_game_preserves_screenshot_notes(tmp_path):
 
 def test_missing_screenshot_has_clear_error(tmp_path):
     path = tmp_path / "missing.png"
-    try:
+    with pytest.raises(ValueError, match="不存在"):
         load_screenshot_game(path)
-    except ValueError as error:
-        assert "不存在" in str(error)
-    else:
-        raise AssertionError("缺失截图必须明确失败")
