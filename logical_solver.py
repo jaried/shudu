@@ -1,6 +1,6 @@
 """纯逻辑数独求解器兼容入口。
-核心候选与技巧搜索统一委托给 sudoku_logic 的 Numba 实现。
-本模块保留既有公开 helpers、CLI 和默认技巧顺序，避免调用方迁移成本。
+核心候选与技巧搜索统一委托给 shudu 包内的 Numba 实现。
+本模块保留既有公开 helpers、CLI 和默认技巧顺序，避免入口调用方迁移成本。
 完整 solve 卡住时仍使用共享回溯 fallback；单步逻辑本身不试数。
 """
 
@@ -8,8 +8,8 @@ from __future__ import annotations
 
 from typing import List, Set, Tuple
 
-from sudoku_logic import NumbaLogicSolver
-from sudoku_rules import BOXES, COLS, ROWS, candidate_grid, unit_name as shared_unit_name
+from shudu.sudoku_logic import NumbaLogicSolver
+from shudu.sudoku_rules import BOXES, COLS, ROWS, candidate_grid, unit_name as shared_unit_name
 
 Board = List[List[int]]
 Cands = List[List[Set[int]]]

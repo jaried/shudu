@@ -13,8 +13,8 @@ from pathlib import Path
 import cv2
 import numpy as np
 
-from sudoku_puzzles import Puzzle
-from sudoku_rules import Cell
+from shudu.sudoku_puzzles import Puzzle
+from shudu.sudoku_rules import Cell
 
 BOARD_PIXELS = 900
 CELL_PIXELS = BOARD_PIXELS // 9

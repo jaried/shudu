@@ -1,12 +1,12 @@
 """定义逻辑求解器的一步结构化结果。
-动作来自求解器实际产生的棋盘与候选差异。
-结果使用不可变对象，供只读提示界面安全引用。
+动作与证据都由实际执行算法的 solver 产生，不由提示层反向识别。
+不可变结果是 solver 与提示层之间唯一的步骤 Interface。
 共享坐标类型来自 sudoku_rules，避免重复定义领域概念。
 """
 
 from dataclasses import dataclass
 
-from sudoku_rules import Cell
+from shudu.sudoku_rules import Cell
 
 Change = tuple[int, int, int]
 CandidatesSnapshot = tuple[tuple[frozenset[int], ...], ...]

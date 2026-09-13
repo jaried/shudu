@@ -1,7 +1,7 @@
 """绘制统一的只读一步推理效果。
 保留游戏页头并压暗无关区域，亮起观察行列宫和绿色依据格。
 红色候选表示本步建议删除，蓝框表示需要观察的逻辑区域。
-说明卡片复用同一布局，所有逻辑技巧只通过 Hint 语义驱动绘制。
+本模块只消费 Hint 和 SudokuView 的公开绘制 Interface，不调用其私有方法。
 """
 
 from __future__ import annotations
@@ -9,11 +9,11 @@ from __future__ import annotations
 import tkinter as tk
 from typing import TYPE_CHECKING
 
-from sudoku_hints import CELLS, Hint
-from sudoku_theme import BG, BLUE, CELL, ERROR, ERROR_INK, INK, LEFT, SAME, TOP, WHITE, WIDTH
+from shudu.sudoku_hints import CELLS, Hint
+from shudu.sudoku_theme import BG, BLUE, CELL, ERROR, ERROR_INK, INK, LEFT, SAME, TOP, WHITE, WIDTH
 
 if TYPE_CHECKING:
-    from sudoku_view import SudokuView
+    from shudu.sudoku_view import SudokuView
 
 DIM = "#858573"
 DIM_INK = "#604B34"
@@ -37,10 +37,10 @@ def draw_hint(view: SudokuView) -> None:
     hint = view.game.hint_preview
     view.targets.clear()
     view.rectangle((0, 0, WIDTH, 940), DIM)
-    view._draw_header()
+    view.draw_header()
     for cell in CELLS:
         draw_hint_cell(view, hint, cell)
-    view._draw_grid_lines()
+    view.draw_grid_lines()
     draw_outlines(view, hint)
     draw_panel(view, hint)
     view.targets.clear()

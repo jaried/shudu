@@ -1,120 +1,163 @@
 # shudu · 数独
 
-基于现有 Python 数独求解器的桌面游戏。默认载入用户截图中的 **关卡 108**，保留奶油色背景、橙棕色数字、全局同值数字的行列宫高亮、同数字绿色高亮和九宫格候选笔记。
+本地 Python/Tkinter 数独桌面游戏。支持截图导入、候选笔记、只读逻辑提示、逐项自动算法和 Numba 加速逻辑核心。
 
 ## 启动
-
-在仓库目录下，使用准备运行游戏的 Python 环境执行：
 
 ```bash
 python -m pip install -r requirements.txt
 python sudoku_gui.py
 ```
 
-建议使用 Python 3.12。代码要求 Python 3.10 或更新版本，运行环境需要 `tkinter`；可先执行 `python -m tkinter` 检查是否能打开测试窗口。Windows 的 Python 安装应包含 Tcl/Tk 组件。Linux 缺少该组件时需安装与所用 Python 环境匹配的 Tk 支持，例如系统 Python 的 `python3-tk` 包。
+Windows 也可以运行 `run_gui.bat`。建议 Python 3.12，GUI 环境需要 `tkinter`。
 
-首次运行会有 Numba JIT 编译开销；核心逻辑内核全部使用 `@numba.njit(cache=True)`，后续进程可复用编译缓存。填写数字、点击和普通重绘不会执行完整求解搜索。
+可以直接把游戏截图作为启动输入：
 
-Windows 配好同一 Python 环境后，也可双击 `run_gui.bat`。游戏完全在本地运行，不需要网络或账号。
+```bash
+python sudoku_gui.py "D:\screenshots\sudoku.png"
+```
 
-## 截图对应的交互
+运行中也可以从左上角关卡菜单或设置菜单选择 **“从截图导入…”**，同一个窗口可反复导入不同截图。
 
-| 操作或状态 | 实际行为 |
+## 截图导入
+
+`shudu/sudoku_screenshot.py` 是截图输入的深 Module，只暴露“截图路径 → Puzzle + notes”的主要 Interface。内部负责：
+
+- 定位 9×9 棋盘；
+- 区分正式大数字与候选小数字；
+- 正式大数字做本地模板识别；
+- 候选小数字按格内 3×3 位置恢复为 1–9；
+- 支持深色高亮格中的浅色正式数字；
+- 支持中文文件路径；
+- 识别失败明确报错，不静默猜题。
+
+GUI 不接触 OpenCV 阈值、模板或单格识别细节。
+
+## 自动算法
+
+设置 → **自动解决算法** 中，每种算法可以独立勾选：
+
+| 算法 | 默认 |
 | --- | --- |
-| 选择空格 | 当前格橙色，同行、同列、同宫浅色高亮 |
-| 选择已有大数字 | 当前格棕底白字，其他相同大数字绿底白字；所有这些大数字各自所在的行、列、宫合并为浅色高亮，同值小数字笔记也变绿 |
-| 笔记开关打开 | 数字作为 3×3 小字标记；再次输入同一数字取消标记，不正式填数、不记错误 |
-| 笔记开关关闭 | 数字正式填入；题目已知数不可修改 |
-| 填写错误 | 错误格显示红底；行、列、宫中的关联冲突数字显示橙红色；错误次数增加 |
-| 无重复但答案错误 | 仍会标记错误；校验依据原始题目的唯一解 |
-| 正确填数 | 清除本格笔记，默认清理同行、同列、同宫的同值笔记；设置中可关闭自动清理 |
-| 擦除、撤回 | 擦除正式数字或整格笔记；撤回恢复该步之前的数字及关联笔记 |
-| 暂停 | 隐藏棋盘、暂停计时并禁止操作；继续后恢复 |
-| 自动笔记 | 一键重算所有空格的行、列、宫合法候选，只写小数字，整次操作可撤回 |
-| 提示 | 按项目级逻辑求解器展示一步推理与相关区域，不自动填数或删除笔记 |
+| Hidden Single | ✅ |
+| Naked Single | ✅ |
+| Naked Pair | ✅ |
+| Hidden Pair | ⬜ |
+| Naked Triple | ✅ |
+| Pointing Pair | ✅ |
+| Box-Line Reduction | ⬜ |
+| X-Wing | ⬜ |
+| XY-Wing | ⬜ |
 
-“宫”是棋盘中粗线分隔的 **3×3 区域**。例如选中大数字 4，会同时突出全部大数字 4，以及它们各自所在的行、列、宫；题目已知数和玩家正式填写的数字都参与。点击空格时，只突出当前格的行、列、宫，即使该格有笔记或正在标记 4，也不会扩大区域。笔记小数字不是区域高亮的来源；但选中某个已确定大数字后，同值的小数字笔记也会变绿，即使当前没有开启笔记模式。切换选中格、填数、擦除或撤回后立即重新计算范围，错误和冲突的红色提示优先保留。
+所有已勾选算法按固定优先级反复执行，直到当前集合全部无法继续。算法候选与用户手工笔记是两份独立状态；自动算法不会把用户手工笔记当作推理前提。
 
-同一个错误值连续重复点击只记一次错误；改变为另一个错误值会再记一次。错误次数**不设上限**，只累计显示，不会因为错误过多结束游戏；擦除、撤回不退回累计错误。提示次数同样累计，不因撤回减少。
+自动算法开启时，同时用 solver 的最终候选状态维护小数字，因此 Naked Pair、Naked Triple、Pointing、X-Wing 等产生的候选删除会直接同步到界面笔记。
 
-### 一步提示（只展示，不执行）
+## 提示
 
-点击「提示」或按 `H`，进入只读提示界面：绿色显示依据数字，浅蓝色显示相关区域，蓝框标出观察的行、列或宫。候选排除步骤会把建议删除的小数字标红并加删除线。下方显示技巧名称与完整推理；长说明可以滚动。提示界面点击任意位置即可返回棋盘。
+点击「提示」或按 `H` 只展示一步，不自动修改棋盘或笔记。
 
-提示通过 `shudu_solver.ShuduSolver` 复用共享 Numba 逻辑核心：**隐性唯一数优先**，随后才检查唯一候选数、显性数对、隐性数对、显性三数组、宫指向行列、行列指向宫、X-Wing、XY-Wing。隐性唯一数使用算法自己根据正式大数字计算的候选，不读取用户手工笔记；某行、列或宫中某个数字只剩一个候选位置时，shudu-solver 会直接落子，GUI 提示则只展示这一步而不替用户执行。
+统一提示效果：
 
-GUI 提示只调用 `ShuduSolver.next_step()` 公共接口，不直接访问求解器私有方法。没有手动执行时，再次点击会显示同一步。对于候选排除，只有程序已证明该整步、且其所有删除都已体现在非空手工笔记中时，才会在求解副本中重放这一步并寻找下一条建议；任意手工漏标都不会被当成推理前提。当前有错误数字时先指出错误，既不自动纠正，也不在错误盘面上继续推理。现有技巧无法推进时会明确显示「暂无逻辑提示」。
+- 无关区域压暗；
+- 观察的行、列、宫亮起并用蓝框标识；
+- 算法依据格用绿色显示；
+- 待删除候选用红色和删除线显示；
+- 待填入目标格突出显示；
+- 下方显示“观察哪里 → 为什么成立 → 可以做什么”的说明；
+- 点击任意位置或按 `Esc / 空格 / Enter` 返回。
 
-### 一键自动笔记
+`ShuduSolver.next_step()` 直接返回 `LogicStep`，其中包含：
 
-点击工具栏的「自动笔记」或按 `A`，给所有空格重新填写可填的小数字，排除同行、同列、同一 3×3 宫中已有的正式数字。题目给定值与玩家正确填写的大数字都参与排除；即使某格只剩一个候选，也只写小字，绝不自动落子。
+- `placements`；
+- `eliminations`；
+- `sources`；
+- `units`；
+- 动作前候选快照。
 
-该按钮不要求选中空格；选中已知数时同样可用。完成后开启笔记模式，方便继续手动增删。它会**覆盖现有笔记，恢复按基本规则仍可填写的候选数**，包括此前手动删除的候选；按一次撤回即可恢复整个操作之前的笔记。候选未变化时重复点击不会堆积撤回记录。
+因此 `shudu/sudoku_hints.py` 不再重新扫描候选来识别 Naked Pair、Pointing、X-Wing、XY-Wing 等模式，只负责把 solver 已确定的事实转换成提示文案和视觉语义。
 
-基础候选统一由 `sudoku_rules.candidate_grid()` 调用 Numba 位掩码内核计算；Game、提示层与求解器不再各自维护一套行、列、宫规则。错误盘面上暂停自动生成候选，先修正红色错误格；暂停、提示和完成状态也不执行此操作。平时的手工笔记仍允许标记任意 1–9，笔记开关本身的行为不变。
+## 常用操作
 
-## 键盘
-
-| 按键 | 功能 |
+| 操作 | 行为 |
 | --- | --- |
-| `1–9` / 数字小键盘 | 根据笔记开关，填写数字或切换标记 |
-| 方向键 | 移动选中格 |
+| `1–9` | 正式填数或切换笔记 |
 | `N` | 切换笔记模式 |
-| `Delete` / `Backspace` / `0` | 擦除 |
+| `A` | 自动笔记；自动算法开启时使用最终算法候选 |
+| `H` | 只读一步提示 |
+| `Delete / Backspace / 0` | 擦除 |
 | `Ctrl+Z` | 撤回 |
-| `A` | 一键生成所有合法候选笔记 |
-| `H` | 展示一步逻辑提示 |
-| 空格 / `Esc` | 暂停或继续；提示界面中为关闭提示 |
-| `Enter` | 关闭提示并返回棋盘 |
+| 方向键 | 移动选中格 |
+| 空格 / `Esc` | 暂停/继续；提示中返回 |
 
-某数字已在九个正确位置填满后，普通输入模式会禁用该数字；笔记模式仍可增删相应标记。已知数或已有正式数字不能直接添加笔记，需要先擦除可编辑的正式数字。
-
-## 关卡与边界
-
-左上角返回形状按钮打开关卡菜单，右上角齿轮打开设置。内置三个固定且已验证唯一解的题目：截图关卡 108、入门练习、复用 `solver.py` 原题的回溯挑战。切换关卡或重开已有进度的游戏会先确认。
-
-也支持在 `sudoku_gui.py` 的 `if __name__ == "__main__"` 中直接修改 9×9 文本自定义开局；`.` 或 `0` 表示空格，可在数字之间加入空格。
-
-当前版本不包含随机出题、自动存档或广告。关闭窗口不会保存当前进度。
+挑战完成后保留完整棋盘，不用完成遮罩替换界面。
 
 ## 代码结构
 
-| 文件 | 职责 |
+仓库根目录只保留可执行入口：
+
+```text
+sudoku_gui.py       GUI 入口
+shudu_solver.py     项目级逻辑 solver seam / CLI
+logical_solver.py   legacy 逻辑入口 / CLI
+solver.py           回溯演示入口
+techniques.py       技巧演示入口
+```
+
+非入口实现统一位于 `shudu/`：
+
+| Module | 职责 |
 | --- | --- |
-| `sudoku_njit_core.py` | **Numba 计算核心**：候选位掩码、落子传播、9 种逻辑技巧的 nopython 模式搜索 |
-| `sudoku_logic.py` | 共享 solver orchestration：位掩码状态、日志、技巧编排、回溯 fallback |
-| `sudoku_rules.py` | **纯领域规则层**：行、列、宫、peer、坐标类型；基础候选复用 Numba 内核 |
-| `logical_solver.py` | 兼容旧公开 API/CLI，保留旧 Naked Single → Hidden Single 优先级 |
-| `shudu_solver.py` | 项目级求解入口，Hidden Single 优先，提供稳定 `next_step()` API |
-| `sudoku_step.py` | 不可变的结构化一步结果 |
-| `sudoku_hints.py` | 把 `LogicStep` 转成只读提示语义，不访问 solver 私有 API |
-| `sudoku_game.py` | 游戏状态、用户笔记、撤回、计时、错误与胜负 |
-| `sudoku_view.py` / `sudoku_theme.py` | 普通棋盘与共用主题 |
-| `sudoku_hint_view.py` | 只读提示棋盘和说明面板 |
-| `sudoku_gui.py` | 窗口、菜单、键盘和操作分发 |
-| `sudoku_puzzles.py` | 内置题面和自定义文本题面 |
-| `sudoku_backtracking.py` | 公共完整解/校验能力；回溯搜索本身也已 njit |
-| `solver.py` / `techniques.py` | 兼容与教学演示入口 |
+| `shudu/sudoku_njit_core.py` | Numba 位掩码计算核心和 9 种逻辑 finder |
+| `shudu/sudoku_rules.py` | 行、列、宫、peer 和基础候选真源 |
+| `shudu/sudoku_backtracking.py` | 公共完整解/校验能力 |
+| `shudu/sudoku_logic.py` | solver 状态、技巧编排、日志与算法证据 |
+| `shudu/sudoku_step.py` | 不可变 `LogicStep` Interface |
+| `shudu/sudoku_hints.py` | `LogicStep → Hint` 语义适配 |
+| `shudu/sudoku_game.py` | 游戏状态、笔记、撤回、计时和自动算法 |
+| `shudu/sudoku_screenshot.py` | 截图输入深 Module |
+| `shudu/sudoku_view.py` | 普通游戏绘制和共用绘制 Interface |
+| `shudu/sudoku_hint_view.py` | 统一提示效果绘制 |
+| `shudu/sudoku_theme.py` | 主题和尺寸常量 |
+| `shudu/sudoku_puzzles.py` | 内置题面和自定义题面 |
 
-详细依赖审查见 [`docs/codebase-design-review.md`](docs/codebase-design-review.md)，Numba 核心决策见 [`docs/adr/ADR-003-njit-logical-core.md`](docs/adr/ADR-003-njit-logical-core.md)。
+核心依赖方向：
 
-## 测试与 CI
+```text
+sudoku_njit_core / sudoku_rules
+            ↓
+      sudoku_logic
+            ↓
+      shudu_solver
+            ↓
+       LogicStep
+            ↓
+      sudoku_hints
+            ↓
+          Game
+            ↓
+      View / GUI
+```
 
-本地执行：
+截图输入是独立支线：
+
+```text
+sudoku_screenshot → Puzzle + notes → GUI/Game
+```
+
+详细结构审查见 [`docs/codebase-design-review.md`](docs/codebase-design-review.md)。架构决策见 [`docs/02_架构决策记录/`](docs/02_架构决策记录/)。
+
+## 测试
 
 ```bash
 python -m pip install -r requirements-dev.txt
 python -m pytest -q
 ```
 
-需要完整 GUI 测试时：
+完整 GUI 测试使用 Tk + Xvfb：
 
 ```bash
 xvfb-run -a -s "-screen 0 1400x1200x24" python -m pytest -q
 ```
 
-仓库已加入 `.github/workflows/tests.yml`，每次 push / pull request 都在 Python 3.12 + Tk + Xvfb 环境运行完整回归，GUI 测试不会因无显示环境而静默跳过。
-
-2026-09-13 全核心 Numba 改造后的 GitHub Actions 回归结果：**141 passed in 8.35s**。新增 `tests/test_njit_core.py` 会主动执行全部核心 finder，并断言每个 dispatcher 都生成 `nopython_signatures`，防止未来无意退回 object/Python 路径。
-
-Windows 字体、系统显示缩放及双击启动仍属于实机验收项；操作复现见 [GUI 验收说明](docs/gui-acceptance.md)。
+GitHub Actions 在 Python 3.12 下执行完整回归，并包含架构依赖、Numba nopython、GUI、截图导入和提示行为门禁。

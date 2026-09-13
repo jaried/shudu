@@ -7,8 +7,9 @@
 import pytest
 
 from sudoku_backtracking import DEFAULT_BACKTRACKING_SOLVER
-from sudoku_game import CELLS, PEERS, Game, related, solve_puzzle
+from sudoku_game import Game, solve_puzzle
 from sudoku_puzzles import PUZZLES, Puzzle, SCREENSHOT_PUZZLE
+from sudoku_rules import CELLS, PEERS, related
 
 
 @pytest.fixture

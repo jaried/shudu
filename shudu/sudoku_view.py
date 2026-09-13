@@ -1,7 +1,7 @@
 """绘制接近截图配色的数独桌面界面。
 所有控件与棋盘使用同一套缩放和命中坐标。
 本模块只呈现状态并发送操作，不执行数独求解。
-计时标签单独更新，避免每秒重绘整个棋盘。
+提示绘制只通过公开绘制 Interface 复用页头和网格，不依赖私有方法。
 """
 
 from __future__ import annotations
@@ -11,13 +11,12 @@ from math import cos, pi, sin
 from tkinter import font
 from typing import Callable
 
-from sudoku_game import CELLS, Cell, Game
-
-from sudoku_theme import (
+from shudu.sudoku_game import CELLS, Cell, Game
+from shudu.sudoku_hint_view import draw_hint
+from shudu.sudoku_theme import (
     WIDTH, HEIGHT, LEFT, TOP, SIDE, CELL, BG, INK, ACCENT, PEER,
     SELECTED, SAME, LINE, BORDER, BLUE, MUTED, ERROR, ERROR_LIGHT, ERROR_INK, WHITE,
 )
-from sudoku_hint_view import draw_hint
 
 Rect = tuple[float, float, float, float]
 
@@ -116,7 +115,7 @@ class SudokuView(tk.Canvas):
         self._clear_hint_panel()
         self.delete("all")
         self.targets.clear()
-        self._draw_header()
+        self.draw_header()
         if self.game.status == "hint":
             draw_hint(self)
         else:
@@ -135,7 +134,8 @@ class SudokuView(tk.Canvas):
         self._draw_controls()
         self._draw_footer()
 
-    def _draw_header(self) -> None:
+    def draw_header(self) -> None:
+        """绘制普通页头；提示视图通过这一公开绘制 Interface 复用。"""
         self.text(WIDTH / 2, 49, self.game.puzzle.title, 30, ACCENT)
         self.line((81,34, 67,49, 81,64), ACCENT, 5, capstyle=tk.ROUND, joinstyle=tk.ROUND)
         self.targets["levels"] = ((50, 24, 102, 77), True)
@@ -175,7 +175,7 @@ class SudokuView(tk.Canvas):
         highlighted = self.game.highlighted_cells()
         for cell in CELLS:
             self._draw_cell(cell, wrong, conflicts, highlighted)
-        self._draw_grid_lines()
+        self.draw_grid_lines()
 
     def _draw_cell(self, cell: Cell, wrong: set[Cell], conflicts: set[Cell], highlighted: set[Cell]) -> None:
         row, col = cell
@@ -195,7 +195,8 @@ class SudokuView(tk.Canvas):
             tag = f"note-{cell[0]}-{cell[1]}-{digit}"
             self.text(x+(note_col+0.5)*CELL/3, y+(note_row+0.5)*CELL/3, str(digit), 18, color, numeric=True, tags=tag)
 
-    def _draw_grid_lines(self) -> None:
+    def draw_grid_lines(self) -> None:
+        """绘制共用棋盘网格；普通棋盘与提示效果共享。"""
         for index in range(10):
             width = 3 if index % 3 == 0 else 1
             color = BORDER if index % 3 == 0 else LINE

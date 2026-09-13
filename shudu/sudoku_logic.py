@@ -1,6 +1,6 @@
 """共享的 Numba 数独逻辑求解器。
 候选状态使用 1–9 的整数位掩码，全部核心技巧搜索由 njit 内核执行。
-Python 层只负责日志、兼容接口和控制流，避免 UI/提示层触碰算法内部实现。
+Python 层负责算法编排、日志和结构化证据，提示层不再重新识别算法模式。
 回溯仅在完整 solve() 卡住时作为既有 fallback，不参与单步逻辑提示。
 """
 
@@ -10,8 +10,8 @@ from typing import Iterable
 
 import numpy as np
 
-from sudoku_backtracking import DEFAULT_BACKTRACKING_SOLVER
-from sudoku_njit_core import (
+from shudu.sudoku_backtracking import DEFAULT_BACKTRACKING_SOLVER
+from shudu.sudoku_njit_core import (
     apply_placement,
     candidate_sets,
     find_box_line,
@@ -26,7 +26,7 @@ from sudoku_njit_core import (
     mask_digits,
     masks_from_board,
 )
-from sudoku_rules import BOXES, COLS, ROWS, Cell, box_cells, col_cells, row_cells, unit_name
+from shudu.sudoku_rules import BOXES, COLS, ROWS, Cell, box_cells, col_cells, row_cells, unit_name
 
 
 class NumbaLogicSolver:
@@ -40,6 +40,8 @@ class NumbaLogicSolver:
         self.elim_count = 0
         self.fallback_used = False
         self.error_message: str | None = None
+        self._last_sources: tuple[Cell, ...] = ()
+        self._last_units: tuple[tuple[Cell, ...], ...] = ()
         return
 
     @property
@@ -77,12 +79,23 @@ class NumbaLogicSolver:
         return result
 
     def _apply_next_step(self) -> bool:
+        self._reset_step_context()
         result = False
         for technique in self._techniques():
             if technique():
                 result = True
                 break
         return result
+
+    def _reset_step_context(self) -> None:
+        self._last_sources = ()
+        self._last_units = ()
+        return
+
+    def _set_step_context(self, sources=(), units=()) -> None:
+        self._last_sources = tuple(dict.fromkeys(sources))
+        self._last_units = tuple(dict.fromkeys(tuple(unit) for unit in units if unit))
+        return
 
     def _place(self, row: int, col: int, digit: int) -> None:
         self.board[row][col] = digit
@@ -102,16 +115,42 @@ class NumbaLogicSolver:
         result = unit_index >= 0
         if result:
             unit = _legacy_unit(unit_index)
+            sources = self._hidden_single_sources(unit, (row, col), digit)
+            self._set_step_context(sources, (unit,))
             self._log(f"Hidden Single: {_format_cell(row, col)} = {digit}（{unit_name(unit)} 唯一可能位置）")
             self._place(row, col, digit)
+        return result
+
+    def _hidden_single_sources(self, unit, target: Cell, digit: int) -> tuple[Cell, ...]:
+        empty_others = tuple(cell for cell in unit if cell != target and not self.board[cell[0]][cell[1]])
+        result = tuple(
+            (row, col)
+            for row in range(9)
+            for col in range(9)
+            if self.board[row][col] == digit
+            and any(_sees((row, col), other) for other in empty_others)
+        )
         return result
 
     def naked_single(self) -> bool:
         row, col, digit = find_naked_single(self._board_array(), self._masks)
         result = row >= 0
         if result:
+            units = (row_cells(row), col_cells(col), box_cells(row, col))
+            self._set_step_context(self._solved_sources((row, col), units), units)
             self._log(f"Naked Single: {_format_cell(row, col)} = {digit}")
             self._place(row, col, digit)
+        return result
+
+    def _solved_sources(self, target: Cell, units) -> tuple[Cell, ...]:
+        result = tuple(
+            dict.fromkeys(
+                cell
+                for unit in units
+                for cell in unit
+                if cell != target and self.board[cell[0]][cell[1]]
+            )
+        )
         return result
 
     def naked_pair(self) -> bool:
@@ -124,12 +163,13 @@ class NumbaLogicSolver:
     def _apply_naked_pair(self, hit) -> None:
         unit_index, row_a, col_a, row_b, col_b, mask = hit
         source_order = ((row_a, col_a), (row_b, col_b))
-        sources = set(source_order)
-        targets = self._unit_targets(unit_index, mask, sources)
+        unit = _legacy_unit(unit_index)
+        targets = self._unit_targets(unit_index, mask, set(source_order))
         numbers = mask_digits(mask)
+        self._set_step_context(source_order, (unit,))
         self._log(
             f"Naked Pair: {_format_cells(source_order)} 共享 {sorted(numbers)}，"
-            f"{unit_name(_legacy_unit(unit_index))} 内 {_format_cells(targets)} 排除"
+            f"{unit_name(unit)} 内 {_format_cells(targets)} 排除"
         )
         self._discard_mask(targets, mask)
         self.elim_count += len(targets)
@@ -145,12 +185,14 @@ class NumbaLogicSolver:
     def _apply_hidden_pair(self, hit) -> None:
         unit_index, row_a, col_a, row_b, col_b, digit_a, digit_b = hit
         cells = ((row_a, col_a), (row_b, col_b))
+        unit = _legacy_unit(unit_index)
         pair_mask = (1 << digit_a) | (1 << digit_b)
         extras = set()
         for row, col in cells:
             extras.update(mask_digits(int(self._masks[row, col]) & ~pair_mask))
+        self._set_step_context(cells, (unit,))
         self._log(
-            f"Hidden Pair: {_format_cells(cells)} 在 {unit_name(_legacy_unit(unit_index))} 中出现数字 "
+            f"Hidden Pair: {_format_cells(cells)} 在 {unit_name(unit)} 中出现数字 "
             f"{digit_a},{digit_b}，排除其他候选 {sorted(extras)}"
         )
         self._retain_mask(cells, pair_mask)
@@ -167,10 +209,12 @@ class NumbaLogicSolver:
     def _apply_naked_triple(self, hit) -> None:
         unit_index, row_a, col_a, row_b, col_b, row_c, col_c, mask = hit
         source_order = ((row_a, col_a), (row_b, col_b), (row_c, col_c))
+        unit = _legacy_unit(unit_index)
         targets = self._unit_targets(unit_index, mask, set(source_order))
+        self._set_step_context(source_order, (unit,))
         self._log(
             f"Naked Triple: {_format_cells(source_order)} 共享 {sorted(mask_digits(mask))}，"
-            f"{unit_name(_legacy_unit(unit_index))} 内 {_format_cells(targets)} 排除"
+            f"{unit_name(unit)} 内 {_format_cells(targets)} 排除"
         )
         self._discard_mask(targets, mask)
         self.elim_count += len(targets)
@@ -185,13 +229,18 @@ class NumbaLogicSolver:
 
     def _apply_pointing_pair(self, hit) -> None:
         base_row, base_col, digit, axis, line = hit
+        box = box_cells(base_row, base_col)
+        line_unit = row_cells(line) if axis == 0 else col_cells(line)
+        bit = 1 << digit
+        sources = tuple(cell for cell in box if self._candidate_has(cell, bit))
         targets = self._pointing_targets(base_row, base_col, digit, axis, line)
         axis_name = "行" if axis == 0 else "列"
+        self._set_step_context(sources, (box, line_unit))
         self._log(
             f"Pointing Pair: 宫 ({base_row + 1},{base_col + 1}) 中数字 {digit} 只在{axis_name} {line + 1}，"
             f"{_format_cells(targets)} 排除 {digit}"
         )
-        self._discard_mask(targets, 1 << digit)
+        self._discard_mask(targets, bit)
         self.elim_count += len(targets)
         return
 
@@ -204,13 +253,18 @@ class NumbaLogicSolver:
 
     def _apply_box_line(self, hit) -> None:
         axis, line, digit, base_row, base_col = hit
+        line_unit = row_cells(line) if axis == 0 else col_cells(line)
+        box = box_cells(base_row, base_col)
+        bit = 1 << digit
+        sources = tuple(cell for cell in line_unit if self._candidate_has(cell, bit))
         targets = self._box_line_targets(axis, line, digit, base_row, base_col)
         axis_name = "行" if axis == 0 else "列"
+        self._set_step_context(sources, (line_unit, box))
         self._log(
             f"Box-Line: {axis_name} {line + 1} 中数字 {digit} 只在宫 ({base_row + 1},{base_col + 1})，"
             f"{_format_cells(targets)} 排除 {digit}"
         )
-        self._discard_mask(targets, 1 << digit)
+        self._discard_mask(targets, bit)
         self.elim_count += len(targets)
         return
 
@@ -223,11 +277,15 @@ class NumbaLogicSolver:
 
     def _apply_x_wing(self, hit) -> None:
         axis, digit, row_a, row_b, col_a, col_b = hit
-        targets = self._x_wing_targets(axis, digit, row_a, row_b, col_a, col_b)
+        sources = tuple((row, col) for row in (row_a, row_b) for col in (col_a, col_b))
         if axis == 0:
+            units = (row_cells(row_a), row_cells(row_b), col_cells(col_a), col_cells(col_b))
             message = f"X-Wing: 数字 {digit} 在行 {row_a + 1},{row_b + 1} 只出现在列 {col_a + 1},{col_b + 1}"
         else:
+            units = (col_cells(col_a), col_cells(col_b), row_cells(row_a), row_cells(row_b))
             message = f"X-Wing: 数字 {digit} 在列 {col_a + 1},{col_b + 1} 只出现在行 {row_a + 1},{row_b + 1}"
+        targets = self._x_wing_targets(axis, digit, row_a, row_b, col_a, col_b)
+        self._set_step_context(sources, units)
         self._log(f"{message}，{_format_cells(targets)} 排除 {digit}")
         self._discard_mask(targets, 1 << digit)
         self.elim_count += len(targets)
@@ -242,10 +300,21 @@ class NumbaLogicSolver:
 
     def _apply_xy_wing(self, hit) -> None:
         pivot_row, pivot_col, row_a, col_a, row_b, col_b, digit = hit
-        targets = self._xy_wing_targets(row_a, col_a, row_b, col_b, digit, (pivot_row, pivot_col))
+        pivot_cell = (pivot_row, pivot_col)
+        wing_a_cell = (row_a, col_a)
+        wing_b_cell = (row_b, col_b)
+        targets = self._xy_wing_targets(row_a, col_a, row_b, col_b, digit, pivot_cell)
         pivot = sorted(mask_digits(int(self._masks[pivot_row, pivot_col])))
         wing_a = sorted(mask_digits(int(self._masks[row_a, col_a])))
         wing_b = sorted(mask_digits(int(self._masks[row_b, col_b])))
+        units = tuple(
+            dict.fromkeys(
+                unit
+                for unit in (_shared_unit(pivot_cell, wing_a_cell), _shared_unit(pivot_cell, wing_b_cell))
+                if unit
+            )
+        )
+        self._set_step_context((pivot_cell, wing_a_cell, wing_b_cell), units)
         self._log(
             f"XY-Wing: 枢纽 {_format_cell(pivot_row, pivot_col)} {pivot}，"
             f"翼 {_format_cell(row_a, col_a)} {wing_a} + {_format_cell(row_b, col_b)} {wing_b}，"
@@ -424,6 +493,17 @@ def _legacy_unit(unit_index: int) -> tuple[Cell, ...]:
     return result
 
 
+def _shared_unit(first: Cell, second: Cell) -> tuple[Cell, ...]:
+    result: tuple[Cell, ...] = ()
+    if first[0] == second[0]:
+        result = row_cells(first[0])
+    elif first[1] == second[1]:
+        result = col_cells(first[1])
+    elif first[0] // 3 == second[0] // 3 and first[1] // 3 == second[1] // 3:
+        result = box_cells(*first)
+    return result
+
+
 def _format_cell(row: int, col: int) -> str:
     result = f"({row + 1},{col + 1})"
     return result
@@ -454,4 +534,3 @@ def _print_board(board) -> None:
         if row in (2, 5):
             print(horizontal)
     print(horizontal)
-    return
