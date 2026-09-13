@@ -184,7 +184,7 @@ class Game:
             self.message = "已关闭简单算法自动求解。"
 
     def auto_solve_simple(self, remember: bool = False) -> int:
-        """自动执行 Naked Pair 及以下，并同步全部算法候选删除到小数字。"""
+        """自动执行项目简单算法，并把全部算法候选删除同步到小数字。"""
         if not self.auto_simple or self.status != "playing" or self.wrong_cells():
             return 0
         solver = ShuduSolver(self.board)
@@ -223,7 +223,7 @@ class Game:
         if placements and removed:
             self.message = f"简单算法自动填入 {placements} 格，并同步删除 {removed} 个候选小数字。"
         elif placements:
-            self.message = f"简单算法自动填入 {placements} 格；Hidden Pair 及以上算法未自动执行。"
+            self.message = f"简单算法自动填入 {placements} 格；当前自动范围外算法未执行。"
         else:
             self.message = f"简单算法自动删除 {removed} 个候选小数字。"
 
