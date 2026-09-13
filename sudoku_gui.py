@@ -1,7 +1,7 @@
 """启动数独图形化游戏。
 使用 Tkinter 接收鼠标和键盘输入。
 命令行或关卡菜单都可指定截图文件，直接恢复正式大数字与候选小数字。
-窗口关闭时取消计时回调，不创建后台线程或写入用户文件。
+自动求解算法在设置菜单逐项控制，窗口层不实现算法规则。
 """
 
 from __future__ import annotations
@@ -25,12 +25,11 @@ HELP_TEXT = (
     "方向键移动；N 切换笔记；Delete / 0 擦除；\n"
     "Ctrl+Z 撤回；A 自动笔记；H 展示一步提示。\n"
     "空格暂停 / 继续；提示中用 Esc / 空格返回。\n\n"
-    "设置中的“自动解决简单算法”默认开启：自动连续执行 Hidden Single、Naked Single、"
-    "Naked Pair、Naked Triple、Pointing Pair，直到全部无法继续。\n"
-    "该模式同时自动维护全部候选小数字，始终与算法最终候选状态一致；"
-    "Hidden Pair、Box-Line、X-Wing、XY-Wing 不自动执行。\n"
-    "提示只展示推理，不自动填数或删笔记。\n"
-    "关闭自动简单算法后，A 自动笔记只按基础行、列、宫规则重算候选。\n"
+    "设置 > 自动解决算法 中每个逻辑算法都可以独立勾选。默认只勾选 Hidden Single、"
+    "Naked Single、Naked Pair、Naked Triple、Pointing Pair。\n"
+    "Hidden Pair、Box-Line Reduction、X-Wing、XY-Wing 默认不勾选；勾选后也会自动执行。\n"
+    "所有已勾选算法会按固定优先级反复执行到无法继续，并同步维护全部候选小数字。\n"
+    "提示只展示推理，不自动填数或删笔记；全部自动算法关闭后，A 自动笔记只按基础规则重算。\n"
     "左上角关卡菜单可随时选择“从截图导入…”；正式大数字进入题面，"
     "3×3 位置中的候选小数字恢复为笔记。\n"
     "启动时也可把游戏截图文件作为参数传给 sudoku_gui.py。\n"
@@ -148,11 +147,9 @@ class SudokuWindow:
     def _change_puzzle(self, puzzle: Puzzle) -> None:
         if not self._confirm_replace_progress():
             return
-        auto_clean = self.game.auto_clean
-        auto_simple = self.game.auto_simple
-        game = Game(puzzle, auto_simple=auto_simple)
-        game.auto_clean = auto_clean
-        game.auto_solve_simple()
+        game = Game(puzzle, auto_techniques=self.game.auto_techniques)
+        game.auto_clean = self.game.auto_clean
+        game.auto_solve_enabled()
         self._install_game(game)
 
     def _install_game(self, game: Game) -> None:
@@ -188,22 +185,19 @@ class SudokuWindow:
         self._load_screenshot(path)
 
     def _load_screenshot(self, path: str) -> None:
+        auto_techniques = set(self.game.auto_techniques)
         try:
-            game = game_from_screenshot(path, auto_simple=self.game.auto_simple)
+            game = game_from_screenshot(path, auto_simple=bool(auto_techniques))
         except ValueError as error:
             messagebox.showerror("截图导入失败", str(error), parent=self.root)
             return
+        game.auto_techniques = auto_techniques
         game.auto_clean = self.game.auto_clean
         self._install_game(game)
 
     def show_settings(self) -> None:
         menu = self._menu()
-        self._auto_simple = tk.BooleanVar(value=self.game.auto_simple)
-        menu.add_checkbutton(
-            label="自动解决简单算法（含 Triple / Pointing + 自动笔记）",
-            variable=self._auto_simple,
-            command=self._set_auto_simple,
-        )
+        self._add_auto_technique_menu(menu)
         self._auto_clean = tk.BooleanVar(value=self.game.auto_clean)
         menu.add_checkbutton(label="正确填数后，清理关联笔记", variable=self._auto_clean, command=self._set_auto_clean)
         menu.add_separator()
@@ -214,8 +208,22 @@ class SudokuWindow:
         menu.add_command(label="操作说明", command=self.show_help)
         self._popup(menu)
 
-    def _set_auto_simple(self) -> None:
-        self.game.set_auto_simple(self._auto_simple.get())
+    def _add_auto_technique_menu(self, menu: tk.Menu) -> None:
+        auto_menu = tk.Menu(menu, tearoff=False, font=(self.view.chinese_font, 11))
+        self._auto_technique_vars: dict[str, tk.BooleanVar] = {}
+        for name, label, enabled in self.game.auto_technique_settings():
+            variable = tk.BooleanVar(value=enabled)
+            self._auto_technique_vars[name] = variable
+            auto_menu.add_checkbutton(
+                label=label,
+                variable=variable,
+                command=lambda selected=name: self._set_auto_technique(selected),
+            )
+        menu.add_cascade(label="自动解决算法", menu=auto_menu)
+
+    def _set_auto_technique(self, name: str) -> None:
+        enabled = self._auto_technique_vars[name].get()
+        self.game.set_auto_technique(name, enabled)
         self.view.draw()
 
     def _set_auto_clean(self) -> None:
@@ -238,7 +246,7 @@ def game_from_screenshot(path: str | Path, auto_simple: bool = True) -> Game:
 def main(puzzle: Puzzle = SCREENSHOT_PUZZLE, screenshot_path: str | Path | None = None) -> None:
     if screenshot_path is None:
         game = Game(puzzle, auto_simple=True)
-        game.auto_solve_simple()
+        game.auto_solve_enabled()
     else:
         game = game_from_screenshot(screenshot_path)
     root = tk.Tk()
