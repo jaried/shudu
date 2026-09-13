@@ -6,10 +6,18 @@
 
 from __future__ import annotations
 
+from dataclasses import dataclass
+
 from logical_solver import parse, print_board
 from sudoku_logic import NumbaLogicSolver
 from sudoku_rules import box_cells, col_cells, row_cells
-from sudoku_step import LogicStep, capture_candidates, step_changes
+from sudoku_step import Change, LogicStep, capture_candidates, step_changes
+
+
+@dataclass(frozen=True)
+class SimpleSolveResult:
+    placements: int
+    eliminations: tuple[Change, ...]
 
 
 class ShuduSolver(NumbaLogicSolver):
@@ -30,20 +38,37 @@ class ShuduSolver(NumbaLogicSolver):
 
     def apply_simple_step(self) -> bool:
         """执行一个简单算法步骤；没有可执行步骤时返回 False。"""
+        result, _ = self._apply_simple_step_with_eliminations()
+        return result
+
+    def _apply_simple_step_with_eliminations(self) -> tuple[bool, tuple[Change, ...]]:
         result = False
+        eliminations: tuple[Change, ...] = ()
         for technique in self.simple_techniques():
+            before = capture_candidates(self.cands) if technique.__name__ == "naked_pair" else None
             if technique():
                 result = True
+                if before is not None:
+                    eliminations = _candidate_eliminations(before, self.cands)
                 break
+        return result, eliminations
+
+    def solve_simple_result(self) -> SimpleSolveResult:
+        """连续执行简单算法，并返回大数字填入数与 Naked Pair 候选删除。"""
+        before = sum(bool(value) for row in self.board for value in row)
+        removed: list[Change] = []
+        while True:
+            progressed, eliminations = self._apply_simple_step_with_eliminations()
+            if not progressed:
+                break
+            removed.extend(eliminations)
+        after = sum(bool(value) for row in self.board for value in row)
+        result = SimpleSolveResult(after - before, tuple(dict.fromkeys(removed)))
         return result
 
     def solve_simple(self) -> int:
         """连续执行简单算法直到稳定，返回本轮自动填入的大数字数量。"""
-        before = sum(bool(value) for row in self.board for value in row)
-        while self.apply_simple_step():
-            pass
-        after = sum(bool(value) for row in self.board for value in row)
-        result = after - before
+        result = self.solve_simple_result().placements
         return result
 
     def next_step(self) -> LogicStep | None:
@@ -73,6 +98,16 @@ class ShuduSolver(NumbaLogicSolver):
             row, col, _ = placements[0]
             result = (row_cells(row), col_cells(col), box_cells(row, col))
         return result
+
+
+def _candidate_eliminations(before, after) -> tuple[Change, ...]:
+    result = tuple(
+        (row, col, digit)
+        for row in range(9)
+        for col in range(9)
+        for digit in sorted(before[row][col] - set(after[row][col]))
+    )
+    return result
 
 
 DEFAULT_BOARD = """
