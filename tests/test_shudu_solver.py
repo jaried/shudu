@@ -1,9 +1,9 @@
-"""验证 shudu-solver 的候选所有权和技巧优先级。"""
+"""验证 shudu-solver 的候选所有权、技巧优先级和公共一步 API。"""
 
 from copy import deepcopy
 
-from sudoku_game import Game
 from shudu_solver import ShuduSolver
+from sudoku_game import Game
 
 
 def test_hidden_single_is_highest_priority_non_marking_rule():
@@ -12,10 +12,20 @@ def test_hidden_single_is_highest_priority_non_marking_rule():
     assert names == ["hidden_single", "naked_single"]
 
 
-def test_first_step_uses_hidden_single_when_available():
+def test_first_public_step_uses_hidden_single_when_available():
     solver = ShuduSolver(Game().board)
-    assert solver._apply_next_step()
-    assert solver.steps[-1].find("Hidden Single:") >= 0
+    step = solver.next_step()
+    assert step is not None
+    assert step.name == "Hidden Single"
+    assert step.placements
+
+
+def test_public_step_matches_solver_mutation():
+    solver = ShuduSolver(Game().board)
+    step = solver.next_step()
+    assert step is not None and len(step.placements) == 1
+    row, col, digit = step.placements[0]
+    assert solver.board[row][col] == digit
 
 
 def test_algorithm_candidates_do_not_depend_on_user_notes():
