@@ -1,26 +1,22 @@
-"""提供 shudu 使用的逻辑求解器入口。
-在既有 LogicSolver 上定义项目需要的技巧优先级和稳定一步 API。
-算法候选来自求解器自己的 cands，不读取 GUI 用户笔记。
-高级技巧继续复用既有实现，避免复制规则和制造第二套求解器。
+"""提供 shudu 使用的项目级逻辑求解器。
+核心候选与所有技巧搜索继承共享 Numba 实现。
+本层只定义 Hidden Single 优先级、结构化一步 API 和命令行入口。
+算法候选独立于 GUI 用户笔记，不复制高级数独规则。
 """
 
 from __future__ import annotations
 
-from logical_solver import LogicSolver, parse, print_board
+from logical_solver import parse, print_board
+from sudoku_logic import NumbaLogicSolver
 from sudoku_rules import box_cells, col_cells, row_cells
 from sudoku_step import LogicStep, capture_candidates, step_changes
 
 
-class ShuduSolver(LogicSolver):
-    """项目级逻辑求解器：行、列、宫唯一落点优先。"""
+class ShuduSolver(NumbaLogicSolver):
+    """shudu 项目求解器：行、列、宫唯一落点优先。"""
 
     def _non_marking_techniques(self):
         result = [self.hidden_single, self.naked_single]
-        return result
-
-    def algorithm_candidates(self):
-        """返回算法内部候选快照；调用方修改快照不会影响求解器。"""
-        result = [[set(values) for values in row] for row in self.cands]
         return result
 
     def next_step(self) -> LogicStep | None:
@@ -71,9 +67,9 @@ def main(board_text: str = DEFAULT_BOARD) -> None:
     solved = solver.solve()
     if solved:
         print_board(solver.board)
+    return
 
 
 if __name__ == "__main__":
-    # 直接修改这里即可像 GUI 一样自定义题面；0 或 . 表示空格。
     CUSTOM_BOARD = DEFAULT_BOARD
     main(CUSTOM_BOARD)
