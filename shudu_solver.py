@@ -42,19 +42,19 @@ class ShuduSolver(NumbaLogicSolver):
         return result
 
     def _apply_simple_step_with_eliminations(self) -> tuple[bool, tuple[Change, ...]]:
+        """执行一步并返回这一步在算法候选中产生的全部删除。"""
         result = False
         eliminations: tuple[Change, ...] = ()
         for technique in self.simple_techniques():
-            before = capture_candidates(self.cands) if technique.__name__ == "naked_pair" else None
+            before = capture_candidates(self.cands)
             if technique():
                 result = True
-                if before is not None:
-                    eliminations = _candidate_eliminations(before, self.cands)
+                eliminations = _candidate_eliminations(before, self.cands)
                 break
         return result, eliminations
 
     def solve_simple_result(self) -> SimpleSolveResult:
-        """连续执行简单算法，并返回大数字填入数与 Naked Pair 候选删除。"""
+        """连续执行简单算法，并返回大数字填入数与全部候选删除。"""
         before = sum(bool(value) for row in self.board for value in row)
         removed: list[Change] = []
         while True:
