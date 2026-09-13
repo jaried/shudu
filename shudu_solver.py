@@ -20,15 +20,11 @@ class ShuduSolver(NumbaLogicSolver):
         return result
 
     def simple_techniques(self):
-        """返回 X-Wing 之前的项目简单算法，不包含 X-Wing 与 XY-Wing。"""
+        """返回 Naked Pair 及以下简单算法；Hidden Pair 起不自动执行。"""
         result = [
             self.hidden_single,
             self.naked_single,
             self.naked_pair,
-            self.hidden_pair,
-            self.naked_triple,
-            self.pointing_pair,
-            self.box_line_reduction,
         ]
         return result
 
