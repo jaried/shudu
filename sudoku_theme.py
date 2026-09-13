@@ -1,0 +1,23 @@
+"""定义游戏与只读提示共用的尺寸和配色。
+棋盘以统一逻辑坐标绘制并等比缩放。
+普通高亮与提示界面使用相同的数字和网格样式。
+本模块不保存状态，不执行窗口操作。
+"""
+
+WIDTH, HEIGHT = 660, 940
+LEFT, TOP, SIDE = 60, 146, 540
+CELL = SIDE / 9
+BG = "#FFFCE5"
+INK = "#9C5B2B"
+ACCENT = "#CA751C"
+PEER = "#FCECCF"
+SELECTED = "#FFD084"
+SAME = "#75AF13"
+LINE = "#F4D69A"
+BORDER = "#D58B28"
+BLUE = "#4C83E9"
+MUTED = "#A7ACA4"
+ERROR = "#F26674"
+ERROR_LIGHT = "#FFE0D9"
+ERROR_INK = "#FF5B26"
+WHITE = "#FFFFFF"
