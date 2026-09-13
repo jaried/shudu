@@ -291,9 +291,12 @@ class Game:
             return
         candidates = candidate_grid(self.board)
         notes = {cell: set(candidates[cell[0]][cell[1]]) for cell in CELLS if not self.value(cell)}
+        notes_changed = notes != self.notes
         self._replace_notes(notes)
         self.notes_mode = True
         self.message = "已重算所有空格的候选笔记；未填写大数字，可一次撤回。"
+        if self.auto_simple:
+            self.auto_solve_simple(remember=not notes_changed)
 
     def _replace_notes(self, notes: dict[Cell, set[int]]) -> None:
         if notes != self.notes:
