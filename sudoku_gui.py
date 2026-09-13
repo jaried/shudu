@@ -22,8 +22,9 @@ HELP_TEXT = (
     "方向键移动；N 切换笔记；Delete / 0 擦除；\n"
     "Ctrl+Z 撤回；A 自动笔记；H 展示一步提示。\n"
     "空格暂停 / 继续；提示中用 Esc / 空格返回。\n\n"
-    "设置中的“自动解决简单算法”默认开启：自动连续执行 Hidden Single、Naked Single、Naked Pair，"
-    "从 Hidden Pair 开始不自动执行。\n"
+    "设置中的“自动解决简单算法”默认开启：自动连续执行 Hidden Single、Naked Single、"
+    "Naked Pair、Naked Triple、Pointing Pair，并同步清除这些算法排除的候选小数字。\n"
+    "Hidden Pair、Box-Line、X-Wing、XY-Wing 不自动执行。\n"
     "提示只展示推理，不自动填数或删笔记。\n"
     "自动笔记重算全部空格的行、列、宫合法候选，可一次撤回。\n"
     "关闭窗口不保存进度；左上角可选择其他关卡。"
@@ -161,7 +162,7 @@ class SudokuWindow:
         menu = self._menu()
         self._auto_simple = tk.BooleanVar(value=self.game.auto_simple)
         menu.add_checkbutton(
-            label="自动解决简单算法（Naked Pair 及以下）",
+            label="自动解决简单算法（含 Triple / Pointing）",
             variable=self._auto_simple,
             command=self._set_auto_simple,
         )
