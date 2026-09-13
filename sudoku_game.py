@@ -16,6 +16,7 @@ from sudoku_backtracking import DEFAULT_BACKTRACKING_SOLVER
 from sudoku_hints import Hint, make_hint
 from sudoku_puzzles import Puzzle, SCREENSHOT_PUZZLE
 from sudoku_rules import CELLS, PEERS, Cell, candidate_grid, related
+from sudoku_step import Change
 
 Grid = tuple[tuple[int, ...], ...]
 
@@ -35,6 +36,7 @@ class Snapshot:
     board: Grid
     notes: tuple[tuple[Cell, frozenset[int]], ...]
     selected: Cell
+    simple_eliminations: tuple[Change, ...]
 
 
 class Game:
@@ -58,6 +60,7 @@ class Game:
     def _init_play_state(self, auto_simple: bool) -> None:
         self.notes: dict[Cell, set[int]] = {}
         self.history: list[Snapshot] = []
+        self.simple_eliminations: set[Change] = set()
         self.selected: Cell = (1, 3)
         self.active_digit = 0
         self.notes_mode = False
@@ -124,7 +127,8 @@ class Game:
     def _remember(self) -> None:
         board = tuple(tuple(row) for row in self.board)
         notes = tuple((cell, frozenset(values)) for cell, values in self.notes.items())
-        self.history.append(Snapshot(board, notes, self.selected))
+        eliminations = tuple(sorted(self.simple_eliminations))
+        self.history.append(Snapshot(board, notes, self.selected, eliminations))
 
     def enter(self, digit: int) -> None:
         if not isinstance(digit, int) or isinstance(digit, bool) or not 1 <= digit <= 9:
@@ -184,20 +188,24 @@ class Game:
             self.message = "已关闭简单算法自动求解。"
 
     def auto_solve_simple(self, remember: bool = False) -> int:
-        """自动执行项目简单算法，并把全部算法候选删除同步到小数字。"""
+        """持续执行简单算法，并持久化算法自己的候选删除状态。"""
         if not self.auto_simple or self.status != "playing" or self.wrong_cells():
             return 0
         solver = ShuduSolver(self.board)
+        solver.apply_candidate_eliminations(self.simple_eliminations)
         result = solver.solve_simple_result()
-        note_removals = self._matching_note_eliminations(result.eliminations)
-        if result.placements == 0 and note_removals == 0:
+        all_eliminations = tuple(dict.fromkeys((*sorted(self.simple_eliminations), *result.eliminations)))
+        new_eliminations = set(result.eliminations) - self.simple_eliminations
+        note_removals = self._matching_note_eliminations(all_eliminations)
+        if result.placements == 0 and note_removals == 0 and not new_eliminations:
             return 0
         if remember:
             self._remember()
         previous = [row[:] for row in self.board]
+        self.simple_eliminations.update(result.eliminations)
         self.board = [row[:] for row in solver.board]
         self._clean_auto_notes(previous)
-        removed = self._remove_candidate_notes(result.eliminations)
+        removed = self._remove_candidate_notes(all_eliminations)
         self.active_digit = self.value(self.selected)
         self._set_auto_simple_message(result.placements, removed)
         self._check_finished()
@@ -224,8 +232,10 @@ class Game:
             self.message = f"简单算法自动填入 {placements} 格，并同步删除 {removed} 个候选小数字。"
         elif placements:
             self.message = f"简单算法自动填入 {placements} 格；当前自动范围外算法未执行。"
-        else:
+        elif removed:
             self.message = f"简单算法自动删除 {removed} 个候选小数字。"
+        else:
+            self.message = "简单算法候选状态已推进到当前固定点。"
 
     def _clean_auto_notes(self, previous) -> None:
         for cell in CELLS:
@@ -243,8 +253,9 @@ class Game:
         row, col = self.selected
         self.board[row][col] = 0
         self.notes.pop(self.selected, None)
+        self.simple_eliminations.clear()
         self.active_digit = 0
-        self.message = "已擦除；累计错误次数保持不变。"
+        self.message = "已擦除；算法候选将从当前盘面重新推导，累计错误次数保持不变。"
 
     def undo(self) -> None:
         if self.status != "playing" or not self.history:
@@ -252,9 +263,10 @@ class Game:
         snapshot = self.history.pop()
         self.board = [list(row) for row in snapshot.board]
         self.notes = {cell: set(values) for cell, values in snapshot.notes}
+        self.simple_eliminations = set(snapshot.simple_eliminations)
         self.selected = snapshot.selected
         self.active_digit = self.value(self.selected)
-        self.message = "已撤销，并恢复该操作之前的笔记；错误次数不退回。"
+        self.message = "已撤销，并恢复该操作之前的笔记和算法候选状态；错误次数不退回。"
 
     def wrong_cells(self) -> set[Cell]:
         result = {cell for cell in CELLS if self.value(cell) and self.value(cell) != self.solution[cell[0]][cell[1]]}
