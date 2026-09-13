@@ -14,6 +14,20 @@ from sudoku_puzzles import PUZZLES, Puzzle, SCREENSHOT_PUZZLE
 from sudoku_view import BG, HEIGHT, WIDTH, SudokuView
 
 
+HELP_TEXT = (
+    "单击格子后，点击下方数字或用键盘输入。\n\n"
+    "笔记开启：数字在小九宫格中标记，再按一次取消。\n"
+    "笔记关闭：正式填数，错误填数标红并累计错误。\n"
+    "错误次数不设上限；同一错误值重复点击不重复计数；擦除和撤回不退错误。\n\n"
+    "方向键移动；N 切换笔记；Delete / 0 擦除；\n"
+    "Ctrl+Z 撤回；A 自动笔记；H 展示一步提示。\n"
+    "空格暂停 / 继续；提示中用 Esc / 空格返回。\n\n"
+    "提示只展示推理，不自动填数或删笔记。\n"
+    "自动笔记重算全部空格的行、列、宫合法候选，可一次撤回。\n"
+    "关闭窗口不保存进度；左上角可选择其他关卡。"
+)
+
+
 class SudokuWindow:
     def __init__(self, root: tk.Tk, game: Game | None = None):
         self.root = root
@@ -38,7 +52,8 @@ class SudokuWindow:
         self.commands = {
             "erase": self.game.erase, "undo": self.game.undo,
             "notes": self.game.toggle_notes, "notes-switch": self.game.toggle_notes,
-            "hint": self.game.hint, "pause": self.game.toggle_pause,
+            "hint": self.game.hint, "close-hint": self.game.close_hint,
+            "auto-notes": self.game.auto_notes, "pause": self.game.toggle_pause,
             "restart": self.restart, "levels": self.show_levels,
             "settings": self.show_settings,
         }
@@ -49,6 +64,8 @@ class SudokuWindow:
         self.view.focus_set()
 
     def dispatch(self, action: str) -> None:
+        if self.game.status == "hint" and action != "close-hint":
+            return
         parts = action.split(":")
         if parts[0] == "cell":
             self.game.select(int(parts[1]), int(parts[2]))
@@ -70,7 +87,14 @@ class SudokuWindow:
         return result
 
     def _key_action(self, event: tk.Event) -> str | None:
-        keys = {"n": "notes", "h": "hint", "space": "pause", "Escape": "pause", "BackSpace": "erase", "Delete": "erase", "0": "erase"}
+        if self.game.status == "hint":
+            action = "close-hint" if event.keysym in ("Escape", "space", "Return", "KP_Enter", "h", "H") else None
+        else:
+            action = self._play_key_action(event)
+        return action
+
+    def _play_key_action(self, event: tk.Event) -> str | None:
+        keys = {"n": "notes", "a": "auto-notes", "h": "hint", "space": "pause", "Escape": "pause", "BackSpace": "erase", "Delete": "erase", "0": "erase"}
         symbol = event.keysym
         action = keys.get(symbol.lower(), keys.get(symbol))
         if event.char in "123456789" and event.char:
@@ -81,7 +105,7 @@ class SudokuWindow:
 
     def _move_key(self, symbol: str) -> bool:
         offsets = {"Left": (0,-1), "Right": (0,1), "Up": (-1,0), "Down": (1,0)}
-        moved = symbol in offsets
+        moved = self.game.status == "playing" and symbol in offsets
         if moved:
             self.game.move(*offsets[symbol])
         return moved
@@ -144,16 +168,7 @@ class SudokuWindow:
         self.game.auto_clean = self._auto_clean.get()
 
     def show_help(self) -> None:
-        messagebox.showinfo("操作说明", (
-            "单击格子后，点击下方数字或用键盘输入。\n\n"
-            "笔记开启：数字在小九宫格中标记，再按一次取消。\n"
-            "笔记关闭：正式填数，错误填数标红并累计错误。\n"
-            "同一错误值重复点击不重复扣错；擦除和撤回不退错误。\n\n"
-            "方向键移动；N 切换笔记；Delete / 0 擦除；\n"
-            "Ctrl+Z 撤回；H 提示一格；空格暂停 / 继续。\n\n"
-            "提示使用原题求解结果，不把错误数字和手工笔记作为约束。\n"
-            "关闭窗口不保存进度；左上角可选择其他关卡。"
-        ), parent=self.root)
+        messagebox.showinfo("操作说明", HELP_TEXT, parent=self.root)
 
 
 def main() -> None:
