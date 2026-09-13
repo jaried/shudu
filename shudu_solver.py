@@ -38,13 +38,20 @@ class ShuduSolver(NumbaLogicSolver):
         ]
         return result
 
+    def apply_candidate_eliminations(self, eliminations) -> None:
+        """恢复此前由自动简单算法证明的候选删除，不读取用户手工笔记。"""
+        for row, col, digit in eliminations:
+            if not self.board[row][col]:
+                self._masks[row, col] = int(self._masks[row, col]) & ~(1 << digit)
+        return
+
     def apply_simple_step(self) -> bool:
-        """按优先级执行一个简单算法步骤；没有可执行步骤时返回 False。"""
+        """执行一个简单算法步骤；没有可执行步骤时返回 False。"""
         result, _ = self._apply_simple_step_with_eliminations()
         return result
 
     def _apply_simple_step_with_eliminations(self) -> tuple[bool, tuple[Change, ...]]:
-        """从最高优先级重新扫描，执行一步并返回候选删除。"""
+        """执行一步并返回这一步在算法候选中产生的全部删除。"""
         result = False
         eliminations: tuple[Change, ...] = ()
         for technique in self.simple_techniques():
@@ -56,7 +63,7 @@ class ShuduSolver(NumbaLogicSolver):
         return result, eliminations
 
     def solve_simple_result(self) -> SimpleSolveResult:
-        """反复执行简单算法到固定点，再返回全部落子与候选删除。"""
+        """反复从最高优先级扫描，直到全部自动简单算法都无法继续。"""
         before = sum(bool(value) for row in self.board for value in row)
         removed: list[Change] = []
         while True:
@@ -69,7 +76,7 @@ class ShuduSolver(NumbaLogicSolver):
         return result
 
     def solve_simple(self) -> int:
-        """连续执行简单算法直到没有任何可执行步骤，返回自动填入数量。"""
+        """连续执行简单算法直到稳定，返回本轮自动填入的大数字数量。"""
         result = self.solve_simple_result().placements
         return result
 
