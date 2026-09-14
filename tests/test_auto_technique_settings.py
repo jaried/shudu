@@ -1,6 +1,6 @@
 """验证所有逻辑算法都可独立配置自动执行。
 默认仅启用此前的简单算法集合，高级算法保持未勾选。
-设置只选择算法，不复制算法实现或依赖 GUI 私有细节。
+GUI 修改后通过 UserSettingsStore 保存，下次产品启动恢复完整集合。
 每个已启用算法都通过同一求解器入口执行到固定点。
 """
 
@@ -12,7 +12,8 @@ import pytest
 
 from shudu_solver import AUTO_TECHNIQUE_NAMES, DEFAULT_AUTO_TECHNIQUES, ShuduSolver
 from sudoku_game import Game
-from sudoku_gui import SudokuWindow
+from sudoku_gui import SudokuWindow, main
+from shudu.user_settings import UserSettings, UserSettingsStore
 
 EXPECTED_NAMES = (
     "hidden_single",
@@ -89,3 +90,41 @@ def test_settings_menu_defaults_match_previous_simple_algorithms(monkeypatch):
     assert set(window._auto_technique_vars) == set(EXPECTED_NAMES)
     assert checked == EXPECTED_DEFAULTS
     window.close()
+
+
+@pytest.mark.skipif(
+    sys.platform.startswith("linux") and not os.environ.get("DISPLAY"),
+    reason="GUI 测试需要显示环境或 xvfb-run",
+)
+def test_setting_change_is_saved_immediately(tmp_path, monkeypatch):
+    store = UserSettingsStore(tmp_path / "settings.json")
+    root = tk.Tk()
+    window = SudokuWindow(root, Game(auto_techniques=set()), settings_store=store)
+    monkeypatch.setattr(window, "_popup", lambda menu: None)
+    window.show_settings()
+    window._auto_technique_vars["x_wing"].set(True)
+    window._set_auto_technique("x_wing")
+    assert store.load().auto_techniques == frozenset({"x_wing"})
+    window.close()
+
+
+def test_product_startup_restores_saved_auto_techniques(tmp_path, monkeypatch):
+    store = UserSettingsStore(tmp_path / "settings.json")
+    store.save(UserSettings.from_auto_techniques({"x_wing", "hidden_pair"}))
+    captured = {}
+
+    class FakeRoot:
+        def mainloop(self):
+            captured["mainloop"] = True
+
+    def fake_window(root, game, settings_store=None):
+        captured["game"] = game
+        captured["store"] = settings_store
+        return object()
+
+    monkeypatch.setattr("sudoku_gui.tk.Tk", FakeRoot)
+    monkeypatch.setattr("sudoku_gui.SudokuWindow", fake_window)
+    main(settings_store=store)
+    assert captured["game"].auto_techniques == {"x_wing", "hidden_pair"}
+    assert captured["store"] is store
+    assert captured["mainloop"]
