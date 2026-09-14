@@ -7,6 +7,7 @@
 from __future__ import annotations
 
 import argparse
+from collections.abc import Callable, Iterable
 from pathlib import Path
 import tkinter as tk
 from tkinter import filedialog, messagebox
@@ -15,6 +16,7 @@ from shudu.sudoku_game import Game
 from shudu.sudoku_puzzles import PUZZLES, Puzzle, SCREENSHOT_PUZZLE, puzzle_from_text
 from shudu.sudoku_screenshot import load_screenshot_game
 from shudu.sudoku_view import BG, HEIGHT, WIDTH, SudokuView
+from shudu.user_settings import UserSettings, UserSettingsStore
 
 
 HELP_TEXT = (
@@ -29,23 +31,41 @@ HELP_TEXT = (
     "Naked Single、Naked Pair、Naked Triple、Pointing Pair。\n"
     "Hidden Pair、Box-Line Reduction、X-Wing、XY-Wing 默认不勾选；勾选后也会自动执行。\n"
     "所有已勾选算法会按固定优先级反复执行到无法继续，并同步维护全部候选小数字。\n"
+    "自动算法勾选会保存到本地，下次启动自动恢复。\n"
+    "行、列或宫正确完成时，会播放与参考视频一致的青色扫光完成动画。\n"
     "提示只展示推理，不自动填数或删笔记；全部自动算法关闭后，A 自动笔记只按基础规则重算。\n"
     "左上角关卡菜单可随时选择“从截图导入…”；正式大数字进入题面，"
     "3×3 位置中的候选小数字恢复为笔记。\n"
     "启动时也可把游戏截图文件作为参数传给 sudoku_gui.py。\n"
-    "关闭窗口不保存进度；左上角可选择其他关卡。"
+    "关闭窗口不保存游戏进度；自动算法配置会保留。左上角可选择其他关卡。"
 )
 
 IMAGE_FILE_TYPES = (
     ("图片文件", "*.png *.jpg *.jpeg *.bmp *.webp"),
     ("所有文件", "*.*"),
 )
+GAME_ACTIONS = frozenset({
+    "erase",
+    "undo",
+    "notes",
+    "notes-switch",
+    "hint",
+    "close-hint",
+    "auto-notes",
+    "pause",
+})
 
 
 class SudokuWindow:
-    def __init__(self, root: tk.Tk, game: Game | None = None):
+    def __init__(
+        self,
+        root: tk.Tk,
+        game: Game | None = None,
+        settings_store: UserSettingsStore | None = None,
+    ):
         self.root = root
         self.game = game if game is not None else Game()
+        self.settings_store = settings_store
         self._configure_window()
         self.view = SudokuView(root, self.game, self.dispatch)
         self.view.pack(fill=tk.BOTH, expand=True)
@@ -83,11 +103,26 @@ class SudokuWindow:
         parts = action.split(":")
         if parts[0] == "cell":
             self.game.select(int(parts[1]), int(parts[2]))
+            self.view.draw()
         elif parts[0] == "digit":
-            self.game.enter(int(parts[1]))
+            self._apply_game_change(lambda: self.game.enter(int(parts[1])))
+        elif action in GAME_ACTIONS:
+            self._apply_game_change(self.commands[action])
         else:
             self.commands[action]()
+        return
+
+    def _apply_game_change(self, change: Callable[[], None]) -> None:
+        before = set(self.game.completed_units())
+        change()
+        completed = tuple(
+            unit
+            for unit in self.game.completed_units()
+            if unit not in before
+        )
         self.view.draw()
+        self.view.animate_completed_units(completed)
+        return
 
     def _key(self, event: tk.Event) -> str | None:
         action = self._key_action(event)
@@ -132,6 +167,7 @@ class SudokuWindow:
         if self._timer_id is not None:
             self.root.after_cancel(self._timer_id)
             self._timer_id = None
+        self.view.stop_completion_animation()
         self.root.destroy()
 
     def restart(self) -> None:
@@ -153,6 +189,7 @@ class SudokuWindow:
         self._install_game(game)
 
     def _install_game(self, game: Game) -> None:
+        self.view.stop_completion_animation()
         self.game = game
         self.view.game = game
         self._bind_commands()
@@ -187,11 +224,10 @@ class SudokuWindow:
     def _load_screenshot(self, path: str) -> None:
         auto_techniques = set(self.game.auto_techniques)
         try:
-            game = game_from_screenshot(path, auto_simple=bool(auto_techniques))
+            game = game_from_screenshot(path, auto_techniques=auto_techniques)
         except ValueError as error:
             messagebox.showerror("截图导入失败", str(error), parent=self.root)
             return
-        game.auto_techniques = auto_techniques
         game.auto_clean = self.game.auto_clean
         self._install_game(game)
 
@@ -223,8 +259,25 @@ class SudokuWindow:
 
     def _set_auto_technique(self, name: str) -> None:
         enabled = self._auto_technique_vars[name].get()
-        self.game.set_auto_technique(name, enabled)
-        self.view.draw()
+        self._apply_game_change(
+            lambda: self.game.set_auto_technique(name, enabled),
+        )
+        self._persist_auto_techniques()
+        return
+
+    def _persist_auto_techniques(self) -> None:
+        if self.settings_store is None:
+            return
+        settings = UserSettings.from_auto_techniques(self.game.auto_techniques)
+        try:
+            self.settings_store.save(settings)
+        except OSError as error:
+            messagebox.showerror(
+                "配置保存失败",
+                f"自动解决算法配置未能保存：{error}",
+                parent=self.root,
+            )
+        return
 
     def _set_auto_clean(self) -> None:
         self.game.auto_clean = self._auto_clean.get()
@@ -233,24 +286,39 @@ class SudokuWindow:
         messagebox.showinfo("操作说明", HELP_TEXT, parent=self.root)
 
 
-def game_from_screenshot(path: str | Path, auto_simple: bool = True) -> Game:
+def game_from_screenshot(
+    path: str | Path,
+    auto_techniques: Iterable[str] | None = None,
+) -> Game:
     """从指定截图恢复游戏；GUI 不接触图像识别实现。"""
     imported = load_screenshot_game(path)
-    game = Game(imported.puzzle, auto_simple=auto_simple)
+    if auto_techniques is None:
+        game = Game(imported.puzzle, auto_simple=True)
+    else:
+        game = Game(imported.puzzle, auto_techniques=auto_techniques)
     game.notes = imported.note_map()
     game.notes_mode = bool(game.notes)
     game.message = "已从截图恢复正式数字和候选笔记。"
     return game
 
 
-def main(puzzle: Puzzle = SCREENSHOT_PUZZLE, screenshot_path: str | Path | None = None) -> None:
+def main(
+    puzzle: Puzzle = SCREENSHOT_PUZZLE,
+    screenshot_path: str | Path | None = None,
+    settings_store: UserSettingsStore | None = None,
+) -> None:
+    store = settings_store if settings_store is not None else UserSettingsStore()
+    settings = store.load()
     if screenshot_path is None:
-        game = Game(puzzle, auto_simple=True)
+        game = Game(puzzle, auto_techniques=settings.auto_techniques)
         game.auto_solve_enabled()
     else:
-        game = game_from_screenshot(screenshot_path)
+        game = game_from_screenshot(
+            screenshot_path,
+            auto_techniques=settings.auto_techniques,
+        )
     root = tk.Tk()
-    SudokuWindow(root, game)
+    SudokuWindow(root, game, settings_store=store)
     root.mainloop()
 
 
