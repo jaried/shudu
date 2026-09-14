@@ -109,3 +109,43 @@ def test_gui_uses_screenshot_module_through_public_loader():
     source = (ROOT / "sudoku_gui.py").read_text(encoding="utf-8")
     assert "shudu.sudoku_screenshot" in modules
     assert "load_screenshot_game(" in source
+
+
+def test_auto_technique_catalog_is_internal_single_source():
+    game_source = (PACKAGE / "sudoku_game.py").read_text(encoding="utf-8")
+    solver_source = (ROOT / "shudu_solver.py").read_text(encoding="utf-8")
+    assert "AUTO_TECHNIQUE_SPECS = (" not in game_source
+    assert "AUTO_TECHNIQUE_SPECS = (" not in solver_source
+    assert "shudu.auto_techniques" in imported_modules(PACKAGE / "sudoku_game.py")
+    assert "shudu.auto_techniques" in imported_modules(ROOT / "shudu_solver.py")
+
+
+def test_user_settings_io_stays_out_of_game_and_view():
+    settings_modules = imported_modules(PACKAGE / "user_settings.py")
+    forbidden = {
+        "sudoku_gui",
+        "shudu.sudoku_game",
+        "shudu.sudoku_view",
+        "tkinter",
+        "shudu_solver",
+    }
+    assert settings_modules.isdisjoint(forbidden)
+    assert "shudu.auto_techniques" in settings_modules
+    assert "shudu.user_settings" not in imported_modules(PACKAGE / "sudoku_game.py")
+    assert "shudu.user_settings" not in imported_modules(PACKAGE / "sudoku_view.py")
+
+
+def test_gui_owns_settings_lifecycle_through_store_interface():
+    modules = imported_modules(ROOT / "sudoku_gui.py")
+    source = (ROOT / "sudoku_gui.py").read_text(encoding="utf-8")
+    assert "shudu.user_settings" in modules
+    assert "UserSettingsStore" in source
+    assert ".settings_store.save(" in source
+
+
+def test_completion_animation_is_view_only():
+    game_source = (PACKAGE / "sudoku_game.py").read_text(encoding="utf-8")
+    view_source = (PACKAGE / "sudoku_view.py").read_text(encoding="utf-8")
+    assert "after(" not in game_source
+    assert "animate_completed_units" in view_source
+    assert "completed_units" in game_source
