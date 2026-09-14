@@ -1,6 +1,6 @@
 """提供 shudu 使用的项目级逻辑求解器入口。
 核心候选与所有技巧搜索继承共享 Numba 实现。
-本层定义项目技巧目录、自动求解优先级和结构化 next_step() Interface。
+本层定义项目技巧选择、自动求解优先级和结构化 next_step() Interface。
 算法执行时直接产出提示证据，提示层不再复制高级数独规则。
 """
 
@@ -9,25 +9,15 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from logical_solver import parse, print_board
+from shudu.auto_techniques import (
+    AUTO_TECHNIQUE_NAMES,
+    AUTO_TECHNIQUE_SPECS,
+    DEFAULT_AUTO_TECHNIQUES,
+    validate_auto_techniques,
+)
 from shudu.sudoku_logic import NumbaLogicSolver
 from shudu.sudoku_rules import CELLS, box_cells, col_cells, related, row_cells
 from shudu.sudoku_step import Change, LogicStep, capture_candidates, step_changes
-
-AUTO_TECHNIQUE_SPECS = (
-    ("hidden_single", "Hidden Single", True),
-    ("naked_single", "Naked Single", True),
-    ("naked_pair", "Naked Pair", True),
-    ("hidden_pair", "Hidden Pair", False),
-    ("naked_triple", "Naked Triple", True),
-    ("pointing_pair", "Pointing Pair", True),
-    ("box_line_reduction", "Box-Line Reduction", False),
-    ("x_wing", "X-Wing", False),
-    ("xy_wing", "XY-Wing", False),
-)
-AUTO_TECHNIQUE_NAMES = tuple(name for name, _, _ in AUTO_TECHNIQUE_SPECS)
-DEFAULT_AUTO_TECHNIQUES = frozenset(
-    name for name, _, enabled_by_default in AUTO_TECHNIQUE_SPECS if enabled_by_default
-)
 
 
 @dataclass(frozen=True)
@@ -45,11 +35,12 @@ class ShuduSolver(NumbaLogicSolver):
 
     def techniques_for(self, names) -> list:
         """按固定优先级返回指定算法，未知名称立即失败。"""
-        selected = set(names)
-        unknown = selected.difference(AUTO_TECHNIQUE_NAMES)
-        if unknown:
-            raise ValueError(f"未知自动算法：{', '.join(sorted(unknown))}")
-        result = [getattr(self, name) for name in AUTO_TECHNIQUE_NAMES if name in selected]
+        selected = validate_auto_techniques(names)
+        result = [
+            getattr(self, name)
+            for name in AUTO_TECHNIQUE_NAMES
+            if name in selected
+        ]
         return result
 
     def simple_techniques(self):
