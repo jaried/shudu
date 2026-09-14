@@ -1,7 +1,7 @@
 """绘制接近截图配色的数独桌面界面。
 所有控件与棋盘使用同一套缩放和命中坐标。
 本模块只呈现状态并发送操作，不执行数独求解。
-提示绘制只通过公开绘制 Interface 复用页头和网格，不依赖私有方法。
+行列宫完成动画是 View 内部瞬态，不写入 Game 或撤回状态。
 """
 
 from __future__ import annotations
@@ -16,6 +16,16 @@ from shudu.sudoku_hint_view import draw_hint
 from shudu.sudoku_theme import (
     WIDTH, HEIGHT, LEFT, TOP, SIDE, CELL, BG, INK, ACCENT, PEER,
     SELECTED, SAME, LINE, BORDER, BLUE, MUTED, ERROR, ERROR_LIGHT, ERROR_INK, WHITE,
+    COMPLETE_LIGHT, COMPLETE_MID, COMPLETE_STRONG,
+)
+
+COMPLETION_FRAME_MS = 70
+COMPLETION_PALETTE = (
+    COMPLETE_LIGHT,
+    COMPLETE_MID,
+    COMPLETE_STRONG,
+    COMPLETE_MID,
+    COMPLETE_LIGHT,
 )
 
 Rect = tuple[float, float, float, float]
@@ -58,6 +68,10 @@ class SudokuView(tk.Canvas):
         self.scale_factor = 1.0
         self.offset = (0.0, 0.0)
         self.hint_panel: tk.Frame | None = None
+        self._completion_after_id: str | None = None
+        self._completion_units: tuple[tuple[Cell, ...], ...] = ()
+        self._completion_frame = 0
+        self._completion_colors: dict[Cell, str] = {}
         self._init_fonts()
         self._bind_events()
         return
@@ -126,6 +140,70 @@ class SudokuView(tk.Canvas):
             self.hint_panel.destroy()
             self.hint_panel = None
 
+    def animate_completed_units(self, units) -> None:
+        """播放行、列、宫完成后的青色扫光；不修改 Game 状态。"""
+        normalized = tuple(dict.fromkeys(tuple(unit) for unit in units if unit))
+        if not normalized:
+            return
+        self.stop_completion_animation()
+        self._completion_units = normalized
+        self._completion_frame = 0
+        self._draw_completion_frame()
+        return
+
+    def stop_completion_animation(self) -> None:
+        """取消当前完成动画并清理临时绘制状态。"""
+        if self._completion_after_id is not None:
+            self.after_cancel(self._completion_after_id)
+            self._completion_after_id = None
+        self._completion_units = ()
+        self._completion_colors = {}
+        self._completion_frame = 0
+        return
+
+    def _draw_completion_frame(self) -> None:
+        max_rank = max(
+            self._completion_rank(unit, cell)
+            for unit in self._completion_units
+            for cell in unit
+        )
+        final_frame = max_rank + len(COMPLETION_PALETTE)
+        if self._completion_frame >= final_frame:
+            self._completion_after_id = None
+            self._completion_units = ()
+            self._completion_colors = {}
+            self._completion_frame = 0
+            self.draw()
+            return
+        self._completion_colors = self._completion_frame_colors()
+        self.draw()
+        self._completion_frame += 1
+        self._completion_after_id = self.after(
+            COMPLETION_FRAME_MS,
+            self._draw_completion_frame,
+        )
+        return
+
+    def _completion_frame_colors(self) -> dict[Cell, str]:
+        result: dict[Cell, str] = {}
+        for unit in self._completion_units:
+            for cell in unit:
+                phase = self._completion_frame - self._completion_rank(unit, cell)
+                if 0 <= phase < len(COMPLETION_PALETTE):
+                    result[cell] = COMPLETION_PALETTE[phase]
+        return result
+
+    def _completion_rank(self, unit, cell: Cell) -> int:
+        rows = {row for row, _ in unit}
+        cols = {col for _, col in unit}
+        if len(rows) == 1:
+            result = cell[1] - min(cols)
+        elif len(cols) == 1:
+            result = cell[0] - min(rows)
+        else:
+            result = cell[0] - min(rows) + cell[1] - min(cols)
+        return result
+
     def _draw_play_surface(self) -> None:
         if self.game.status == "paused":
             self._draw_overlay()
@@ -182,7 +260,15 @@ class SudokuView(tk.Canvas):
         x, y = LEFT + col * CELL, TOP + row * CELL
         background = cell_background(self.game, cell, wrong, conflicts, highlighted)
         foreground = cell_foreground(self.game, cell, wrong, conflicts)
-        self.rectangle((x,y,x+CELL,y+CELL), background, tags=f"cell-{row}-{col}")
+        flashing = cell in self._completion_colors
+        animated = flashing and cell != self.game.selected and cell not in wrong
+        tags = (f"cell-{row}-{col}",)
+        if flashing:
+            tags += ("completion-flash",)
+        if animated:
+            background = self._completion_colors[cell]
+            foreground = INK
+        self.rectangle((x,y,x+CELL,y+CELL), background, tags=tags)
         if self.game.value(cell):
             self.text(x+CELL/2, y+CELL/2, str(self.game.value(cell)), 43, foreground, numeric=True, tags=f"value-{row}-{col}")
         else:
