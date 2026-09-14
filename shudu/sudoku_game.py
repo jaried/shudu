@@ -12,16 +12,17 @@ from functools import lru_cache
 from time import monotonic
 from typing import Callable
 
-from shudu_solver import (
+from shudu_solver import ShuduSolver
+from shudu.auto_techniques import (
     AUTO_TECHNIQUE_NAMES,
     AUTO_TECHNIQUE_SPECS,
     DEFAULT_AUTO_TECHNIQUES,
-    ShuduSolver,
+    validate_auto_techniques,
 )
 from shudu.sudoku_backtracking import DEFAULT_BACKTRACKING_SOLVER
 from shudu.sudoku_hints import Hint, make_hint
 from shudu.sudoku_puzzles import Puzzle, SCREENSHOT_PUZZLE
-from shudu.sudoku_rules import CELLS, PEERS, Cell, candidate_grid
+from shudu.sudoku_rules import CELLS, PEERS, UNITS, Cell, candidate_grid
 from shudu.sudoku_step import Change
 
 Grid = tuple[tuple[int, ...], ...]
@@ -35,14 +36,6 @@ def solve_puzzle(puzzle: Puzzle) -> Grid:
         raise ValueError(result.invalid_reason or "题面无解")
     solution = tuple(tuple(row) for row in result.solution)
     return solution
-
-
-def _validated_auto_techniques(names: Iterable[str]) -> set[str]:
-    result = set(names)
-    unknown = result.difference(AUTO_TECHNIQUE_NAMES)
-    if unknown:
-        raise ValueError(f"未知自动算法：{', '.join(sorted(unknown))}")
-    return result
 
 
 @dataclass(frozen=True)
@@ -88,7 +81,7 @@ class Game:
 
     def _initial_auto_techniques(self, auto_simple: bool, names: Iterable[str] | None) -> set[str]:
         if names is not None:
-            return _validated_auto_techniques(names)
+            return validate_auto_techniques(names)
         result = set(DEFAULT_AUTO_TECHNIQUES) if auto_simple else set()
         return result
 
@@ -152,6 +145,15 @@ class Game:
         result = set(anchors)
         for cell in anchors:
             result.update(PEERS[cell])
+        return result
+
+    def completed_units(self) -> tuple[tuple[Cell, ...], ...]:
+        """返回当前已经正确完成的行、列和宫，供展示层检测完成事件。"""
+        result = tuple(
+            unit
+            for unit in UNITS
+            if all(self.value(cell) == self.solution[cell[0]][cell[1]] for cell in unit)
+        )
         return result
 
     def move(self, row_delta: int, col_delta: int) -> None:
