@@ -48,7 +48,7 @@ def test_screenshot_import_preserves_preferences_and_rebinds_view(app, monkeypat
     monkeypatch.setattr("sudoku_gui.filedialog.askopenfilename", lambda **kwargs: "first.png")
     monkeypatch.setattr("sudoku_gui.game_from_screenshot", _fake_loader(seen))
     app.import_screenshot()
-    assert seen == [("first.png", True)]
+    assert seen == [("first.png", frozenset(app.game.auto_techniques))]
     assert app.game.auto_simple
     assert not app.game.auto_clean
     assert app.game.notes == {(0, 0): {1}}
@@ -63,7 +63,7 @@ def test_screenshot_import_can_run_repeatedly(app, monkeypatch):
     app.import_screenshot()
     first_game = app.game
     app.import_screenshot()
-    assert seen == [("first.png", False), ("second.png", False)]
+    assert seen == [("first.png", frozenset()), ("second.png", frozenset())]
     assert app.game is not first_game
     assert app.game.message == "second.png"
 
@@ -80,9 +80,10 @@ def test_screenshot_import_failure_keeps_current_game(app, monkeypatch):
 
 
 def _fake_loader(seen):
-    def load(path, auto_simple=True):
-        seen.append((path, auto_simple))
-        game = Game(auto_simple=auto_simple)
+    def load(path, auto_techniques=None):
+        techniques = frozenset(auto_techniques or ())
+        seen.append((path, techniques))
+        game = Game(auto_techniques=techniques)
         game.notes = {(0, 0): {1}}
         game.notes_mode = True
         game.message = path
@@ -90,5 +91,5 @@ def _fake_loader(seen):
     return load
 
 
-def _failing_loader(path, auto_simple=True):
+def _failing_loader(path, auto_techniques=None):
     raise ValueError("识别失败")
