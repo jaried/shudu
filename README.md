@@ -14,7 +14,7 @@ Windows 也可以运行 `run_gui.bat`。项目要求 Python 3.12 或更高版本
 可以直接把游戏截图作为启动输入：
 
 ```bash
-uv run python sudoku_gui.py "D:\screenshots\sudoku.png"
+uv run python sudoku_gui.py "D:\\screenshots\\sudoku.png"
 ```
 
 运行中也可以从左上角关卡菜单或设置菜单选择 **“从截图导入…”**，同一个窗口可反复导入不同截图。
@@ -52,6 +52,19 @@ GUI 不接触 OpenCV 阈值、模板或单格识别细节。
 所有已勾选算法按固定优先级反复执行，直到当前集合全部无法继续。算法候选与用户手工笔记是两份独立状态；自动算法不会把用户手工笔记当作推理前提。
 
 自动算法开启时，同时用 solver 的最终候选状态维护小数字，因此 Naked Pair、Naked Triple、Pointing、X-Wing 等产生的候选删除会直接同步到界面笔记。
+
+自动算法勾选状态会通过 `shudu/user_settings.py` 原子保存到本地配置文件；下一次启动时恢复上次的完整勾选集合。Windows 使用 `%APPDATA%/shudu/settings.json`，其他平台使用对应的用户配置目录。游戏进度仍然不持久化。
+
+## 行、列、宫完成动画
+
+当一次游戏操作让某一行、列或 3×3 宫从“未完成”变为“全部正确完成”时，棋盘会播放参考视频风格的青色扫光：
+
+- 行从左向右扫过；
+- 列从上向下扫过；
+- 宫按左上到右下的对角波纹扫过；
+- 同一步同时完成多个区域时一起播放；
+- 当前选中格保留原选中色，动画只改变临时绘制状态；
+- 动画不会写入 Game，也不会影响撤回、错误次数或求解状态。
 
 ## 提示
 
@@ -108,6 +121,8 @@ techniques.py       技巧演示入口
 
 | Module | 职责 |
 | --- | --- |
+| `shudu/auto_techniques.py` | 自动算法目录、顺序、标签与默认配置真源 |
+| `shudu/user_settings.py` | 本地用户偏好路径、校验与原子持久化深 Module |
 | `shudu/sudoku_njit_core.py` | Numba 位掩码计算核心和 9 种逻辑 finder |
 | `shudu/sudoku_rules.py` | 行、列、宫、peer 和基础候选真源 |
 | `shudu/sudoku_backtracking.py` | 公共完整解/校验能力 |
@@ -116,7 +131,7 @@ techniques.py       技巧演示入口
 | `shudu/sudoku_hints.py` | `LogicStep → Hint` 语义适配 |
 | `shudu/sudoku_game.py` | 游戏状态、笔记、撤回、计时和自动算法 |
 | `shudu/sudoku_screenshot.py` | 截图输入深 Module |
-| `shudu/sudoku_view.py` | 普通游戏绘制和共用绘制 Interface |
+| `shudu/sudoku_view.py` | 普通游戏绘制、完成扫光动画和共用绘制 Interface |
 | `shudu/sudoku_hint_view.py` | 统一提示效果绘制 |
 | `shudu/sudoku_theme.py` | 主题和尺寸常量 |
 | `shudu/sudoku_puzzles.py` | 内置题面和自定义题面 |
