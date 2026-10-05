@@ -1,7 +1,7 @@
 """把 solver 的结构化一步结果转换为只读提示。
-提示推荐只读取当前正式棋盘与错误状态，不读取自动算法配置或可见笔记。
+算法成立只由正式棋盘和 solver 决定；可见笔记只表示玩家已经完成的候选删除进度。
+提示固定使用全部逻辑算法，不读取自动算法配置，也不把笔记当作算法推理约束。
 算法依据格和观察区域由 LogicStep 直接携带，本层不重新识别任何数独模式。
-本层只负责标题、自然语言说明和统一视觉语义。
 """
 
 from __future__ import annotations
@@ -9,8 +9,10 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from shudu_solver import ShuduSolver
-from shudu.sudoku_rules import Cell, unit_name
-from shudu.sudoku_step import LogicStep
+from shudu.sudoku_rules import CELLS, Cell, unit_name
+from shudu.sudoku_step import Change, LogicStep
+
+MAX_LOGIC_TRANSITIONS = len(CELLS) * 9
 
 NAMES = {
     "Naked Single": "唯一候选数",
@@ -34,22 +36,41 @@ class Hint:
     units: tuple[tuple[Cell, ...], ...] = ()
     regions: frozenset[Cell] = frozenset()
     attention: frozenset[Cell] = frozenset()
+    pending_eliminations: tuple[Change, ...] = ()
 
     @property
     def targets(self) -> frozenset[Cell]:
-        changes = () if self.step is None else self.step.placements + self.step.eliminations
+        changes = ()
+        if self.step is not None:
+            changes = self.step.placements or self.pending_eliminations
         result = frozenset((row, col) for row, col, _ in changes)
         return result
 
 
-def pending_step(board) -> LogicStep | None:
-    """按全部逻辑算法的稳定优先级返回当前正式棋盘的第一步。"""
-    solver = ShuduSolver(board)
-    result = solver.next_step()
+def _pending_eliminations(step: LogicStep, notes: dict[Cell, set[int]]) -> tuple[Change, ...]:
+    result = tuple(
+        (row, col, digit)
+        for row, col, digit in step.eliminations
+        if not notes.get((row, col)) or digit in notes[(row, col)]
+    )
     return result
 
 
-def make_hint(board, wrong: set[Cell]) -> Hint:
+def pending_step(board, notes: dict[Cell, set[int]]) -> LogicStep | None:
+    """按全部算法推进已完成的候选删除，返回当前仍可执行的第一步。"""
+    solver = ShuduSolver(board)
+    result = None
+    for _ in range(MAX_LOGIC_TRANSITIONS):
+        step = solver.next_step()
+        if step is None:
+            break
+        if step.placements or _pending_eliminations(step, notes):
+            result = step
+            break
+    return result
+
+
+def make_hint(board, notes: dict[Cell, set[int]], wrong: set[Cell]) -> Hint:
     if wrong:
         result = Hint(
             "请先修正错误",
@@ -57,24 +78,30 @@ def make_hint(board, wrong: set[Cell]) -> Hint:
             attention=frozenset(wrong),
         )
     else:
-        result = _logic_hint(board)
+        result = _logic_hint(board, notes)
     return result
 
 
-def _logic_hint(board) -> Hint:
-    step = pending_step(board)
+def _logic_hint(board, notes: dict[Cell, set[int]]) -> Hint:
+    step = pending_step(board, notes)
     result = Hint(
         "暂无逻辑提示",
         "现有逻辑技巧暂时找不到下一步。没有自动填数，也没有使用回溯答案。",
     )
     if step is not None:
-        result = describe_step(board, step)
+        pending = _pending_eliminations(step, notes)
+        result = describe_step(board, step, pending)
     return result
 
 
-def describe_step(board, step: LogicStep) -> Hint:
+def describe_step(
+    board,
+    step: LogicStep,
+    pending_eliminations: tuple[Change, ...] | None = None,
+) -> Hint:
     sources, units = hint_context(board, step)
     regions = _focus_regions(sources, units, step)
+    visible_eliminations = step.eliminations if pending_eliminations is None else pending_eliminations
     result = Hint(
         NAMES.get(step.name, step.name),
         step_message(step, units, sources),
@@ -82,6 +109,7 @@ def describe_step(board, step: LogicStep) -> Hint:
         sources,
         units,
         regions,
+        pending_eliminations=visible_eliminations,
     )
     return result
 
