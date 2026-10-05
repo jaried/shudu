@@ -53,4 +53,4 @@
 
 ## 验证
 
-`tests/test_njit_core.py` 会主动调用全部九种核心 finder，并断言每个 dispatcher 都产生 `nopython_signatures`。完整 GitHub Actions 回归继续在 Python 3.12 + Xvfb 下运行。
+`tests/test_njit_core.py` 会主动调用全部九种核心 finder，并断言每个 dispatcher 都产生 `nopython_signatures`。完整回归在 Python 3.12 环境执行；GUI 测试在需要时使用 Tk + Xvfb。
