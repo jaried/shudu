@@ -50,9 +50,11 @@ shudu/
 
 `shudu/sudoku_hints.py` 只负责：
 
-1. 跳过玩家已经手工完成的合法排除；
+1. 从当前正式棋盘构造项目 solver，并只请求一次 `next_step()`；
 2. 将 `LogicStep.sources / units / targets` 转为统一视觉语义；
 3. 生成用户可读的中文说明。
+
+Hint recommendation 的输入闭集是正式棋盘与错误状态。可见 `Game.notes` 和 `UserSettings.auto_techniques` 都不参与步骤选择；自动算法未勾选 Hidden Pair 等技巧时，Hint 仍按全部逻辑算法的稳定优先级推荐下一步。
 
 算法名字、模式判定和证据所有权集中在 solver；提示文案可以独立调整而不会改变数独规则。
 
@@ -101,6 +103,7 @@ shudu/
 - 根目录只允许五个 Python 可执行入口；
 - rules 不向 GUI / Game / Hint / solver orchestration 反向依赖；
 - Hint 只依赖项目级 `ShuduSolver` Interface；
+- Hint recommendation 只读取正式棋盘与错误状态，并只请求一次 `next_step()`；
 - Hint 不调用 solver 私有 step 方法，也不重新实现高级算法模式识别；
 - Hint View 不调用普通 View 私有绘制方法；
 - 截图深 Module 不依赖 GUI、Game 或 solver；
@@ -123,4 +126,4 @@ shudu/
 
 ## 验证
 
-GitHub Actions 使用 Python 3.12 + Tk + Xvfb 执行完整回归。架构、逻辑、GUI、完成动画、本地配置、截图输入与 Numba nopython 门禁都在同一测试套件中验证。
+完整回归使用 Python 3.12 测试环境；GUI 测试在需要时使用 Tk + Xvfb。架构、逻辑、GUI、完成动画、本地配置、截图输入与 Numba nopython 门禁都在同一测试套件中验证。
