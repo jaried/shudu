@@ -100,8 +100,8 @@ def describe_step(
     pending_eliminations: tuple[Change, ...] | None = None,
 ) -> Hint:
     sources, units = hint_context(board, step)
-    regions = _focus_regions(sources, units, step)
     visible_eliminations = step.eliminations if pending_eliminations is None else pending_eliminations
+    regions = _focus_regions(sources, units, step, visible_eliminations)
     result = Hint(
         NAMES.get(step.name, step.name),
         step_message(step, units, sources),
@@ -120,17 +120,18 @@ def hint_context(board, step: LogicStep) -> tuple[frozenset[Cell], tuple[tuple[C
     return result
 
 
-def _focus_regions(sources, units, step: LogicStep) -> frozenset[Cell]:
-    cells = set(sources) | set(_target_cells(step))
+def _focus_regions(
+    sources,
+    units,
+    step: LogicStep,
+    pending_eliminations: tuple[Change, ...],
+) -> frozenset[Cell]:
+    changes = step.placements or pending_eliminations
+    cells = set(sources)
+    cells.update((row, col) for row, col, _ in changes)
     for unit in units:
         cells.update(unit)
     result = frozenset(cells)
-    return result
-
-
-def _target_cells(step: LogicStep) -> frozenset[Cell]:
-    changes = step.placements + step.eliminations
-    result = frozenset((row, col) for row, col, _ in changes)
     return result
 
 
