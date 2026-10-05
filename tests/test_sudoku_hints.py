@@ -5,11 +5,29 @@ from copy import deepcopy
 import pytest
 
 from logical_solver import LogicSolver, parse
+from shudu_solver import DEFAULT_AUTO_TECHNIQUES, ShuduSolver
 from test_logical_solver import SECOND_PUZZLE
 from sudoku_puzzles import Puzzle, puzzle_from_text
 from sudoku_game import CELLS, PEERS, Game
 from sudoku_hints import make_hint, pending_step
 from sudoku_puzzles import PUZZLES
+
+
+LEVEL119_PUZZLE = Puzzle(
+    "关卡 119",
+    "回归",
+    (
+        "7183..459",
+        "6924..738",
+        "453879126",
+        "2...3.9..",
+        "...6...7.",
+        "5......82",
+        ".....7.4.",
+        "146583297",
+        "........3",
+    ),
+)
 
 
 def play_state(game):
@@ -51,6 +69,38 @@ def test_hint_round_trip_preserves_all_play_data():
     assert play_state(game) == before and game.status == "playing"
 
 
+@pytest.mark.parametrize(
+    "auto_techniques",
+    (frozenset(), DEFAULT_AUTO_TECHNIQUES),
+)
+def test_level119_hint_recommends_hidden_pair_independent_of_auto_settings(auto_techniques):
+    game = Game(LEVEL119_PUZZLE, auto_techniques=auto_techniques)
+    assert "hidden_pair" not in game.auto_techniques
+    game.notes[(5, 1)] = {3, 6}
+    game.notes_mode = True
+    before = play_state(game)
+    game.hint()
+    step = game.hint_preview.step
+    assert step is not None and step.name == "Hidden Pair"
+    assert (5, 1, 7) in step.eliminations
+    assert play_state(game) == before
+
+
+def test_hint_requests_exactly_one_next_step(monkeypatch):
+    calls = []
+    original = ShuduSolver.next_step
+
+    def tracked(solver):
+        calls.append(None)
+        result = original(solver)
+        return result
+
+    monkeypatch.setattr(ShuduSolver, "next_step", tracked)
+    hint = make_hint(LEVEL119_PUZZLE.grid(), set())
+    assert hint.step is not None and hint.step.name == "Hidden Pair"
+    assert len(calls) == 1
+
+
 def test_hint_uses_existing_solver_priority_without_placing_value():
     game = Game()
     legacy = LogicSolver(game.board)
@@ -85,7 +135,7 @@ def test_hint_never_calls_full_solver_or_backtracking(monkeypatch):
 
 def test_stalled_logic_returns_explanation_without_guessing():
     board = [[0] * 9 for _ in range(9)]
-    result = make_hint(board, {}, set())
+    result = make_hint(board, set())
     assert result.step is None and result.title == "暂无逻辑提示"
     assert not any(any(row) for row in board)
 
@@ -159,7 +209,7 @@ def test_auto_notes_and_hint_are_disabled_outside_playing(status):
 def test_pending_step_does_not_mutate_input_board():
     board = Game().board
     before = deepcopy(board)
-    assert pending_step(board, {}) is not None
+    assert pending_step(board) is not None
     assert board == before
 
 
@@ -175,7 +225,7 @@ def test_hint_message_keeps_existing_technique_name():
 3..51.472
 7.2...6..
 """)
-    step = pending_step(board, {})
+    step = pending_step(board)
     assert step is not None and ":" in step.message
 
 
@@ -188,7 +238,7 @@ def test_naked_pair_marks_both_source_cells():
         if "Naked Pair:" in solver.steps[-1]:
             pair_board = before
             break
-    hint = make_hint(pair_board, {}, set())
+    hint = make_hint(pair_board, set())
     assert hint.step is not None and hint.step.name == "Naked Pair"
     assert len(hint.sources) == 2
     assert all(hint.step.candidates[r][c] == hint.step.candidates[next(iter(hint.sources))[0]][next(iter(hint.sources))[1]]
