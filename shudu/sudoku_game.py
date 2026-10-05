@@ -338,7 +338,7 @@ class Game:
     def hint(self) -> None:
         if self.status != "playing":
             return
-        self.hint_preview = make_hint(self.board, self.notes, self.wrong_cells())
+        self.hint_preview = make_hint(self.board, self.wrong_cells())
         self.hints_used += int(self.hint_preview.step is not None)
         self._stop("hint")
 
