@@ -126,13 +126,25 @@ def test_partial_completed_eliminations_only_show_remaining_actions(monkeypatch)
     assert hint.targets == {(0, 1)}
 
 
-def test_completed_elimination_step_advances_to_next_solver_step(monkeypatch):
+@pytest.mark.parametrize(
+    "name",
+    (
+        "Naked Pair",
+        "Hidden Pair",
+        "Naked Triple",
+        "Pointing Pair",
+        "Box-Line",
+        "X-Wing",
+        "XY-Wing",
+    ),
+)
+def test_completed_elimination_step_advances_to_next_solver_step(monkeypatch, name):
     candidates = tuple(
         tuple(frozenset({1, 7}) for _ in range(9))
         for _ in range(9)
     )
     completed = LogicStep(
-        "Synthetic: completed",
+        f"{name}: completed",
         (),
         ((0, 0, 7),),
         (),
