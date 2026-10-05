@@ -70,6 +70,8 @@ GUI 不接触 OpenCV 阈值、模板或单格识别细节。
 
 点击「提示」或按 `H` 只展示一步，不自动修改棋盘或笔记。
 
+提示固定使用项目支持的全部逻辑算法，并按稳定优先级从简单到复杂返回第一步；它与“自动解决算法”的勾选状态独立。因此即使 Hidden Pair 等算法未勾选为自动执行，提示仍可推荐对应步骤。可见候选笔记只用于展示和玩家交互，不参与推荐步骤选择。
+
 统一提示效果：
 
 - 无关区域压暗；
@@ -175,4 +177,4 @@ uv run python -m pytest -q
 xvfb-run -a -s "-screen 0 1400x1200x24" uv run python -m pytest -q
 ```
 
-GitHub Actions 在 Python 3.12 下执行完整回归，并包含架构依赖、Numba nopython、GUI、截图导入和提示行为门禁。
+完整回归包含架构依赖、Numba nopython、GUI、截图导入和提示行为门禁。
