@@ -60,6 +60,23 @@ def test_hint_adapter_does_not_call_private_solver_step_interface():
     assert "._apply_next_step(" not in source
 
 
+def test_hint_recommendation_interface_excludes_visible_notes():
+    source = (PACKAGE / "sudoku_hints.py").read_text(encoding="utf-8")
+    tree = ast.parse(source)
+    functions = {
+        node.name: node
+        for node in tree.body
+        if isinstance(node, ast.FunctionDef)
+    }
+    pending_args = [arg.arg for arg in functions["pending_step"].args.args]
+    hint_args = [arg.arg for arg in functions["make_hint"].args.args]
+    game_source = (PACKAGE / "sudoku_game.py").read_text(encoding="utf-8")
+    assert pending_args == ["board"]
+    assert hint_args == ["board", "wrong"]
+    assert "already_noted" not in source
+    assert "make_hint(self.board, self.wrong_cells())" in game_source
+
+
 def test_hint_adapter_does_not_reimplement_algorithm_recognition():
     source = (PACKAGE / "sudoku_hints.py").read_text(encoding="utf-8")
     forbidden = (
