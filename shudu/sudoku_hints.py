@@ -1,5 +1,5 @@
 """把 solver 的结构化一步结果转换为只读提示。
-手工笔记只用于跳过玩家已经完成的合法排除，不作为算法推理约束。
+提示推荐只读取当前正式棋盘与错误状态，不读取自动算法配置或可见笔记。
 算法依据格和观察区域由 LogicStep 直接携带，本层不重新识别任何数独模式。
 本层只负责标题、自然语言说明和统一视觉语义。
 """
@@ -9,7 +9,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from shudu_solver import ShuduSolver
-from shudu.sudoku_rules import CELLS, Cell, unit_name
+from shudu.sudoku_rules import Cell, unit_name
 from shudu.sudoku_step import LogicStep
 
 NAMES = {
@@ -23,9 +23,6 @@ NAMES = {
     "X-Wing": "X-Wing",
     "XY-Wing": "XY-Wing",
 }
-MAX_LOGIC_TRANSITIONS = len(CELLS) * 9
-
-
 @dataclass(frozen=True)
 class Hint:
     title: str
@@ -43,25 +40,14 @@ class Hint:
         return result
 
 
-def already_noted(step: LogicStep, notes: dict[Cell, set[int]]) -> bool:
-    result = bool(step.eliminations) and all(
-        bool(notes.get((row, col))) and digit not in notes[(row, col)]
-        for row, col, digit in step.eliminations
-    )
-    return result
-
-
-def pending_step(board, notes: dict[Cell, set[int]]) -> LogicStep | None:
+def pending_step(board) -> LogicStep | None:
+    """按全部逻辑算法的稳定优先级返回当前正式棋盘的第一步。"""
     solver = ShuduSolver(board)
-    result = None
-    for _ in range(MAX_LOGIC_TRANSITIONS):
-        result = solver.next_step()
-        if result is None or not already_noted(result, notes):
-            break
+    result = solver.next_step()
     return result
 
 
-def make_hint(board, notes: dict[Cell, set[int]], wrong: set[Cell]) -> Hint:
+def make_hint(board, wrong: set[Cell]) -> Hint:
     if wrong:
         result = Hint(
             "请先修正错误",
@@ -69,12 +55,12 @@ def make_hint(board, notes: dict[Cell, set[int]], wrong: set[Cell]) -> Hint:
             attention=frozenset(wrong),
         )
     else:
-        result = _logic_hint(board, notes)
+        result = _logic_hint(board)
     return result
 
 
-def _logic_hint(board, notes: dict[Cell, set[int]]) -> Hint:
-    step = pending_step(board, notes)
+def _logic_hint(board) -> Hint:
+    step = pending_step(board)
     result = Hint(
         "暂无逻辑提示",
         "现有逻辑技巧暂时找不到下一步。没有自动填数，也没有使用回溯答案。",
