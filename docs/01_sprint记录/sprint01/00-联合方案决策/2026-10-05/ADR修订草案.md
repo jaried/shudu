@@ -1,69 +1,49 @@
-# ADR 修订草案：提示推荐策略与自动执行配置解耦
+# ADR 修订记录：提示算法事实与候选进度分离
 
-- 状态：草案，方向已闭合，待最终确认
-- 日期：2026-10-05
-- 正式 ADR：暂不修改
-- 目标：最终批准后修订 ADR-002 与 ADR-005，使 recommendation 与自动执行配置拥有单一现行语义
+- 状态：已同步现行 ADR-002 / ADR-005
+- 日期：2026-10-06
 
-## 1. ADR-002 修订方向
+## 1. ADR-002 现行语义
 
 继续保持：
 
-- solver 拥有候选状态、技巧执行和算法证据；
+- solver 拥有候选状态、技巧执行与算法证据；
 - `ShuduSolver.next_step()` 返回完整 `LogicStep`；
-- Hint 只消费结构化步骤，不重新识别高级算法；
+- Hint 不重新识别高级算法模式；
 - 用户笔记不是 solver 推理前提。
 
-修订为：
+补充：
 
-1. Hint recommendation 的输入闭集为当前正式棋盘与错误状态。
-2. `ShuduSolver.next_step()` 按全部逻辑算法稳定优先级返回第一条 `LogicStep`。
-3. `Game.notes` 不参与推荐步骤选择或“已完成”判断。
-4. 删除 `already_noted` 和多步 fast-forward 语义。
-5. 玩家只改变候选笔记、未改变正式棋盘时，后续提示允许重复同一逻辑消除。
-6. Hint 保持只读，不使用 full solve / backtracking。
+1. Hint 固定使用全部逻辑算法，不读取自动算法配置。
+2. 算法成立只由正式棋盘与 solver 候选状态决定。
+3. `Game.notes` 只作为候选删除进度。
+4. elimination 已全部反映在 notes 时，Hint 在同一 solver 内推进到下一步。
+5. 部分完成时只暴露仍待删除的候选。
+6. `LogicStep` 保留完整算法事实，`Hint.pending_eliminations` 表达当前 UI 动作。
+7. Hint 保持只读，不使用 full solve / backtracking。
 
-执行面结果：
+## 2. ADR-005 现行语义
 
-- recommendation 从可能多 transition 扫描收缩为一次 `next_step()`；
-- read / compute / effect / process / remote 均不扩大。
+1. `UserSettings.auto_techniques` 只控制自动执行。
+2. `Game.auto_solve_enabled()` / `ShuduSolver.solve_techniques_result(names)` 只执行用户勾选集合。
+3. Hint 不读取该集合，始终可使用全部逻辑算法。
+4. 自动执行产生的 notes 与截图/玩家 notes 一样，只能作为 Hint 的候选删除进度，不能成为算法证明。
+5. 正式棋盘变化后，Hint 基于新棋盘重新计算算法事实。
 
-## 2. ADR-005 修订方向
-
-1. 自动算法目录继续提供算法名称、显示标签、稳定顺序与自动默认集合。
-2. `UserSettings.auto_techniques` 只表示用户允许自动执行的算法集合。
-3. `Game.auto_solve_enabled()` / `ShuduSolver.solve_techniques_result(names)` 只执行该集合。
-4. recommendation 不读取 `UserSettings`，也不以自动集合裁剪算法。
-5. recommendation 固定使用全部逻辑算法稳定顺序。
-6. 自动完成真实改变正式棋盘后，后续 recommendation 根据新棋盘重新计算。
-7. 自动算法生成的可见候选继续属于 `Game.notes` 展示状态，不成为 recommendation 输入。
-
-## 3. 目标依赖方向
+## 3. 依赖方向
 
 ```text
-逻辑算法实现 / 稳定顺序
-        ├── recommendation: 全部算法 -> first step
-        └── auto execution: 用户勾选集合 -> run selected techniques
-
-UserSettings.auto_techniques
-        └── auto execution
-
-Game.board + wrong_cells
-        └── recommendation
+Game.board
+   -> ShuduSolver
+   -> LogicStep
+   -> Hint
 
 Game.notes
-        └── 可见笔记 / 玩家交互
+   -> Hint progress projection
+   -> pending_eliminations
+
+UserSettings.auto_techniques
+   -> auto execution only
 ```
 
-推荐与自动执行共享算法实现，不共享选择配置。
-
-## 4. 同步表面
-
-正式批准后同步：
-
-- `README.md`
-- `docs/codebase-design-review.md`
-- `tests/test_architecture.py`
-- 提示、自动配置、截图导入相关行为测试
-
-本变更直接修订 ADR-002 与 ADR-005 已拥有的责任，不新增平行 ADR。本草案不改变已接受 ADR 状态。
+推荐与自动执行共享算法实现，不共享选择配置；Hint 的算法事实与用户候选进度也保持分离。
