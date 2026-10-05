@@ -60,7 +60,7 @@ def test_hint_adapter_does_not_call_private_solver_step_interface():
     assert "._apply_next_step(" not in source
 
 
-def test_hint_recommendation_interface_excludes_visible_notes():
+def test_hint_recommendation_separates_algorithm_truth_from_note_progress():
     source = (PACKAGE / "sudoku_hints.py").read_text(encoding="utf-8")
     tree = ast.parse(source)
     functions = {
@@ -71,10 +71,19 @@ def test_hint_recommendation_interface_excludes_visible_notes():
     pending_args = [arg.arg for arg in functions["pending_step"].args.args]
     hint_args = [arg.arg for arg in functions["make_hint"].args.args]
     game_source = (PACKAGE / "sudoku_game.py").read_text(encoding="utf-8")
-    assert pending_args == ["board"]
-    assert hint_args == ["board", "wrong"]
-    assert "already_noted" not in source
-    assert "make_hint(self.board, self.wrong_cells())" in game_source
+    assert pending_args == ["board", "notes"]
+    assert hint_args == ["board", "notes", "wrong"]
+    assert "_pending_eliminations" in source
+    assert "auto_techniques" not in source
+    assert "make_hint(self.board, self.notes, self.wrong_cells())" in game_source
+
+
+def test_hint_view_reads_cells_from_rules_and_pending_actions_from_hint():
+    modules = imported_modules(PACKAGE / "sudoku_hint_view.py")
+    source = (PACKAGE / "sudoku_hint_view.py").read_text(encoding="utf-8")
+    assert "shudu.sudoku_rules" in modules
+    assert "hint.pending_eliminations" in source
+    assert "hint.step.eliminations" not in source
 
 
 def test_hint_adapter_does_not_reimplement_algorithm_recognition():
