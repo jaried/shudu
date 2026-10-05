@@ -23,6 +23,8 @@ NAMES = {
     "X-Wing": "X-Wing",
     "XY-Wing": "XY-Wing",
 }
+
+
 @dataclass(frozen=True)
 class Hint:
     title: str
