@@ -9,7 +9,8 @@ from __future__ import annotations
 import tkinter as tk
 from typing import TYPE_CHECKING
 
-from shudu.sudoku_hints import CELLS, Hint
+from shudu.sudoku_hints import Hint
+from shudu.sudoku_rules import CELLS
 from shudu.sudoku_theme import BG, BLUE, CELL, ERROR, ERROR_INK, INK, LEFT, SAME, TOP, WHITE, WIDTH
 
 if TYPE_CHECKING:
