@@ -9,7 +9,8 @@ from __future__ import annotations
 import tkinter as tk
 from typing import TYPE_CHECKING
 
-from shudu.sudoku_hints import CELLS, Hint
+from shudu.sudoku_hints import Hint
+from shudu.sudoku_rules import CELLS
 from shudu.sudoku_theme import BG, BLUE, CELL, ERROR, ERROR_INK, INK, LEFT, SAME, TOP, WHITE, WIDTH
 
 if TYPE_CHECKING:
@@ -22,12 +23,12 @@ FOCUS = "#FFFCE5"
 
 def hint_background(hint: Hint, cell, value: int) -> str:
     result = FOCUS if cell in hint.regions else DIM
+    if cell in hint.targets and hint.pending_eliminations:
+        result = FOCUS
     if cell in hint.sources:
         result = SAME
     if cell in hint.targets and hint.step is not None and hint.step.placements:
         result = SAME
-    if cell in hint.targets and hint.step is not None and hint.step.eliminations:
-        result = FOCUS
     if cell in hint.attention:
         result = ERROR
     return result
@@ -70,10 +71,11 @@ def hint_foreground(hint: Hint, cell) -> str:
 
 
 def draw_hint_notes(view: SudokuView, hint: Hint, cell, x: float, y: float) -> None:
-    values = view.game.notes.get(cell, ())
-    if hint.step is not None and cell in hint.regions | hint.sources | hint.targets:
+    values = view.game.notes.get(cell)
+    if values is None and hint.step is not None and cell in hint.regions | hint.sources | hint.targets:
         values = hint.step.candidates[cell[0]][cell[1]]
-    removed = set(() if hint.step is None else hint.step.eliminations)
+    values = () if values is None else values
+    removed = set(hint.pending_eliminations)
     for digit in sorted(values):
         draw_note(view, hint, cell, digit, x, y, (*cell, digit) in removed)
 
