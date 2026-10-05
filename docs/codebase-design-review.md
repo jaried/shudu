@@ -2,7 +2,7 @@
 
 ## Status
 
-COMPLETE — 2026-09-14
+COMPLETE — 2026-10-06
 
 本轮按 `.claude/skills/engineering/codebase-design` 对提示链、目录结构、完成动画和本地用户偏好继续深化。目标是让算法知识只存在于真正执行算法的 Module 中，让调用方只消费稳定的 Interface；同时把带时间性的视觉效果留在 View，把持久化文件格式留在独立偏好 Module。
 
