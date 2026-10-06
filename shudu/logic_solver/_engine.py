@@ -52,6 +52,8 @@ class NumbaLogicSolver:
         self.error_message: str | None = None
         self._last_sources: tuple[Cell, ...] = ()
         self._last_units: tuple[tuple[Cell, ...], ...] = ()
+        self._last_technique_name: str | None = None
+        self._single_capture_active = False
 
     @property
     def cands(self):
@@ -93,6 +95,7 @@ class NumbaLogicSolver:
         result = False
         for technique in self._techniques():
             if technique():
+                self._last_technique_name = _technique_name(technique.__name__)
                 result = True
                 break
         return result
@@ -100,10 +103,19 @@ class NumbaLogicSolver:
     def _reset_step_context(self) -> None:
         self._last_sources = ()
         self._last_units = ()
+        self._last_technique_name = None
 
     def _set_step_context(self, sources=(), units=()) -> None:
         self._last_sources = tuple(dict.fromkeys(sources))
         self._last_units = tuple(dict.fromkeys(tuple(unit) for unit in units if unit))
+
+    def _begin_single_capture(self) -> None:
+        self._single_capture_active = True
+        self._reset_step_context()
+
+    def _end_single_capture(self) -> None:
+        self._reset_step_context()
+        self._single_capture_active = False
 
     def _place(self, row: int, col: int, digit: int) -> None:
         self.board[row][col] = digit
@@ -116,25 +128,17 @@ class NumbaLogicSolver:
         self._masks = masks_from_board(self.board)
 
     def hidden_single(self) -> bool:
-        unit_index, row, col, digit = find_hidden_single(self._board_array(), self._masks)
+        unit_index, row, col, digit = find_hidden_single(
+            self._board_array(), self._masks
+        )
         result = unit_index >= 0
         if result:
             unit = _legacy_unit(unit_index)
-            sources = self._hidden_single_sources(unit, (row, col), digit)
-            self._set_step_context(sources, (unit,))
-            self._log(f"Hidden Single: {_format_cell(row, col)} = {digit}（{unit_name(unit)} 唯一可能位置）")
+            self._set_step_context((), (unit,))
+            self._log(
+                f"Hidden Single: {_format_cell(row, col)} = {digit}（{unit_name(unit)} 唯一可能位置）"
+            )
             self._place(row, col, digit)
-        return result
-
-    def _hidden_single_sources(self, unit, target: Cell, digit: int) -> tuple[Cell, ...]:
-        empty_others = tuple(cell for cell in unit if cell != target and not self.board[cell[0]][cell[1]])
-        result = tuple(
-            (row, col)
-            for row in range(9)
-            for col in range(9)
-            if self.board[row][col] == digit
-            and any(_sees((row, col), other) for other in empty_others)
-        )
         return result
 
     def naked_single(self) -> bool:
@@ -301,10 +305,20 @@ class NumbaLogicSolver:
         axis, digit, row_a, row_b, col_a, col_b = hit
         sources = tuple((row, col) for row in (row_a, row_b) for col in (col_a, col_b))
         if axis == 0:
-            units = (row_cells(row_a), row_cells(row_b), col_cells(col_a), col_cells(col_b))
+            units = (
+                row_cells(row_a),
+                row_cells(row_b),
+                col_cells(col_a),
+                col_cells(col_b),
+            )
             message = f"X-Wing: 数字 {digit} 在行 {row_a + 1},{row_b + 1} 只出现在列 {col_a + 1},{col_b + 1}"
         else:
-            units = (col_cells(col_a), col_cells(col_b), row_cells(row_a), row_cells(row_b))
+            units = (
+                col_cells(col_a),
+                col_cells(col_b),
+                row_cells(row_a),
+                row_cells(row_b),
+            )
             message = f"X-Wing: 数字 {digit} 在列 {col_a + 1},{col_b + 1} 只出现在行 {row_a + 1},{row_b + 1}"
         targets = self._x_wing_targets(axis, digit, row_a, row_b, col_a, col_b)
         self._set_step_context(sources, units)
@@ -331,7 +345,10 @@ class NumbaLogicSolver:
         units = tuple(
             dict.fromkeys(
                 unit
-                for unit in (_shared_unit(pivot_cell, wing_a_cell), _shared_unit(pivot_cell, wing_b_cell))
+                for unit in (
+                    _shared_unit(pivot_cell, wing_a_cell),
+                    _shared_unit(pivot_cell, wing_b_cell),
+                )
                 if unit
             )
         )
@@ -344,9 +361,15 @@ class NumbaLogicSolver:
         self._discard_mask(targets, 1 << digit)
         self.elim_count += len(targets)
 
-    def _unit_targets(self, unit_index: int, mask: int, excluded: set[Cell]) -> list[Cell]:
+    def _unit_targets(
+        self, unit_index: int, mask: int, excluded: set[Cell]
+    ) -> list[Cell]:
         unit = _legacy_unit(unit_index)
-        result = [cell for cell in unit if cell not in excluded and self._candidate_has(cell, mask)]
+        result = [
+            cell
+            for cell in unit
+            if cell not in excluded and self._candidate_has(cell, mask)
+        ]
         return result
 
     def _candidate_has(self, cell: Cell, mask: int) -> bool:
@@ -354,32 +377,53 @@ class NumbaLogicSolver:
         result = not self.board[row][col] and bool(int(self._masks[row, col]) & mask)
         return result
 
-    def _pointing_targets(self, base_row: int, base_col: int, digit: int, axis: int, line: int) -> list[Cell]:
+    def _pointing_targets(
+        self, base_row: int, base_col: int, digit: int, axis: int, line: int
+    ) -> list[Cell]:
         bit = 1 << digit
         unit = row_cells(line) if axis == 0 else col_cells(line)
         box = set(box_cells(base_row, base_col))
-        result = [cell for cell in unit if cell not in box and self._candidate_has(cell, bit)]
+        result = [
+            cell for cell in unit if cell not in box and self._candidate_has(cell, bit)
+        ]
         return result
 
-    def _box_line_targets(self, axis: int, line: int, digit: int, base_row: int, base_col: int) -> list[Cell]:
+    def _box_line_targets(
+        self, axis: int, line: int, digit: int, base_row: int, base_col: int
+    ) -> list[Cell]:
         bit = 1 << digit
         result = [
             cell
             for cell in box_cells(base_row, base_col)
-            if (cell[0] != line if axis == 0 else cell[1] != line) and self._candidate_has(cell, bit)
+            if (cell[0] != line if axis == 0 else cell[1] != line)
+            and self._candidate_has(cell, bit)
         ]
         return result
 
-    def _x_wing_targets(self, axis: int, digit: int, row_a: int, row_b: int, col_a: int, col_b: int) -> list[Cell]:
+    def _x_wing_targets(
+        self, axis: int, digit: int, row_a: int, row_b: int, col_a: int, col_b: int
+    ) -> list[Cell]:
         bit = 1 << digit
         if axis == 0:
-            cells = ((row, col) for row in range(9) if row not in (row_a, row_b) for col in (col_a, col_b))
+            cells = (
+                (row, col)
+                for row in range(9)
+                if row not in (row_a, row_b)
+                for col in (col_a, col_b)
+            )
         else:
-            cells = ((row, col) for col in range(9) if col not in (col_a, col_b) for row in (row_a, row_b))
+            cells = (
+                (row, col)
+                for col in range(9)
+                if col not in (col_a, col_b)
+                for row in (row_a, row_b)
+            )
         result = [cell for cell in cells if self._candidate_has(cell, bit)]
         return result
 
-    def _xy_wing_targets(self, row_a: int, col_a: int, row_b: int, col_b: int, digit: int, pivot: Cell) -> list[Cell]:
+    def _xy_wing_targets(
+        self, row_a: int, col_a: int, row_b: int, col_b: int, digit: int, pivot: Cell
+    ) -> list[Cell]:
         bit = 1 << digit
         excluded = {pivot, (row_a, col_a), (row_b, col_b)}
         result = [
@@ -505,6 +549,12 @@ def _legacy_unit(unit_index: int) -> tuple[Cell, ...]:
     return result
 
 
+def _technique_name(method_name: str) -> str:
+    labels = {"box_line_reduction": "Box-Line"}
+    result = labels.get(method_name, method_name.replace("_", " ").title())
+    return result
+
+
 def _shared_unit(first: Cell, second: Cell) -> tuple[Cell, ...]:
     result: tuple[Cell, ...] = ()
     if first[0] == second[0]:
@@ -529,7 +579,11 @@ def _format_cells(cells: Iterable[Cell]) -> str:
 def _sees(first: Cell, second: Cell) -> bool:
     row, col = first
     other_row, other_col = second
-    result = row == other_row or col == other_col or (row // 3, col // 3) == (other_row // 3, other_col // 3)
+    result = (
+        row == other_row
+        or col == other_col
+        or (row // 3, col // 3) == (other_row // 3, other_col // 3)
+    )
     return result
 
 

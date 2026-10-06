@@ -8,13 +8,18 @@ from __future__ import annotations
 
 from shudu.auto_techniques import (
     AUTO_TECHNIQUE_NAMES,
-    AUTO_TECHNIQUE_SPECS,
     DEFAULT_AUTO_TECHNIQUES,
     validate_auto_techniques,
 )
-from shudu.sudoku_rules import CELLS, box_cells, col_cells, related, row_cells
+
 from ._engine import NumbaLogicSolver
-from ._results import Change, LogicStep, SimpleSolveResult, capture_candidates, step_changes
+from ._results import (
+    Change,
+    LogicStep,
+    SimpleSolveResult,
+    capture_candidates,
+    step_changes,
+)
 
 
 class ShuduSolver(NumbaLogicSolver):
@@ -28,9 +33,7 @@ class ShuduSolver(NumbaLogicSolver):
         """按固定优先级返回指定算法，未知名称立即失败。"""
         selected = validate_auto_techniques(names)
         result = [
-            getattr(self, name)
-            for name in AUTO_TECHNIQUE_NAMES
-            if name in selected
+            getattr(self, name) for name in AUTO_TECHNIQUE_NAMES if name in selected
         ]
         return result
 
@@ -44,7 +47,6 @@ class ShuduSolver(NumbaLogicSolver):
         for row, col, digit in eliminations:
             if not self.board[row][col]:
                 self._masks[row, col] = int(self._masks[row, col]) & ~(1 << digit)
-        return
 
     def apply_technique_step(self, names) -> bool:
         """执行指定自动算法中的一步；没有可执行步骤时返回 False。"""
@@ -56,7 +58,9 @@ class ShuduSolver(NumbaLogicSolver):
         result = self.apply_technique_step(DEFAULT_AUTO_TECHNIQUES)
         return result
 
-    def _apply_technique_step_with_eliminations(self, names) -> tuple[bool, tuple[Change, ...]]:
+    def _apply_technique_step_with_eliminations(
+        self, names
+    ) -> tuple[bool, tuple[Change, ...]]:
         """执行一步并返回这一步在算法候选中产生的全部删除。"""
         result = False
         eliminations: tuple[Change, ...] = ()
@@ -74,7 +78,9 @@ class ShuduSolver(NumbaLogicSolver):
         before = sum(bool(value) for row in self.board for value in row)
         removed: list[Change] = []
         while True:
-            progressed, eliminations = self._apply_technique_step_with_eliminations(selected)
+            progressed, eliminations = self._apply_technique_step_with_eliminations(
+                selected
+            )
             if not progressed:
                 break
             removed.extend(eliminations)
@@ -94,58 +100,46 @@ class ShuduSolver(NumbaLogicSolver):
 
     def next_step(self) -> LogicStep | None:
         """执行并返回完整一步事实；不使用回溯，也不要求提示层重建证据。"""
-        before = [row[:] for row in self.board]
-        candidates = capture_candidates(self.cands)
-        result = None
-        if self._apply_next_step():
-            placements, eliminations = step_changes(before, self.board, candidates, self.cands)
-            message = self._last_message()
-            sources, units = self._step_context(message, before, candidates, placements)
-            result = LogicStep(
-                message,
-                placements,
-                eliminations,
-                sources,
-                units,
-                candidates,
-            )
-        return result
+        self._begin_single_capture()
+        try:
+            before = [row[:] for row in self.board]
+            candidates = capture_candidates(self.cands)
+            result = None
+            if self._apply_next_step():
+                placements, eliminations = step_changes(
+                    before, self.board, candidates, self.cands
+                )
+                message = self._last_message()
+                sources, units = self._step_context(before, candidates, placements)
+                result = LogicStep(
+                    message,
+                    placements,
+                    eliminations,
+                    sources,
+                    units,
+                    candidates,
+                    self._last_technique_name,
+                )
+            return result
+        finally:
+            self._end_single_capture()
 
-    def _step_context(self, message, board, candidates, placements):
+    def _step_context(self, board, candidates, placements):
         sources = self._last_sources
         units = self._last_units
-        if placements and message.startswith("Hidden Single:"):
+        if placements and self._last_technique_name == "Hidden Single":
+            from . import _evidence
+
             row, col, digit = placements[0]
-            unit = self._preferred_hidden_single_unit(candidates, row, col, digit)
-            units = (unit,)
-            sources = self._hidden_single_evidence(board, unit, (row, col), digit)
+            fallback_unit = self._last_units[0] if self._last_units else ()
+            sources, units = _evidence.hidden_single_evidence(
+                board,
+                candidates,
+                (row, col),
+                digit,
+                fallback_unit,
+            )
         result = (sources, units)
-        return result
-
-    def _preferred_hidden_single_unit(self, candidates, row: int, col: int, digit: int):
-        preferred = (box_cells(row, col), row_cells(row), col_cells(col))
-        result = next(
-            (
-                unit
-                for unit in preferred
-                if sum(digit in candidates[item_row][item_col] for item_row, item_col in unit) == 1
-            ),
-            self._last_units[0],
-        )
-        return result
-
-    def _hidden_single_evidence(self, board, unit, target, digit: int) -> tuple:
-        empty_others = tuple(
-            cell
-            for cell in unit
-            if cell != target and not board[cell[0]][cell[1]]
-        )
-        result = tuple(
-            cell
-            for cell in CELLS
-            if board[cell[0]][cell[1]] == digit
-            and any(related(cell, other) for other in empty_others)
-        )
         return result
 
     def _last_message(self) -> str:

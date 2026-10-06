@@ -65,9 +65,7 @@ def test_hint_recommendation_uses_all_algorithms_with_existing_note_projection()
     source = (PACKAGE / "sudoku_hints.py").read_text(encoding="utf-8")
     tree = ast.parse(source)
     functions = {
-        node.name: node
-        for node in tree.body
-        if isinstance(node, ast.FunctionDef)
+        node.name: node for node in tree.body if isinstance(node, ast.FunctionDef)
     }
     pending_args = [arg.arg for arg in functions["pending_step"].args.args]
     hint_args = [arg.arg for arg in functions["make_hint"].args.args]
@@ -75,10 +73,10 @@ def test_hint_recommendation_uses_all_algorithms_with_existing_note_projection()
     assert pending_args == ["board", "notes"]
     assert hint_args == ["board", "notes", "wrong"]
     assert "_complete_candidate_notes" not in source
-    assert "_apply_candidate_notes" in source
-    assert "notes.items()" in source
+    assert "_apply_candidate_notes" not in source
+    assert "next_hint_step" in source
     assert "auto_techniques" not in source
-    assert source.count("solver.next_step()") == 1
+    assert "solver.next_step()" not in source
     assert "make_hint(self.board, self.notes, self.wrong_cells())" in game_source
 
 
@@ -111,6 +109,21 @@ def test_project_solver_exports_step_evidence_directly():
     assert "self._last_sources" in source
     assert "self._last_units" in source
     assert "LogicStep(" in source
+
+
+def test_single_capability_and_evidence_load_only_on_demand():
+    public_source = (PACKAGE / "logic_solver" / "__init__.py").read_text(
+        encoding="utf-8"
+    )
+    project_source = (PACKAGE / "logic_solver" / "_project.py").read_text(
+        encoding="utf-8"
+    )
+    assert "\nfrom ._single import next_hint_step\n" not in public_source
+    assert "def next_hint_step" in public_source
+    assert (
+        "from . import _evidence" not in project_source.split("class ShuduSolver", 1)[0]
+    )
+    assert "from . import _evidence" in project_source
 
 
 def test_logic_solver_root_adapter_keeps_legacy_class_identity():
