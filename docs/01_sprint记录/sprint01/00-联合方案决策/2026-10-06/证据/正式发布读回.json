@@ -1,0 +1,149 @@
+{
+  "status": "artifacts_validated_pending_commit_and_status_readback",
+  "branch": "Sprint01",
+  "request_binding": "d6e6cdbe-416c-4105-a1d5-64a536c6ffea",
+  "approval_locator": "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/发布批准记录.md",
+  "joint_path": "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/联合方案决策.md",
+  "joint_version": "joint-solution-a4d73c79de3338c3",
+  "issues": [
+    {
+      "issue_id": "S1-01",
+      "canonical_path": "docs/01_sprint记录/sprint01/S1-01/S1-01_方案决策.md",
+      "summary_path": "docs/01_sprint记录/sprint01/S1-01/S1-01_方案决策总结.md",
+      "solution_version": "S1-01-solution-v1",
+      "frozen": true,
+      "approval_state": "approved",
+      "metadata_reader": "parseSolutionArtifactMetadata",
+      "metadata_readback": "pass",
+      "summary_readback": "pass",
+      "item_fields": [
+        "objective",
+        "owner_surface",
+        "allowed_scope",
+        "completion_evidence",
+        "required_behavior_checks",
+        "item_dependencies"
+      ],
+      "dependencies": [],
+      "solution_sha256": "7cb3587923873c1821404f3de6156c1085501ef58c6cfb0a38a37f9d7a1cdf6e",
+      "summary_sha256": "6f37e2a59142d49d3f366e80b6bc57d98262eeb50fe7fa51f6c5e81589e2ed68"
+    },
+    {
+      "issue_id": "S1-02",
+      "canonical_path": "docs/01_sprint记录/sprint01/S1-02/S1-02_方案决策.md",
+      "summary_path": "docs/01_sprint记录/sprint01/S1-02/S1-02_方案决策总结.md",
+      "solution_version": "S1-02-solution-v1",
+      "frozen": true,
+      "approval_state": "approved",
+      "metadata_reader": "parseSolutionArtifactMetadata",
+      "metadata_readback": "pass",
+      "summary_readback": "pass",
+      "item_fields": [
+        "objective",
+        "owner_surface",
+        "allowed_scope",
+        "completion_evidence",
+        "required_behavior_checks",
+        "item_dependencies"
+      ],
+      "dependencies": [
+        "S1-01"
+      ],
+      "solution_sha256": "f7637bf7592b637c92d290c5a562bb73448bfc86df8009cd4e520a9d7be1d824",
+      "summary_sha256": "1692df76abb57101f0d57df5c9148e61cb09c5cbc635d1a022f35d3e2fbe46e2"
+    },
+    {
+      "issue_id": "S1-03",
+      "canonical_path": "docs/01_sprint记录/sprint01/S1-03/S1-03_方案决策.md",
+      "summary_path": "docs/01_sprint记录/sprint01/S1-03/S1-03_方案决策总结.md",
+      "solution_version": "S1-03-solution-v1",
+      "frozen": true,
+      "approval_state": "approved",
+      "metadata_reader": "parseSolutionArtifactMetadata",
+      "metadata_readback": "pass",
+      "summary_readback": "pass",
+      "item_fields": [
+        "objective",
+        "owner_surface",
+        "allowed_scope",
+        "completion_evidence",
+        "required_behavior_checks",
+        "item_dependencies"
+      ],
+      "dependencies": [
+        "S1-01"
+      ],
+      "solution_sha256": "70e9ee734d7a276cc217238771cec3154649d11ab2092e40a3663c742ca958a4",
+      "summary_sha256": "4d34b74547d62ffb371a3ae57c3349bb90ff66e0a1e768e041df8643a3a84d6f"
+    },
+    {
+      "issue_id": "S1-04",
+      "canonical_path": "docs/01_sprint记录/sprint01/S1-04/S1-04_方案决策.md",
+      "summary_path": "docs/01_sprint记录/sprint01/S1-04/S1-04_方案决策总结.md",
+      "solution_version": "S1-04-solution-v1",
+      "frozen": true,
+      "approval_state": "approved",
+      "metadata_reader": "parseSolutionArtifactMetadata",
+      "metadata_readback": "pass",
+      "summary_readback": "pass",
+      "item_fields": [
+        "objective",
+        "owner_surface",
+        "allowed_scope",
+        "completion_evidence",
+        "required_behavior_checks",
+        "item_dependencies"
+      ],
+      "dependencies": [],
+      "solution_sha256": "b269949d1b8344a0159a440de9039a63f2a872a700373a250697c82fbfc6e971",
+      "summary_sha256": "fddccb25ce98240b175892e306c7adc1713b55a0edd8098f5c3b7da0371c648f"
+    }
+  ],
+  "adr_results": [
+    {
+      "adr": "ADR-002",
+      "status": "accepted",
+      "path": "docs/02_架构决策记录\\ADR-002-共享规则内核与求解器公共接口.md",
+      "approval_validation": "pass",
+      "result_sha256": "76794042f4b52a8ae79e055c4ab8bac7b64ee17c5c60668c274a0670bc92ab42"
+    },
+    {
+      "adr": "ADR-003",
+      "status": "accepted",
+      "path": "docs/02_架构决策记录\\ADR-003-Numba位掩码逻辑核心.md",
+      "approval_validation": "pass",
+      "result_sha256": "3aa98863b98ca0e29fa93dc2ea1ff64ad3d454677ad684022aba8562abbd9aa8"
+    },
+    {
+      "adr": "ADR-005",
+      "status": "accepted",
+      "path": "docs/02_架构决策记录\\ADR-005-本地自动算法偏好与完成动画.md",
+      "approval_validation": "pass",
+      "result_sha256": "d3ba76360bfcb26272a556790fbafd8531c0b8ee949072e3381e3a215c753356"
+    }
+  ],
+  "registration": {
+    "runtime_status": "blocked",
+    "runtime_error": {
+      "code": "ISSUE_REGISTER_DOMAIN_FAILURE",
+      "message": "relation_issue_id_invalid"
+    },
+    "allocation_source": "Issue Register actual state and committed requirement files",
+    "tracker_commit": "ca8d33b610bd706d623f9709f3b747b745247800",
+    "missing_paths_commit": "3edfe857aee676537f7dc48c985f30fad89bd000",
+    "actual_expected_paths": [
+      "docs/00_待办列表/Sprint待办列表/Sprint01.md",
+      "docs/01_Sprint记录/Sprint01/S1-01/S1-01_原始需求.md",
+      "docs/01_Sprint记录/Sprint01/S1-02/S1-02_原始需求.md",
+      "docs/01_Sprint记录/Sprint01/S1-03/S1-03_原始需求.md",
+      "docs/01_Sprint记录/Sprint01/S1-04/S1-04_原始需求.md",
+      "docs/01_Sprint记录/Sprint01/S1-01/S1-01_关联关系.md",
+      "docs/01_Sprint记录/Sprint01/S1-02/S1-02_关联关系.md",
+      "docs/01_Sprint记录/Sprint01/S1-03/S1-03_关联关系.md"
+    ]
+  },
+  "legacy_open_count": 5,
+  "implementation_test_status": "not_run_in_publication",
+  "original_full_pytest_status": "237 passed / 1 error in each of two runs; preserved",
+  "production_mutation_count": 0
+}

@@ -1,59 +1,31 @@
-# ADR-003 Numba 位掩码逻辑核心
+# ADR-003: Numba位掩码核心与按需差分
 
-## 状态
+## 状态与来源
 
-已接受 — 2026-10-06 更新
+已接受 — 2026-10-06修订。用户已确认完整联合方案并授权发布；批准见[发布批准](../01_sprint记录/sprint01/00-联合方案决策/2026-10-06/发布批准记录.md)。本ADR描述已批准目标，代码迁移及运行验证由承接Issue后续执行。共同规格见[联合方案](../01_sprint记录/sprint01/00-联合方案决策/2026-10-06/联合方案决策.md)。
 
 ## 背景
 
-此前回溯搜索已经由 `numba.njit` 加速，但人类逻辑技巧仍以 Python `set`、列表推导和 `combinations` 在解释器中执行。随着 GUI 提示、`shudu_solver.py` 和命令行逻辑求解器共用这些技巧，继续保留两套候选表示会产生性能和规则漂移风险。
-
-核心逻辑技巧包括：
-
-- Hidden Single
-- Naked Single
-- Naked Pair
-- Hidden Pair
-- Naked Triple
-- Hidden Triple
-- Pointing Pair
-- Box-Line Reduction
-- X-Wing
-- XY-Wing
+十种技巧和候选传播已经进入Numba nopython，`_masks`是唯一热路径状态。当前自动每次尝试技巧前从掩码转为81格Python set，再冻结候选；失败尝试也付出转换。重组能力时应继续用已有表示计算实际差异，而不是扩大快照或提示事实产生范围。
 
 ## 决策
 
-新增 `sudoku_njit_core.py`，将正式大数字推导出的候选统一编码为 1–9 的整数位掩码，并用 `@numba.njit(cache=True)` 实现基础候选计算、落子传播以及上述十种模式搜索。
+1. `shudu/sudoku_njit_core.py`原位保留基础候选、传播与全部十种finder；Hidden Triple保持Naked Triple之后、现有判定及默认不勾选。
+2. 共享Python编排位于`shudu/logic_solver/_engine.py`，项目优先级及兼容方法位于`_project.py`；公共入口遵循ADR-002。
+3. 候选热状态继续是9×9 int64位掩码；Python集合只在当前确实请求的结果、兼容读出、日志和Hint快照位置生成。
+4. 自动一轮尝试开始时最多复制一份mask；首个成功技巧后由`_diff.py`的`@njit(cache=True)` helper扫描81格及数字位得到真实删除，包括落子传播。失败技巧之间不物化Python候选网格。
+5. 固定点只扫描显式已选集合，成功后回到最高优先级；收集本轮首次出现的真实删除，最终完整notes仅在生产自动结果路径生成一次。元数据兼容方法继续只返回原来需要的结果。
+6. 项目Hidden Single→Naked Single、legacy Naked Single→Hidden Single维持；共享finder代码与调用次数不增加。
+7. 单步证据采集只在next_step动态期启用，自动与legacy路径不为统一返回而创建完整LogicStep或单步候选快照。
+8. rules.candidate_grid继续复用同一基础位掩码计算；自动关闭的基础笔记、Hint的现有notes投影和回溯fallback各沿原能力范围执行。
+9. 新数值差分优先njit，NumPy承担既有数组组织；文案和资源操作仍在Python。当前业务不引入DataFrame计算。
 
-Hidden Triple 按单位枚举三个数字，仅当三个数字均存在候选、候选位置的并集恰为三个空格且存在额外候选时，保留这三格中的三个数字。它在 Naked Triple 之后检查，由共享 solver 直接产出三格来源、所属单位、候选快照与真实删除；Hint 沿用 ADR-002 的现有笔记投影和只读单步 Interface。自动求解目录提供 `hidden_triple` 独立选项，默认不勾选。
+## 取舍与影响
 
-新增 `sudoku_logic.py` 作为共享 Python orchestration 层：
+以整数差分替代原自动Python集合差分，业务输入范围相同。新的helper按自动成功场景请求调用，不在公共入口预编译；首次实际调用仍有Numba编译成本，因此本草案不承诺耗时加速百分比。保留cache=True的已有本地复用机制。
 
-- `_masks: np.ndarray[int64]` 是算法候选的唯一热路径状态；
-- Python `set` 候选只在兼容接口、日志和 GUI 提示边界临时生成；
-- `LogicSolver` 与 `ShuduSolver` 都复用同一 Numba 核心；
-- `LogicSolver` 保留旧的 Naked Single → Hidden Single 优先级；
-- `ShuduSolver` 保留项目要求的 Hidden Single → Naked Single 优先级；
-- 回溯 fallback 继续复用已存在的 njit 回溯实现。
+固定点完整结果和Hint一步事实分开，使结果收敛不制造额外全量投影。候选所有权、内核和编排各有唯一真源，控制流仍是当前同步9×9逻辑。
 
-`sudoku_rules.candidate_grid()` 也改为复用同一候选位掩码内核，因此 GUI 的自动笔记与逻辑求解器不会维护两套基础候选算法。
+## 验证与生效
 
-## 影响
-
-### 正面
-
-- 所有产品核心逻辑模式搜索进入 Numba nopython 路径；
-- 81 格候选状态由 Python set 网格收敛为紧凑整数矩阵；
-- GUI、提示、`logical_solver.py`、`shudu_solver.py` 共用同一基础候选定义；
-- 旧公开接口仍可读取 `cands`，避免已有测试和调用方一次性迁移；
-- `cache=True` 允许后续进程复用已编译内核。
-
-### 代价
-
-- 首次运行仍有 Numba JIT 编译成本；
-- 日志字符串和 GUI 结构化结果保留在 Python 层，因为这些并非计算热点，也不适合放入 nopython 内核；
-- `cands` 属性现在返回快照，调用方不应通过修改该快照来改变 solver 内部状态。
-
-## 验证
-
-`tests/test_njit_core.py` 会主动调用全部十种核心 finder，并断言每个 dispatcher 都产生 `nopython_signatures`。完整回归在 Python 3.12 环境执行；GUI 测试在需要时使用 Tk + Xvfb。
+全部十种finder和新差分必须有实际nopython签名；差分保留原真实删除/次序保障；项目与legacy顺序、只选集合、失败尝试零Python候选转换、metadata零最终notes与单步采集均由本票实际回归证明。正式修订待用户完整批准及HOST readback；当前只保存草案。

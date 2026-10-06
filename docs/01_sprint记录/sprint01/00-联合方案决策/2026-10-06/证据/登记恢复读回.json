@@ -1,0 +1,86 @@
+{
+  "recovery": {
+    "requestBinding": "d6e6cdbe-416c-4105-a1d5-64a536c6ffea",
+    "operationIdentity": "issue-publication:d6e6cdbe-416c-4105-a1d5-64a536c6ffea:88db254528f00a297c41989104be5397e087818cb688b1e8a05e19ff2812e216",
+    "allocations": [
+      {
+        "draftKey": "A01",
+        "issueId": "S1-01",
+        "requirementPath": "docs/01_Sprint记录/Sprint01/S1-01/S1-01_原始需求.md",
+        "dependencies": []
+      },
+      {
+        "draftKey": "A02",
+        "issueId": "S1-02",
+        "requirementPath": "docs/01_Sprint记录/Sprint01/S1-02/S1-02_原始需求.md",
+        "dependencies": [
+          "S1-01"
+        ]
+      },
+      {
+        "draftKey": "A03",
+        "issueId": "S1-03",
+        "requirementPath": "docs/01_Sprint记录/Sprint01/S1-03/S1-03_原始需求.md",
+        "dependencies": [
+          "S1-01"
+        ]
+      },
+      {
+        "draftKey": "A04",
+        "issueId": "S1-04",
+        "requirementPath": "docs/01_Sprint记录/Sprint01/S1-04/S1-04_原始需求.md",
+        "dependencies": []
+      }
+    ],
+    "requirementVersions": {
+      "S1-01": "S1-01-requirement-v1",
+      "S1-02": "S1-02-requirement-v1",
+      "S1-03": "S1-03-requirement-v1",
+      "S1-04": "S1-04-requirement-v1"
+    },
+    "expected_commit_paths": [
+      "docs/00_待办列表/Sprint待办列表/Sprint01.md",
+      "docs/01_Sprint记录/Sprint01/S1-01/S1-01_原始需求.md",
+      "docs/01_Sprint记录/Sprint01/S1-02/S1-02_原始需求.md",
+      "docs/01_Sprint记录/Sprint01/S1-03/S1-03_原始需求.md",
+      "docs/01_Sprint记录/Sprint01/S1-04/S1-04_原始需求.md",
+      "docs/01_Sprint记录/Sprint01/S1-01/S1-01_关联关系.md",
+      "docs/01_Sprint记录/Sprint01/S1-02/S1-02_关联关系.md",
+      "docs/01_Sprint记录/Sprint01/S1-03/S1-03_关联关系.md"
+    ],
+    "runtime_status": "blocked",
+    "runtime_error": {
+      "code": "ISSUE_REGISTER_DOMAIN_FAILURE",
+      "message": "relation_issue_id_invalid"
+    },
+    "semantic_recovery": "reuse allocated IDs and verified requirement/tracker effects; persist symmetric relations and exact Git readback"
+  },
+  "commit_observation": {
+    "runtime_outcome": "completed",
+    "actual_commit": "ca8d33b610bd706d623f9709f3b747b745247800",
+    "actual_committed_paths": [
+      "docs/00_待办列表/Sprint待办列表/Sprint01.md"
+    ],
+    "expected_paths": [
+      "docs/00_待办列表/Sprint待办列表/Sprint01.md",
+      "docs/01_Sprint记录/Sprint01/S1-01/S1-01_原始需求.md",
+      "docs/01_Sprint记录/Sprint01/S1-02/S1-02_原始需求.md",
+      "docs/01_Sprint记录/Sprint01/S1-03/S1-03_原始需求.md",
+      "docs/01_Sprint记录/Sprint01/S1-04/S1-04_原始需求.md",
+      "docs/01_Sprint记录/Sprint01/S1-01/S1-01_关联关系.md",
+      "docs/01_Sprint记录/Sprint01/S1-02/S1-02_关联关系.md",
+      "docs/01_Sprint记录/Sprint01/S1-03/S1-03_关联关系.md"
+    ],
+    "missing_from_commit": [
+      "docs/01_Sprint记录/Sprint01/S1-01/S1-01_原始需求.md",
+      "docs/01_Sprint记录/Sprint01/S1-02/S1-02_原始需求.md",
+      "docs/01_Sprint记录/Sprint01/S1-03/S1-03_原始需求.md",
+      "docs/01_Sprint记录/Sprint01/S1-04/S1-04_原始需求.md",
+      "docs/01_Sprint记录/Sprint01/S1-01/S1-01_关联关系.md",
+      "docs/01_Sprint记录/Sprint01/S1-02/S1-02_关联关系.md",
+      "docs/01_Sprint记录/Sprint01/S1-03/S1-03_关联关系.md"
+    ],
+    "recovery": "preserve actual tracker commit; commit exact missing requirements and relations without rewriting history"
+  },
+  "completed_requirement_relation_commit": "3edfe857aee676537f7dc48c985f30fad89bd000"
+}

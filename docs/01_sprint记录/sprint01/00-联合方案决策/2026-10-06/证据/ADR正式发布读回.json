@@ -1,0 +1,131 @@
+[
+  {
+    "request": {
+      "source_issue": "DIRECT-SHUDU-20261006-A01",
+      "source_stage": "solution-decision",
+      "design_doc": "D:/Tony/Documents/invest2026/projects/shudu/docs/01_sprint记录/sprint01/S1-01/S1-01_方案决策.md",
+      "phase": "approval_final",
+      "action": "revise",
+      "target_adr": "ADR-002",
+      "target_scope": "project",
+      "rationale": "用户确认完整方案并明确授权发布，接受本已批准ADR修订。",
+      "executor": "architecture-design",
+      "request_id": "0ad860b251dd442e4ee6890ce872558b176b1163810d9e0dbfef7ee7afa6c31f",
+      "issue_dir": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\docs\\01_Sprint记录\\sprint01\\00-联合方案决策\\2026-10-06\\01-原子Issue草案\\A01-求解模块目录迁移",
+      "draft_path": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\docs\\01_Sprint记录\\sprint01\\00-联合方案决策\\2026-10-06\\01-原子Issue草案\\A01-求解模块目录迁移\\DIRECT-SHUDU-20261006-A01_ADR草案_共享规则内核与能力级求解接口.md",
+      "approval_locator": "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/发布批准记录.md"
+    },
+    "status": "accepted",
+    "resulting_adr": "ADR-002",
+    "draft_locator": "D:/Tony/Documents/invest2026/projects/shudu/docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/01-原子Issue草案/A01-求解模块目录迁移/DIRECT-SHUDU-20261006-A01_ADR草案_共享规则内核与能力级求解接口.md",
+    "owner": "architecture-design",
+    "completed_at": "2026-10-06T10:51:59.843Z",
+    "target_path": "docs/02_架构决策记录\\ADR-002-共享规则内核与求解器公共接口.md",
+    "baseline_sha256": "f680f5707137fb031b2866f8336e75a16f78861971acea0db22da19049f22efa",
+    "reused_existing_effect": true,
+    "result_sha256": "76794042f4b52a8ae79e055c4ab8bac7b64ee17c5c60668c274a0670bc92ab42",
+    "approval_validation": {
+      "outcome": "pass",
+      "operation": "verify-adr-mutation",
+      "validation": {
+        "outcome": "pass",
+        "mismatches": []
+      }
+    },
+    "approval_binding": {
+      "targetAdr": "ADR-002",
+      "lifecycleAction": "revise",
+      "baselineAdrVersion": "f680f5707137fb031b2866f8336e75a16f78861971acea0db22da19049f22efa",
+      "deltaFingerprint": "d2712ed6a6ee8b9be09c118cd7ca3dd586769150030f7b78ff77bf2246531305",
+      "approvedSolutionVersion": "S1-01-solution-v1",
+      "approvalLocator": "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/发布批准记录.md"
+    },
+    "hash_observation": "working_tree_after_auto_commit_text_normalization"
+  },
+  {
+    "request": {
+      "source_issue": "DIRECT-SHUDU-20261006-A03",
+      "source_stage": "solution-decision",
+      "design_doc": "D:/Tony/Documents/invest2026/projects/shudu/docs/01_sprint记录/sprint01/S1-03/S1-03_方案决策.md",
+      "phase": "approval_final",
+      "action": "revise",
+      "target_adr": "ADR-003",
+      "target_scope": "project",
+      "rationale": "用户确认完整方案并明确授权发布，接受本已批准ADR修订。",
+      "executor": "architecture-design",
+      "request_id": "682eb2d061280732d27e41a4dee76b84ee80f45ef4f63991d6d1cf64e279c470",
+      "issue_dir": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\docs\\01_Sprint记录\\sprint01\\00-联合方案决策\\2026-10-06\\01-原子Issue草案\\A03-自动结果能力",
+      "draft_path": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\docs\\01_Sprint记录\\sprint01\\00-联合方案决策\\2026-10-06\\01-原子Issue草案\\A03-自动结果能力\\DIRECT-SHUDU-20261006-A03_ADR草案_Numba位掩码核心与按需差分.md",
+      "approval_locator": "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/发布批准记录.md"
+    },
+    "status": "accepted",
+    "resulting_adr": "ADR-003",
+    "draft_locator": "D:/Tony/Documents/invest2026/projects/shudu/docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/01-原子Issue草案/A03-自动结果能力/DIRECT-SHUDU-20261006-A03_ADR草案_Numba位掩码核心与按需差分.md",
+    "owner": "architecture-design",
+    "completed_at": "2026-10-06T10:51:59.847Z",
+    "target_path": "docs/02_架构决策记录\\ADR-003-Numba位掩码逻辑核心.md",
+    "baseline_sha256": "b58b648faf20aafaf81c2b2e64d6fd98dae9a2fd29b4e6bbbe7f0c7d828c2dee",
+    "reused_existing_effect": true,
+    "result_sha256": "3aa98863b98ca0e29fa93dc2ea1ff64ad3d454677ad684022aba8562abbd9aa8",
+    "approval_validation": {
+      "outcome": "pass",
+      "operation": "verify-adr-mutation",
+      "validation": {
+        "outcome": "pass",
+        "mismatches": []
+      }
+    },
+    "approval_binding": {
+      "targetAdr": "ADR-003",
+      "lifecycleAction": "revise",
+      "baselineAdrVersion": "b58b648faf20aafaf81c2b2e64d6fd98dae9a2fd29b4e6bbbe7f0c7d828c2dee",
+      "deltaFingerprint": "822702fc16e7d7478696251b57b6179946146b29f1b64bce1c07894cca6009c4",
+      "approvedSolutionVersion": "S1-03-solution-v1",
+      "approvalLocator": "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/发布批准记录.md"
+    },
+    "hash_observation": "working_tree_after_auto_commit_text_normalization"
+  },
+  {
+    "request": {
+      "source_issue": "DIRECT-SHUDU-20261006-A04",
+      "source_stage": "solution-decision",
+      "design_doc": "D:/Tony/Documents/invest2026/projects/shudu/docs/01_sprint记录/sprint01/S1-04/S1-04_方案决策.md",
+      "phase": "approval_final",
+      "action": "revise",
+      "target_adr": "ADR-005",
+      "target_scope": "project",
+      "rationale": "用户确认完整方案并明确授权发布，接受本已批准ADR修订。",
+      "executor": "architecture-design",
+      "request_id": "ac10539cf5a631469a9179b63072502bb736dced592f9163441189e08ace2113",
+      "issue_dir": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\docs\\01_Sprint记录\\sprint01\\00-联合方案决策\\2026-10-06\\01-原子Issue草案\\A04-设置菜单能力",
+      "draft_path": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\docs\\01_Sprint记录\\sprint01\\00-联合方案决策\\2026-10-06\\01-原子Issue草案\\A04-设置菜单能力\\DIRECT-SHUDU-20261006-A04_ADR草案_自动偏好与设置菜单的能力执行面.md",
+      "approval_locator": "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/发布批准记录.md"
+    },
+    "status": "accepted",
+    "resulting_adr": "ADR-005",
+    "draft_locator": "D:/Tony/Documents/invest2026/projects/shudu/docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/01-原子Issue草案/A04-设置菜单能力/DIRECT-SHUDU-20261006-A04_ADR草案_自动偏好与设置菜单的能力执行面.md",
+    "owner": "architecture-design",
+    "completed_at": "2026-10-06T10:51:59.849Z",
+    "target_path": "docs/02_架构决策记录\\ADR-005-本地自动算法偏好与完成动画.md",
+    "baseline_sha256": "bd22149077636f102e4c5697461db985d9556df0fa144dbe3e06c4678eff2b5c",
+    "reused_existing_effect": true,
+    "result_sha256": "d3ba76360bfcb26272a556790fbafd8531c0b8ee949072e3381e3a215c753356",
+    "approval_validation": {
+      "outcome": "pass",
+      "operation": "verify-adr-mutation",
+      "validation": {
+        "outcome": "pass",
+        "mismatches": []
+      }
+    },
+    "approval_binding": {
+      "targetAdr": "ADR-005",
+      "lifecycleAction": "revise",
+      "baselineAdrVersion": "bd22149077636f102e4c5697461db985d9556df0fa144dbe3e06c4678eff2b5c",
+      "deltaFingerprint": "2cfd650e559e79d90566c215b59b4350b2412d189d332f39bdeda1077a34033d",
+      "approvedSolutionVersion": "S1-04-solution-v1",
+      "approvalLocator": "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/发布批准记录.md"
+    },
+    "hash_observation": "working_tree_after_auto_commit_text_normalization"
+  }
+]

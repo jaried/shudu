@@ -1,0 +1,138 @@
+{
+  "operation": "canonical_publication_commit",
+  "runtime_status": "error",
+  "runtime_reason": "invalid_snapshot",
+  "observed_head": "3edfe857aee676537f7dc48c985f30fad89bd000",
+  "observed_branch": "Sprint01",
+  "candidate_files": [
+    "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/发布批准记录.md",
+    "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/正式来源关系.md",
+    "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/联合方案决策.md",
+    "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/证据/ADR正式发布读回.json",
+    "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/证据/发布结构检查.json",
+    "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/证据/正式发布读回.json",
+    "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/证据/登记恢复读回.json",
+    "docs/01_sprint记录/sprint01/S1-01/S1-01_关联关系.md",
+    "docs/01_sprint记录/sprint01/S1-01/S1-01_方案决策.md",
+    "docs/01_sprint记录/sprint01/S1-01/S1-01_方案决策总结.md",
+    "docs/01_sprint记录/sprint01/S1-01/S1-01_遗留问题.md",
+    "docs/01_sprint记录/sprint01/S1-02/S1-02_关联关系.md",
+    "docs/01_sprint记录/sprint01/S1-02/S1-02_方案决策.md",
+    "docs/01_sprint记录/sprint01/S1-02/S1-02_方案决策总结.md",
+    "docs/01_sprint记录/sprint01/S1-03/S1-03_关联关系.md",
+    "docs/01_sprint记录/sprint01/S1-03/S1-03_方案决策.md",
+    "docs/01_sprint记录/sprint01/S1-03/S1-03_方案决策总结.md",
+    "docs/01_sprint记录/sprint01/S1-04/S1-04_关联关系.md",
+    "docs/01_sprint记录/sprint01/S1-04/S1-04_方案决策.md",
+    "docs/01_sprint记录/sprint01/S1-04/S1-04_方案决策总结.md",
+    "docs/01_sprint记录/sprint01/S1-04/S1-04_遗留问题.md",
+    "docs/02_架构决策记录/ADR-002-共享规则内核与求解器公共接口.md",
+    "docs/02_架构决策记录/ADR-003-Numba位掩码逻辑核心.md",
+    "docs/02_架构决策记录/ADR-005-本地自动算法偏好与完成动画.md",
+    "docs/02_架构决策记录/README.md"
+  ],
+  "candidate_tree": "80b4c0d986e3c0cdea61ab653c1ca6676573a839",
+  "expected_files": [
+    "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/发布批准记录.md",
+    "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/正式来源关系.md",
+    "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/联合方案决策.md",
+    "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/证据/ADR正式发布读回.json",
+    "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/证据/发布结构检查.json",
+    "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/证据/正式发布读回.json",
+    "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/证据/登记恢复读回.json",
+    "docs/01_sprint记录/sprint01/S1-01/S1-01_关联关系.md",
+    "docs/01_sprint记录/sprint01/S1-01/S1-01_方案决策.md",
+    "docs/01_sprint记录/sprint01/S1-01/S1-01_方案决策总结.md",
+    "docs/01_sprint记录/sprint01/S1-01/S1-01_遗留问题.md",
+    "docs/01_sprint记录/sprint01/S1-02/S1-02_关联关系.md",
+    "docs/01_sprint记录/sprint01/S1-02/S1-02_方案决策.md",
+    "docs/01_sprint记录/sprint01/S1-02/S1-02_方案决策总结.md",
+    "docs/01_sprint记录/sprint01/S1-03/S1-03_关联关系.md",
+    "docs/01_sprint记录/sprint01/S1-03/S1-03_方案决策.md",
+    "docs/01_sprint记录/sprint01/S1-03/S1-03_方案决策总结.md",
+    "docs/01_sprint记录/sprint01/S1-04/S1-04_关联关系.md",
+    "docs/01_sprint记录/sprint01/S1-04/S1-04_方案决策.md",
+    "docs/01_sprint记录/sprint01/S1-04/S1-04_方案决策总结.md",
+    "docs/01_sprint记录/sprint01/S1-04/S1-04_遗留问题.md",
+    "docs/02_架构决策记录/ADR-002-共享规则内核与求解器公共接口.md",
+    "docs/02_架构决策记录/ADR-003-Numba位掩码逻辑核心.md",
+    "docs/02_架构决策记录/ADR-005-本地自动算法偏好与完成动画.md",
+    "docs/02_架构决策记录/README.md"
+  ],
+  "case_aliases": [
+    {
+      "requested": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-06/发布批准记录.md",
+      "candidate": "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/发布批准记录.md"
+    },
+    {
+      "requested": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-06/正式来源关系.md",
+      "candidate": "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/正式来源关系.md"
+    },
+    {
+      "requested": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-06/联合方案决策.md",
+      "candidate": "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/联合方案决策.md"
+    },
+    {
+      "requested": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-06/证据/ADR正式发布读回.json",
+      "candidate": "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/证据/ADR正式发布读回.json"
+    },
+    {
+      "requested": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-06/证据/发布结构检查.json",
+      "candidate": "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/证据/发布结构检查.json"
+    },
+    {
+      "requested": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-06/证据/正式发布读回.json",
+      "candidate": "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/证据/正式发布读回.json"
+    },
+    {
+      "requested": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-06/证据/登记恢复读回.json",
+      "candidate": "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/证据/登记恢复读回.json"
+    },
+    {
+      "requested": "docs/01_Sprint记录/sprint01/S1-01/S1-01_方案决策.md",
+      "candidate": "docs/01_sprint记录/sprint01/S1-01/S1-01_方案决策.md"
+    },
+    {
+      "requested": "docs/01_Sprint记录/sprint01/S1-01/S1-01_方案决策总结.md",
+      "candidate": "docs/01_sprint记录/sprint01/S1-01/S1-01_方案决策总结.md"
+    },
+    {
+      "requested": "docs/01_Sprint记录/sprint01/S1-01/S1-01_遗留问题.md",
+      "candidate": "docs/01_sprint记录/sprint01/S1-01/S1-01_遗留问题.md"
+    },
+    {
+      "requested": "docs/01_Sprint记录/sprint01/S1-02/S1-02_方案决策.md",
+      "candidate": "docs/01_sprint记录/sprint01/S1-02/S1-02_方案决策.md"
+    },
+    {
+      "requested": "docs/01_Sprint记录/sprint01/S1-02/S1-02_方案决策总结.md",
+      "candidate": "docs/01_sprint记录/sprint01/S1-02/S1-02_方案决策总结.md"
+    },
+    {
+      "requested": "docs/01_Sprint记录/sprint01/S1-03/S1-03_方案决策.md",
+      "candidate": "docs/01_sprint记录/sprint01/S1-03/S1-03_方案决策.md"
+    },
+    {
+      "requested": "docs/01_Sprint记录/sprint01/S1-03/S1-03_方案决策总结.md",
+      "candidate": "docs/01_sprint记录/sprint01/S1-03/S1-03_方案决策总结.md"
+    },
+    {
+      "requested": "docs/01_Sprint记录/sprint01/S1-04/S1-04_关联关系.md",
+      "candidate": "docs/01_sprint记录/sprint01/S1-04/S1-04_关联关系.md"
+    },
+    {
+      "requested": "docs/01_Sprint记录/sprint01/S1-04/S1-04_方案决策.md",
+      "candidate": "docs/01_sprint记录/sprint01/S1-04/S1-04_方案决策.md"
+    },
+    {
+      "requested": "docs/01_Sprint记录/sprint01/S1-04/S1-04_方案决策总结.md",
+      "candidate": "docs/01_sprint记录/sprint01/S1-04/S1-04_方案决策总结.md"
+    },
+    {
+      "requested": "docs/01_Sprint记录/sprint01/S1-04/S1-04_遗留问题.md",
+      "candidate": "docs/01_sprint记录/sprint01/S1-04/S1-04_遗留问题.md"
+    }
+  ],
+  "authorized_recovery": "exact Git add/commit/readback of the same approved file set; preserve existing commits",
+  "global_runtime_mutations": 0
+}
