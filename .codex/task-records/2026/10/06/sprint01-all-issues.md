@@ -7,8 +7,9 @@
 调度：所有ready动作及时派发；DAG foreground只读每30秒检查，阶段完成事件即时续派；Leader健康检查300秒。关键路径Top3及依赖满足的未合并尖端更新最久Top3用于重点关注，其余正常调度。
 Runtime恢复：保留真实错误、已有副作用和Legacy，按原合同语义执行到阶段完成；共享Skills/Runtime源码保持原状。
 测试：所需门禁逐票真实通过；最小固定输入；位置/实现断言随Issue迁移且绑定ADR与本票方案设计；失败按批准保障定位、修复、真实复跑。
-实际基线：两次全量237passed/1Tksetup error，隔离1pass仍保留全量失败；S1-04承接真实门禁修复。
-已派发：/root/s1_01_worker、/root/s1_04_worker，当前solution-design；02/03等待01设计里程碑。
+历史基线：两次完整237passed/1Tksetup error；04已真实定位资源缺失并修复，合并后完整门禁：247 passed in 16.73s，exit=0。原失败记录与关闭证据均保留。
+当前实际状态：S1-01=待验收；S1-04=待验收；S1-03=实施中；S1-02=实施中。02/03沿既有两个依赖并行实施，01/04正式交付与后置cleanup已readback。
+当前Sprint tip：c4bfd4655ab15e2797839d522974ee1985ef193a；状态读取时间：2026-10-06T12:33:59.536Z
 远端事实：origin git@github.com:jaried/shudu.git 当前读取退出1，Permission denied(publickey)，本地阶段继续，RemoteSync未验证。
 原生Goal事实：get_goal返回null；公开cycle返回native_goal_context_required/ensure，现有公开DAG及HOST工具执行同授权阶段合同。
 完成判据：四票required检查、独立评审、真实sourceTip进入Sprint、tracker均待验收及Git/readback；用户验收后续由acceptance owner完成。

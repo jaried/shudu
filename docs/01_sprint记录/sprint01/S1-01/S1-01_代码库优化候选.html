@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="source-sprint-tip" content="9853bdc099c16af8729c2224acc6a03db4010385">
+<meta name="candidate-count" content="0">
+<title>S1-01 代码库优化候选 · 求解 Module 迁移后的架构扫描</title>
+<style>:root{color-scheme:light;--ink:#18243a;--muted:#637186;--line:#dce3ed;--accent:#256b64;--bg:#f4f7fa}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:"Segoe UI","Microsoft YaHei",sans-serif;font-size:15px;line-height:1.75}main{max-width:1080px;margin:0 auto;padding:48px 30px 64px}header{display:flex;align-items:center;justify-content:space-between;gap:24px;margin-bottom:30px}.eyebrow{font-size:12px;letter-spacing:.15em;color:var(--muted)}h1{margin:3px 0 8px;font-size:32px;line-height:1.3}h2{font-size:21px;margin:0 0 16px}h3{font-size:16px;margin:0 0 10px}p{margin:10px 0}.badge{background:#e3f0e8;color:#246045;padding:13px 22px;border:1px solid #bfd8c9;border-radius:18px;white-space:nowrap;font-weight:700}.badge strong{font-size:28px;margin-right:7px}.card{background:white;border:1px solid var(--line);border-radius:18px;padding:25px;margin:22px 0;box-shadow:0 6px 24px #16243a04}.meta{display:grid;grid-template-columns:120px 1fr;gap:8px;font-size:13px;color:var(--muted)}code{font-family:Consolas,"Courier New",monospace;font-size:.9em;overflow-wrap:anywhere;color:#405674}.compare{display:grid;grid-template-columns:1fr 1fr;gap:28px}.flow{display:grid;gap:10px}.box{padding:14px 16px;border:1px solid var(--line);border-radius:10px;text-align:center;background:#f8fafc}.deep{border:2px solid #256b64;background:#edf7f3}.arrow{text-align:center;color:#729088;line-height:1.1;font-size:23px}.small{color:var(--muted);font-size:13px}.caption{font-size:13px;color:var(--muted);margin:10px 0}.row{display:grid;grid-template-columns:150px 1fr;gap:15px;border-top:1px solid var(--line);padding:13px 0}.row:first-of-type{border-top:0}.row strong{font-size:14px}ul{margin:0;padding-left:22px}li{margin:7px 0}.callout{border-left:4px solid var(--accent);padding:10px 16px;background:#eef6f3}.footer{border-top:1px solid var(--line);padding-top:19px;margin-top:32px;color:var(--muted);font-size:13px}a{color:#256b64} @media(max-width:700px){main{padding:28px 16px}header{align-items:flex-start;flex-direction:column}h1{font-size:27px}.compare{grid-template-columns:1fr}.row{grid-template-columns:1fr;gap:4px}.meta{grid-template-columns:1fr}.card{padding:19px}}</style>
+</head>
+<body><main>
+<header><div><div class="eyebrow">SHUDU · 2026-10-06 · S1-01</div><h1>求解 Module 迁移后的架构扫描</h1><p>实现知识归入一个目录，根入口继续承接实际 CLI 与兼容导入。</p></div><div class="badge"><strong>0</strong>新增候选</div></header>
+<div class="meta"><span>扫描 Sprint tip</span><code>9853bdc099c16af8729c2224acc6a03db4010385</code><span>扫描范围</span><span>本票交付后的实际代码、直接依赖与相应验证证据</span></div>
+
+<section class="card"><h2>交付前后：实现知识的归属</h2><div class="compare">
+<div><h3>交付前</h3><div class="flow"><div class="box">根项目求解入口<br><span class="small">项目技巧、一步事实、CLI</span></div><div class="arrow">↓</div><div class="box">共享逻辑实现 / 步骤结果<br><span class="small">实现与可执行入口分散</span></div></div></div>
+<div><h3>交付后</h3><div class="flow"><div class="box">Game / Hint / 根 CLI adapter</div><div class="arrow">↓ 同一公开 interface</div><div class="box deep"><strong>shudu/logic_solver Module</strong><br><span class="small">__init__ 公开入口<br>engine · project · results 内部知识</span></div></div></div>
+</div><p class="caption">图示为已经交付的目录迁移。单步事实与自动结果继续由已批准 S1-02 / S1-03 承接。</p></section>
+<section class="card"><h2>为什么保持当前分工</h2>
+<div class="row"><strong>Depth 与 locality</strong><span>候选、技巧、项目顺序和结果留在 Module；直接调用方从公开入口导入，维护者在同一目录追踪知识。</span></div>
+<div class="row"><strong>Seam 与 adapter</strong><span>根项目 CLI 和 legacy 入口各有真实消费者，兼容类身份和不同 Single 顺序保持。</span></div>
+<div class="row"><strong>Deletion test</strong><span>删除根 adapter 会分散启动与兼容知识；只合并内部文件不能证明提高 depth。现有 interface 继续提供 leverage。</span></div>
+<div class="row"><strong>已批准工作</strong><span>S1-02 / S1-03 继续收紧单步事实和自动完整结果。这些工作保持既有分工，不形成重复候选。</span></div>
+</section>
+<section class="card"><h2>执行面与证据</h2>
+<ul><li>导入公开入口不创建 solver、不执行技巧或能力预热。</li><li>Hint 按现有 notes 投影后请求一次 next_step；自动求解通过 Game 门禁后执行所选技巧到固定点。</li><li>_masks 与 Numba finder 保持现有算法归属，回溯沿完整 CLI 原路径。</li><li>ADR-002 第 13–22 行与第 26–28 行明确 Module、能力和兼容分工。</li><li><code>tests/test_architecture.py:116–138</code> 验证根 adapter 身份与迁移文件；<code>tests/test_njit_core.py:47–56</code> 验证共享核心与两种顺序。</li></ul>
+<p class="callout">已保存 required 回归：<strong>88 passed in 0.50s</strong>。被测 tip：<code>bf5a1340ae16212b6834a247b006e65e54a5c413</code>。它与扫描 tip 的 Python 源码、测试和依赖声明提交差异为空。</p>
+</section><section class="card"><h2>扫描结论</h2><p>新增候选 <strong>0</strong>。迁移部分保持现有 module、interface、seam 与 adapter；继续推进已批准的能力收紧工作。</p></section>
+<div class="footer">本轮核对源码、提交差异和已保存交付测试证据；没有另行运行测试。<br>Markdown 保留候选记录，当前列表为空；此页保存本次扫描快照。<br><a href="S1-01_代码库优化候选.md">查看 Markdown 报告</a> · <a href="S1-01_测试报告.md">查看测试报告</a></div>
+</main></body></html>

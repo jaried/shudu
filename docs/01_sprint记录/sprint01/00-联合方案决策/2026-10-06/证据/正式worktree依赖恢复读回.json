@@ -1,0 +1,80 @@
+{
+  "source_scope": "D:\\Tony\\Documents\\invest2026\\projects\\shudu/.venv/Lib/site-packages",
+  "recovery": "robocopy missing files only, preserving existing files; /E /SJ /SL /XC /XN /XO",
+  "project_configuration_mutations": 0,
+  "own_environment_readbacks": [
+    {
+      "issue_id": "S1-01",
+      "command": [
+        "D:\\Tony\\Documents\\invest2026\\projects\\shudu/.worktrees/S1-01/.venv/Scripts/python.exe",
+        "-c",
+        "import os,sys,json,importlib.metadata as m,numpy,numba,cv2,pytest; names=['numpy','numba','llvmlite','opencv-python-headless','pytest','pluggy','iniconfig','packaging','pygments','colorama','ruff']; print(json.dumps({'python':sys.executable,'os':os.name,'version':sys.version,'cwd':os.getcwd(),'modules':{x.__name__:x.__file__ for x in [numpy,numba,cv2,pytest]},'versions':{n:m.version(n) for n in names}}))"
+      ],
+      "cwd": "D:\\Tony\\Documents\\invest2026\\projects\\shudu/.worktrees/S1-01",
+      "exit_code": 0,
+      "identity": {
+        "python": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.worktrees\\S1-01\\.venv\\Scripts\\python.exe",
+        "os": "nt",
+        "version": "3.12.13 (main, Jul 18 2026, 17:08:38) [MSC v.1944 64 bit (AMD64)]",
+        "cwd": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.worktrees\\S1-01",
+        "modules": {
+          "numpy": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.worktrees\\S1-01\\.venv\\Lib\\site-packages\\numpy\\__init__.py",
+          "numba": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.worktrees\\S1-01\\.venv\\Lib\\site-packages\\numba\\__init__.py",
+          "cv2": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.worktrees\\S1-01\\.venv\\Lib\\site-packages\\cv2\\__init__.py",
+          "pytest": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.worktrees\\S1-01\\.venv\\Lib\\site-packages\\pytest\\__init__.py"
+        },
+        "versions": {
+          "numpy": "2.5.3",
+          "numba": "0.67.0",
+          "llvmlite": "0.49.0",
+          "opencv-python-headless": "4.14.0.94",
+          "pytest": "9.1.1",
+          "pluggy": "1.6.0",
+          "iniconfig": "2.3.0",
+          "packaging": "26.3",
+          "pygments": "2.21.0",
+          "colorama": "0.4.6",
+          "ruff": "0.16.10"
+        }
+      },
+      "lock_sha256": "9d36a8941d05a8bc98d285af97d6a577a872139ae4d719df72715955af6e9a26"
+    },
+    {
+      "issue_id": "S1-04",
+      "command": [
+        "D:\\Tony\\Documents\\invest2026\\projects\\shudu/.worktrees/S1-04/.venv/Scripts/python.exe",
+        "-c",
+        "import os,sys,json,importlib.metadata as m,numpy,numba,cv2,pytest; names=['numpy','numba','llvmlite','opencv-python-headless','pytest','pluggy','iniconfig','packaging','pygments','colorama','ruff']; print(json.dumps({'python':sys.executable,'os':os.name,'version':sys.version,'cwd':os.getcwd(),'modules':{x.__name__:x.__file__ for x in [numpy,numba,cv2,pytest]},'versions':{n:m.version(n) for n in names}}))"
+      ],
+      "cwd": "D:\\Tony\\Documents\\invest2026\\projects\\shudu/.worktrees/S1-04",
+      "exit_code": 0,
+      "identity": {
+        "python": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.worktrees\\S1-04\\.venv\\Scripts\\python.exe",
+        "os": "nt",
+        "version": "3.12.13 (main, Jul 18 2026, 17:08:38) [MSC v.1944 64 bit (AMD64)]",
+        "cwd": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.worktrees\\S1-04",
+        "modules": {
+          "numpy": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.worktrees\\S1-04\\.venv\\Lib\\site-packages\\numpy\\__init__.py",
+          "numba": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.worktrees\\S1-04\\.venv\\Lib\\site-packages\\numba\\__init__.py",
+          "cv2": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.worktrees\\S1-04\\.venv\\Lib\\site-packages\\cv2\\__init__.py",
+          "pytest": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.worktrees\\S1-04\\.venv\\Lib\\site-packages\\pytest\\__init__.py"
+        },
+        "versions": {
+          "numpy": "2.5.3",
+          "numba": "0.67.0",
+          "llvmlite": "0.49.0",
+          "opencv-python-headless": "4.14.0.94",
+          "pytest": "9.1.1",
+          "pluggy": "1.6.0",
+          "iniconfig": "2.3.0",
+          "packaging": "26.3",
+          "pygments": "2.21.0",
+          "colorama": "0.4.6",
+          "ruff": "0.16.10"
+        }
+      },
+      "lock_sha256": "9d36a8941d05a8bc98d285af97d6a577a872139ae4d719df72715955af6e9a26"
+    }
+  ],
+  "product_test_gate": "independent real required checks; environment readback is not product test evidence"
+}
