@@ -111,6 +111,21 @@ def test_project_solver_exports_step_evidence_directly():
     assert "LogicStep(" in source
 
 
+def test_single_capability_and_evidence_load_only_on_demand():
+    public_source = (PACKAGE / "logic_solver" / "__init__.py").read_text(
+        encoding="utf-8"
+    )
+    project_source = (PACKAGE / "logic_solver" / "_project.py").read_text(
+        encoding="utf-8"
+    )
+    assert "\nfrom ._single import next_hint_step\n" not in public_source
+    assert "def next_hint_step" in public_source
+    assert (
+        "from . import _evidence" not in project_source.split("class ShuduSolver", 1)[0]
+    )
+    assert "from . import _evidence" in project_source
+
+
 def test_logic_solver_root_adapter_keeps_legacy_class_identity():
     source = (ROOT / "logical_solver.py").read_text(encoding="utf-8")
     assert "class LogicSolver(NumbaLogicSolver):" in source

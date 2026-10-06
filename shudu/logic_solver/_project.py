@@ -12,7 +12,6 @@ from shudu.auto_techniques import (
     validate_auto_techniques,
 )
 
-from . import _evidence
 from ._engine import NumbaLogicSolver
 from ._results import (
     Change,
@@ -129,6 +128,8 @@ class ShuduSolver(NumbaLogicSolver):
         sources = self._last_sources
         units = self._last_units
         if placements and self._last_technique_name == "Hidden Single":
+            from . import _evidence
+
             row, col, digit = placements[0]
             fallback_unit = self._last_units[0] if self._last_units else ()
             sources, units = _evidence.hidden_single_evidence(
