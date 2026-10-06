@@ -1,6 +1,6 @@
 """把 solver 的结构化一步结果转换为只读提示。
 提示固定使用全部逻辑算法，不读取自动算法配置。
-完整候选笔记作为当前候选状态投影到 solver；零散手工笔记不作为求解约束。
+每个已有笔记格都作为该格当前候选状态投影到 solver；没有笔记的格继续使用 solver 基础候选。
 算法依据格和观察区域由 LogicStep 直接携带，本层不重新识别任何数独模式。
 """
 
@@ -35,7 +35,6 @@ class Hint:
     regions: frozenset[Cell] = frozenset()
     attention: frozenset[Cell] = frozenset()
     pending_eliminations: tuple[Change, ...] = ()
-    use_visible_candidates: bool = False
 
     @property
     def targets(self) -> frozenset[Cell]:
@@ -46,37 +45,24 @@ class Hint:
         return result
 
 
-def _complete_candidate_notes(board, notes: dict[Cell, set[int]]) -> bool:
-    empty_cells = {
-        cell
-        for cell in CELLS
-        if not board[cell[0]][cell[1]]
-    }
-    result = bool(empty_cells) and all(
-        cell in notes and bool(notes[cell])
-        for cell in empty_cells
-    )
-    return result
-
-
 def _apply_candidate_notes(solver: ShuduSolver, notes: dict[Cell, set[int]]) -> None:
+    """已有笔记格以可见候选为准；没有笔记的空格保留 solver 基础候选。"""
     candidates = solver.algorithm_candidates()
     eliminations = tuple(
         (row, col, digit)
-        for row, col in CELLS
-        if not solver.board[row][col]
+        for (row, col), visible in notes.items()
+        if not solver.board[row][col] and visible
         for digit in candidates[row][col]
-        if digit not in notes[(row, col)]
+        if digit not in visible
     )
     solver.apply_candidate_eliminations(eliminations)
     return
 
 
 def pending_step(board, notes: dict[Cell, set[int]]) -> LogicStep | None:
-    """按全部算法从当前候选状态返回第一条逻辑步骤。"""
+    """把现有笔记逐格投影后，按全部算法返回第一条逻辑步骤。"""
     solver = ShuduSolver(board)
-    if _complete_candidate_notes(board, notes):
-        _apply_candidate_notes(solver, notes)
+    _apply_candidate_notes(solver, notes)
     result = solver.next_step()
     return result
 
@@ -94,26 +80,17 @@ def make_hint(board, notes: dict[Cell, set[int]], wrong: set[Cell]) -> Hint:
 
 
 def _logic_hint(board, notes: dict[Cell, set[int]]) -> Hint:
-    complete_candidates = _complete_candidate_notes(board, notes)
     step = pending_step(board, notes)
     result = Hint(
         "暂无逻辑提示",
         "现有逻辑技巧暂时找不到下一步。没有自动填数，也没有使用回溯答案。",
     )
     if step is not None:
-        result = describe_step(
-            board,
-            step,
-            use_visible_candidates=complete_candidates,
-        )
+        result = describe_step(board, step)
     return result
 
 
-def describe_step(
-    board,
-    step: LogicStep,
-    use_visible_candidates: bool = False,
-) -> Hint:
+def describe_step(board, step: LogicStep) -> Hint:
     sources, units = hint_context(board, step)
     visible_eliminations = step.eliminations
     regions = _focus_regions(sources, units, step, visible_eliminations)
@@ -125,7 +102,6 @@ def describe_step(
         units,
         regions,
         pending_eliminations=visible_eliminations,
-        use_visible_candidates=use_visible_candidates,
     )
     return result
 
