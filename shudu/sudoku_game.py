@@ -220,19 +220,20 @@ class Game:
                     self.notes.pop(cell)
 
     def set_auto_technique(self, name: str, enabled: bool) -> None:
-        """独立切换一个自动算法；开启时立即推进全部已启用算法到固定点。"""
+        """独立切换一个自动算法配置；设置变化本身不执行求解。"""
         if name not in AUTO_TECHNIQUE_NAMES:
             raise ValueError(f"未知自动算法：{name}")
         enabled = bool(enabled)
         changed = (name in self.auto_techniques) != enabled
         if not changed:
             return
+        label = self._technique_label(name)
         if enabled:
             self.auto_techniques.add(name)
-            self.auto_solve_enabled(remember=True)
+            self.message = f"已开启 {label} 自动求解；后续自动执行使用当前勾选集合。"
         else:
             self.auto_techniques.remove(name)
-            self.message = f"已关闭 {self._technique_label(name)} 自动求解。"
+            self.message = f"已关闭 {label} 自动求解。"
 
     def _technique_label(self, name: str) -> str:
         result = next(label for key, label, _ in AUTO_TECHNIQUE_SPECS if key == name)

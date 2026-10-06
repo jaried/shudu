@@ -16,7 +16,7 @@
 
 ## ADR-005
 
-1. `auto_techniques` 只控制自动执行。
+1. `auto_techniques` 只控制自动执行；`set_auto_technique()` 只修改配置，不立即改变当前棋盘或笔记。
 2. Hint 的算法集合始终是全部支持算法。
 3. 自动配置与 notes 候选状态是两个独立维度：
    - auto config：决定自动执行能力；
