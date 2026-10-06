@@ -13,6 +13,7 @@ from pathlib import Path
 from tkinter import filedialog, messagebox
 
 from shudu.auto_techniques import DEFAULT_AUTO_SOLVE
+from shudu.settings_popup import SettingsPopup
 from shudu.sudoku_game import Game
 from shudu.sudoku_puzzles import PUZZLES, SCREENSHOT_PUZZLE, Puzzle, puzzle_from_text
 from shudu.sudoku_screenshot import load_screenshot_game
@@ -33,6 +34,7 @@ HELP_TEXT = (
     "Hidden Pair、Hidden Triple、Box-Line Reduction、X-Wing、XY-Wing 默认不勾选。\n"
     "总开关开启时，已勾选算法在自动执行时按固定优先级反复执行到无法继续，并同步维护全部候选小数字。\n"
     "总开关与算法勾选只修改自动策略；配置会保存到本地，下次启动恢复。\n"
+    "鼠标移到自动解决算法即展开子菜单，支持连续勾选；按 Esc 或点击菜单外部关闭。\n"
     "行、列或宫正确完成时，会播放与参考视频一致的青色扫光完成动画。\n"
     "提示固定使用全部逻辑算法的稳定优先级，与总开关和算法勾选无关；每个已有笔记格都按现有候选参与提示，没有笔记的格使用基础候选。\n"
     "提示只展示推理，不自动填数或删笔记。\n"
@@ -69,6 +71,8 @@ class SudokuWindow:
         self.root = root
         self.game = game if game is not None else Game()
         self.settings_store = settings_store
+        self._settings_menu: tk.Menu | None = None
+        self._settings_popup: SettingsPopup | None = None
         self._configure_window()
         self.view = SudokuView(root, self.game, self.dispatch)
         self.view.pack(fill=tk.BOTH, expand=True)
@@ -165,6 +169,7 @@ class SudokuWindow:
         self._timer_id = self.root.after(250, self._tick)
 
     def close(self) -> None:
+        self._close_settings_popup()
         if self._timer_id is not None:
             self.root.after_cancel(self._timer_id)
             self._timer_id = None
@@ -206,7 +211,19 @@ class SudokuWindow:
 
     def _popup(self, menu: tk.Menu) -> None:
         self._active_menu = menu
-        menu.tk_popup(self.root.winfo_pointerx(), self.root.winfo_pointery())
+        x, y = self.root.winfo_pointerx(), self.root.winfo_pointery()
+        if menu is self._settings_menu:
+            self._settings_popup = SettingsPopup(self.root, menu, self._settings_popup_closed)
+            self._settings_popup.post(x, y)
+        else:
+            menu.tk_popup(x, y)
+
+    def _settings_popup_closed(self) -> None:
+        self._settings_popup = None
+
+    def _close_settings_popup(self) -> None:
+        if self._settings_popup is not None:
+            self._settings_popup.close()
 
     def show_levels(self) -> None:
         menu = self._menu()
@@ -233,7 +250,9 @@ class SudokuWindow:
         self._install_game(game)
 
     def show_settings(self) -> None:
+        self._close_settings_popup()
         menu = self._menu()
+        self._settings_menu = menu
         self._auto_solve = tk.BooleanVar(value=self.game.auto_solve)
         menu.add_checkbutton(label="自动求解", variable=self._auto_solve, command=self._set_auto_solve)
         self._add_auto_technique_menu(menu)
@@ -254,8 +273,7 @@ class SudokuWindow:
             variable = tk.BooleanVar(value=enabled)
             self._auto_technique_vars[name] = variable
             auto_menu.add_checkbutton(
-                label=label,
-                variable=variable,
+                label=label, variable=variable,
                 command=lambda selected=name: self._set_auto_technique(selected),
             )
         menu.add_cascade(label="自动解决算法", menu=auto_menu)

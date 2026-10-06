@@ -235,6 +235,183 @@ def test_master_menu_toggle_preserves_checks_and_saves_both_preferences(tmp_path
         window.close()
 
 
+@pytest.mark.skipif(
+    sys.platform.startswith("linux") and not os.environ.get("DISPLAY"),
+    reason="GUI 测试需要显示环境或 xvfb-run",
+)
+def test_algorithm_entry_is_a_cascade(monkeypatch):
+    root = tk.Tk()
+    window = SudokuWindow(root)
+    menus = []
+    monkeypatch.setattr(window, "_popup", menus.append)
+    try:
+        window.show_settings()
+        assert menus[-1].type(1) == "cascade"
+    finally:
+        window.close()
+
+
+@pytest.mark.skipif(
+    sys.platform.startswith("linux") and not os.environ.get("DISPLAY"),
+    reason="GUI 测试需要显示环境或 xvfb-run",
+)
+def test_algorithm_popup_stays_open_for_successive_mouse_selections(tmp_path):
+    store = UserSettingsStore(tmp_path / "settings.json")
+    root = tk.Tk()
+    game = Game(auto_techniques=set(), auto_solve=False)
+    window = SudokuWindow(root, game, settings_store=store)
+    try:
+        root.update()
+        root.focus_force()
+        window.show_settings()
+        root.update()
+        popup = window._settings_popup
+        assert popup is not None and popup.winfo_ismapped()
+        pointer_x, pointer_y = root.winfo_pointerxy()
+        # 让真实系统指针避开弹层，防止它与生成的悬停事件同时操作菜单。
+        popup.post(
+            0 if pointer_x > root.winfo_screenwidth() // 2 else root.winfo_screenwidth() - 500,
+            0 if pointer_y > root.winfo_screenheight() // 2 else root.winfo_screenheight() - 500,
+        )
+        root.update()
+        submenu = popup.nametowidget("submenu")
+        assert not submenu.winfo_ismapped()
+        popup.nametowidget("menu.entry1").event_generate("<Enter>")
+        root.update()
+        assert submenu.winfo_ismapped()
+        before = deepcopy((game.board, game.notes, game.history))
+        for name, enabled in (("hidden_pair", True), ("hidden_triple", True), ("hidden_pair", False)):
+            button = submenu.nametowidget(f"entry{EXPECTED_NAMES.index(name)}")
+            assert button.winfo_class() == "TButton"
+            button.event_generate("<Enter>", x=10, y=10)
+            button.event_generate("<ButtonPress-1>", x=10, y=10)
+            button.event_generate("<ButtonRelease-1>", x=10, y=10, state=0x100)
+            root.update()
+            assert (name in game.auto_techniques) is enabled
+            assert button.cget("image") == (str(popup._check_icons[enabled]),)
+            assert popup.winfo_ismapped() and submenu.winfo_ismapped() and popup.grab_current() == popup
+            assert store.load().auto_techniques == game.auto_techniques
+        button = submenu.nametowidget("entry5")
+        button.focus_force()
+        root.update()
+        button.event_generate("<KeyPress-space>")
+        root.update()
+        assert not game.auto_techniques and not store.load().auto_techniques
+        assert submenu.winfo_ismapped()
+        popup.nametowidget("menu.entry0").event_generate("<Enter>")
+        root.update()
+        assert not submenu.winfo_ismapped()
+        assert root.focus_displayof() == popup
+        root.focus_displayof().event_generate("<KeyPress-space>")
+        root.update()
+        assert not game.auto_techniques and not store.load().auto_techniques
+        popup.nametowidget("menu.entry1").event_generate("<Enter>")
+        root.update()
+        assert submenu.winfo_ismapped()
+        assert not store.load().auto_solve
+        assert (game.board, game.notes, game.history) == before
+        popup.event_generate("<Escape>")
+        root.update()
+        assert window._settings_popup is None
+        assert root.grab_current() is None
+    finally:
+        window.close()
+
+
+@pytest.mark.skipif(
+    sys.platform.startswith("linux") and not os.environ.get("DISPLAY"),
+    reason="GUI 测试需要显示环境或 xvfb-run",
+)
+def test_algorithm_popup_closes_on_outside_click_and_can_reopen():
+    root = tk.Tk()
+    window = SudokuWindow(root)
+    try:
+        root.update()
+        root.focus_force()
+        window.show_settings()
+        root.update()
+        popup = window._settings_popup
+        popup.nametowidget("menu.entry1").event_generate("<Enter>")
+        root.update()
+        popup.event_generate(
+            "<ButtonPress-1>",
+            x=popup.winfo_width() + 10, y=10,
+            rootx=popup.winfo_rootx() + popup.winfo_width() + 10,
+            rooty=popup.winfo_rooty() + 10,
+        )
+        root.update()
+        assert window._settings_popup is None and root.grab_current() is None
+        window.show_settings()
+        root.update()
+        assert window._settings_popup.winfo_ismapped()
+        root.focus_force()
+        root.update()
+        assert window._settings_popup is None and root.grab_current() is None
+    finally:
+        window.close()
+
+
+@pytest.mark.skipif(
+    sys.platform.startswith("linux") and not os.environ.get("DISPLAY"),
+    reason="GUI 测试需要显示环境或 xvfb-run",
+)
+def test_settings_popup_preserves_master_toggle_and_restart_command(tmp_path):
+    store = UserSettingsStore(tmp_path / "settings.json")
+    root = tk.Tk()
+    window = SudokuWindow(root, settings_store=store)
+    try:
+        root.update()
+        window.show_settings()
+        root.update()
+        popup = window._settings_popup
+        before = deepcopy((window.game.board, window.game.notes, window.game.history))
+        popup.nametowidget("menu.entry0").invoke()
+        root.update()
+        assert not window.game.auto_solve and not store.load().auto_solve
+        assert (window.game.board, window.game.notes, window.game.history) == before
+        assert popup.winfo_ismapped()
+        restart = popup.nametowidget("menu.entry5")
+        restart.event_generate("<Enter>", x=10, y=10)
+        restart.event_generate("<ButtonPress-1>", x=10, y=10)
+        restart.event_generate("<Leave>", x=restart.winfo_width() + 10, y=10, state=0x100)
+        restart.event_generate("<ButtonRelease-1>", x=restart.winfo_width() + 10, y=10, state=0x100)
+        root.update()
+        assert window._settings_popup == popup and popup.winfo_ismapped()
+        restart.event_generate("<Enter>", x=10, y=10)
+        restart.event_generate("<ButtonPress-1>", x=10, y=10)
+        restart.event_generate("<ButtonRelease-1>", x=10, y=10, state=0x100)
+        root.update()
+        assert window._settings_popup is None and root.grab_current() is None
+        assert not window.game.auto_solve
+    finally:
+        window.close()
+
+
+@pytest.mark.skipif(
+    sys.platform.startswith("linux") and not os.environ.get("DISPLAY"),
+    reason="GUI 测试需要显示环境或 xvfb-run",
+)
+@pytest.mark.parametrize("bounds", ((0, 0, 600, 400), (-600, -400, 0, 0)))
+def test_algorithm_submenu_stays_inside_monitor_at_bottom_right(monkeypatch, bounds):
+    root = tk.Tk()
+    window = SudokuWindow(root)
+    monkeypatch.setattr("shudu.settings_popup._monitor_bounds", lambda root, x, y: bounds)
+    try:
+        root.update()
+        window.show_settings()
+        popup = window._settings_popup
+        popup.post(bounds[2] - 10, bounds[3] - 10)
+        popup.nametowidget("menu.entry1").event_generate("<Enter>")
+        root.update()
+        assert popup.winfo_rootx() >= bounds[0]
+        assert popup.winfo_rooty() >= bounds[1]
+        assert popup.winfo_rootx() + popup.winfo_width() <= bounds[2]
+        assert popup.winfo_rooty() + popup.winfo_height() <= bounds[3]
+        assert popup.nametowidget("submenu.entry9").winfo_viewable()
+    finally:
+        window.close()
+
+
 @pytest.mark.parametrize("screenshot_path", (None, "screenshot.png"))
 def test_product_startup_preserves_saved_master_off(tmp_path, monkeypatch, screenshot_path):
     store = UserSettingsStore(tmp_path / "settings.json")
