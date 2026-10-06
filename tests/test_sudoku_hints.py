@@ -118,6 +118,20 @@ def test_existing_notes_are_projected_per_cell(monkeypatch):
     assert candidates[3][1] == set(base[3][1])
 
 
+def test_hint_is_identical_for_same_board_and_notes_regardless_of_auto_setting():
+    notes = {
+        (5, 1): {3, 6, 7},
+        (5, 6): {3, 6},
+    }
+    disabled = Game(LEVEL119_PUZZLE, auto_techniques=set())
+    enabled = Game(LEVEL119_PUZZLE, auto_techniques={"hidden_pair"})
+    disabled.notes = {cell: set(values) for cell, values in notes.items()}
+    enabled.notes = {cell: set(values) for cell, values in notes.items()}
+    disabled.hint()
+    enabled.hint()
+    assert disabled.hint_preview == enabled.hint_preview
+
+
 def test_hint_requests_one_all_algorithm_step_with_existing_notes(monkeypatch):
     game = Game(LEVEL119_PUZZLE, auto_techniques=set())
     game.notes = {
