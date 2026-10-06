@@ -77,6 +77,18 @@ def test_game_toggles_algorithms_independently():
     assert "box_line_reduction" not in game.auto_techniques
 
 
+def test_enabling_one_auto_technique_only_changes_configuration():
+    game = Game(auto_techniques=set())
+    before_board = [row[:] for row in game.board]
+    before_notes = {cell: set(values) for cell, values in game.notes.items()}
+    before_history = list(game.history)
+    game.set_auto_technique("hidden_pair", True)
+    assert game.auto_techniques == {"hidden_pair"}
+    assert game.board == before_board
+    assert game.notes == before_notes
+    assert game.history == before_history
+
+
 @pytest.mark.skipif(
     sys.platform.startswith("linux") and not os.environ.get("DISPLAY"),
     reason="GUI 测试需要显示环境或 xvfb-run",
