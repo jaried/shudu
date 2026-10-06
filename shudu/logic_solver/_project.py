@@ -8,13 +8,20 @@ from __future__ import annotations
 
 from shudu.auto_techniques import (
     AUTO_TECHNIQUE_NAMES,
-    AUTO_TECHNIQUE_SPECS,
     DEFAULT_AUTO_TECHNIQUES,
     validate_auto_techniques,
 )
 from shudu.sudoku_rules import CELLS, box_cells, col_cells, related, row_cells
+
+from ._diff import diff_changes
 from ._engine import NumbaLogicSolver
-from ._results import Change, LogicStep, SimpleSolveResult, capture_candidates, step_changes
+from ._results import (
+    Change,
+    LogicStep,
+    SimpleSolveResult,
+    capture_candidates,
+    step_changes,
+)
 
 
 class ShuduSolver(NumbaLogicSolver):
@@ -44,7 +51,6 @@ class ShuduSolver(NumbaLogicSolver):
         for row, col, digit in eliminations:
             if not self.board[row][col]:
                 self._masks[row, col] = int(self._masks[row, col]) & ~(1 << digit)
-        return
 
     def apply_technique_step(self, names) -> bool:
         """执行指定自动算法中的一步；没有可执行步骤时返回 False。"""
@@ -57,16 +63,12 @@ class ShuduSolver(NumbaLogicSolver):
         return result
 
     def _apply_technique_step_with_eliminations(self, names) -> tuple[bool, tuple[Change, ...]]:
-        """执行一步并返回这一步在算法候选中产生的全部删除。"""
-        result = False
-        eliminations: tuple[Change, ...] = ()
+        """执行一个 pass，并用 mask 差分返回首个成功技巧的删除。"""
+        before = self._masks.copy()
         for technique in self.techniques_for(names):
-            before = capture_candidates(self.cands)
             if technique():
-                result = True
-                eliminations = _candidate_eliminations(before, self.cands)
-                break
-        return result, eliminations
+                return True, diff_changes(before, self._masks)
+        return False, ()
 
     def solve_techniques_result(self, names) -> SimpleSolveResult:
         """反复从最高优先级扫描，直到所选自动算法都无法继续。"""

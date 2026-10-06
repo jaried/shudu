@@ -131,11 +131,21 @@ def test_legacy_solver_runtime_identity_stays_at_root_adapter():
 
 def test_logic_solver_module_owns_moved_implementation_files():
     assert (PACKAGE / "logic_solver" / "__init__.py").is_file()
+    assert (PACKAGE / "logic_solver" / "_auto.py").is_file()
+    assert (PACKAGE / "logic_solver" / "_diff.py").is_file()
     assert (PACKAGE / "logic_solver" / "_engine.py").is_file()
     assert (PACKAGE / "logic_solver" / "_project.py").is_file()
     assert (PACKAGE / "logic_solver" / "_results.py").is_file()
     assert not (PACKAGE / "sudoku_logic.py").exists()
     assert not (PACKAGE / "sudoku_step.py").exists()
+
+
+def test_game_auto_path_consumes_only_the_public_result_capability():
+    source = (PACKAGE / "sudoku_game.py").read_text(encoding="utf-8")
+
+    assert "solve_auto(self.board, self.auto_techniques, self.simple_eliminations)" in source
+    assert "ShuduSolver" not in source
+    assert "_solver_notes" not in source
 
 
 def test_hint_view_uses_public_view_drawing_interface():
