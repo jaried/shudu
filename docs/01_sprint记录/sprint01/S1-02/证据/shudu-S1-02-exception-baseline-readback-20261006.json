@@ -1,0 +1,153 @@
+{
+  "sourceTip": "9853bdc099c16af8729c2224acc6a03db4010385",
+  "cwd": "D:\\Tony\\Documents\\invest2026\\projects\\shudu",
+  "argv": [
+    "D:\\Tony\\Documents\\invest2026\\projects\\shudu/.venv/Scripts/python.exe",
+    "-B",
+    "D:/temp/shudu-S1-02-exception-baseline-20261006.py"
+  ],
+  "exitCode": 0,
+  "probe": {
+    "scenario": "hint_exception_fixed_empty_board",
+    "fixture": {
+      "board": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "notes": [],
+      "shape": [
+        9,
+        9
+      ]
+    },
+    "injection": "engine.find_hidden_single raises RuntimeError before mutation",
+    "calls": {
+      "candidate_sets": 2,
+      "masks_from_board": 1,
+      "apply_placement": 0,
+      "find_hidden_single": 1,
+      "find_naked_single": 0,
+      "find_naked_pair": 0,
+      "find_hidden_pair": 0,
+      "find_naked_triple": 0,
+      "find_hidden_triple": 0,
+      "find_pointing_pair": 0,
+      "find_box_line": 0,
+      "find_x_wing": 0,
+      "find_xy_wing": 0,
+      "capture_candidates": 1,
+      "base_hidden_single_evidence": 0,
+      "project_hidden_single_evidence": 0,
+      "next_step": 1
+    },
+    "array_shapes": [
+      [
+        9,
+        9
+      ]
+    ],
+    "outcome": {
+      "exception_type": "RuntimeError",
+      "message": "baseline_probe_exception"
+    },
+    "inputs_unchanged": true,
+    "measurement": "call_counts_and_input_shapes"
+  }
+}

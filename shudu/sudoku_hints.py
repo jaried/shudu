@@ -8,8 +8,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from shudu.logic_solver import Change, LogicStep, next_hint_step
 from shudu.sudoku_rules import Cell, unit_name
-from shudu.logic_solver import Change, LogicStep, ShuduSolver
 
 NAMES = {
     "Naked Single": "唯一候选数",
@@ -45,24 +45,9 @@ class Hint:
         return result
 
 
-def _apply_candidate_notes(solver: ShuduSolver, notes: dict[Cell, set[int]]) -> None:
-    """已有笔记格以可见候选为准；没有笔记的空格保留 solver 基础候选。"""
-    candidates = solver.algorithm_candidates()
-    eliminations = tuple(
-        (row, col, digit)
-        for (row, col), visible in notes.items()
-        if not solver.board[row][col] and visible
-        for digit in candidates[row][col]
-        if digit not in visible
-    )
-    solver.apply_candidate_eliminations(eliminations)
-
-
 def pending_step(board, notes: dict[Cell, set[int]]) -> LogicStep | None:
     """把现有笔记逐格投影后，按全部算法返回第一条逻辑步骤。"""
-    solver = ShuduSolver(board)
-    _apply_candidate_notes(solver, notes)
-    result = solver.next_step()
+    result = next_hint_step(board, notes)
     return result
 
 
@@ -105,7 +90,9 @@ def describe_step(board, step: LogicStep) -> Hint:
     return result
 
 
-def hint_context(board, step: LogicStep) -> tuple[frozenset[Cell], tuple[tuple[Cell, ...], ...]]:
+def hint_context(
+    board, step: LogicStep
+) -> tuple[frozenset[Cell], tuple[tuple[Cell, ...], ...]]:
     """直接使用 solver 产出的证据；board 参数仅为兼容既有调用。"""
     result = (frozenset(step.sources), step.units)
     return result
@@ -177,7 +164,11 @@ def _placement_message(step: LogicStep, units) -> str:
 
 
 def _naked_subset_message(step: LogicStep, units, sources) -> str:
-    digits = sorted(set().union(*(_candidates(step, cell) for cell in sources))) if sources else []
+    digits = (
+        sorted(set().union(*(_candidates(step, cell) for cell in sources)))
+        if sources
+        else []
+    )
     count = "两" if len(sources) == 2 else "三"
     area = unit_name(units[0]) if units else "区域"
     result = f"观察蓝框标出的{area}。绿色{count}格只由候选 {digits} 组成，这些数字必须占据这些格，因此同一区域其他格中的红色候选可删除。"

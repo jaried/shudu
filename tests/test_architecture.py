@@ -65,9 +65,7 @@ def test_hint_recommendation_uses_all_algorithms_with_existing_note_projection()
     source = (PACKAGE / "sudoku_hints.py").read_text(encoding="utf-8")
     tree = ast.parse(source)
     functions = {
-        node.name: node
-        for node in tree.body
-        if isinstance(node, ast.FunctionDef)
+        node.name: node for node in tree.body if isinstance(node, ast.FunctionDef)
     }
     pending_args = [arg.arg for arg in functions["pending_step"].args.args]
     hint_args = [arg.arg for arg in functions["make_hint"].args.args]
@@ -75,10 +73,10 @@ def test_hint_recommendation_uses_all_algorithms_with_existing_note_projection()
     assert pending_args == ["board", "notes"]
     assert hint_args == ["board", "notes", "wrong"]
     assert "_complete_candidate_notes" not in source
-    assert "_apply_candidate_notes" in source
-    assert "notes.items()" in source
+    assert "_apply_candidate_notes" not in source
+    assert "next_hint_step" in source
     assert "auto_techniques" not in source
-    assert source.count("solver.next_step()") == 1
+    assert "solver.next_step()" not in source
     assert "make_hint(self.board, self.notes, self.wrong_cells())" in game_source
 
 

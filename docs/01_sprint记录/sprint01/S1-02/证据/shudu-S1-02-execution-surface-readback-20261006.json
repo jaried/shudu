@@ -1,0 +1,145 @@
+{
+  "observations": [
+    {
+      "scenario": "auto_stalled_all_ten",
+      "calls": {
+        "candidate_sets": 10,
+        "capture_candidates": 10,
+        "find_box_line": 1,
+        "find_hidden_pair": 1,
+        "find_hidden_single": 1,
+        "find_hidden_triple": 1,
+        "find_naked_pair": 1,
+        "find_naked_single": 1,
+        "find_naked_triple": 1,
+        "find_pointing_pair": 1,
+        "find_x_wing": 1,
+        "find_xy_wing": 1,
+        "masks_from_board": 1
+      },
+      "array_shapes": [
+        [
+          9,
+          9
+        ]
+      ],
+      "outcome": {
+        "placements": 0,
+        "eliminations": 0
+      }
+    },
+    {
+      "scenario": "auto_stalled_hidden_triple_only",
+      "calls": {
+        "candidate_sets": 1,
+        "capture_candidates": 1,
+        "find_hidden_triple": 1,
+        "masks_from_board": 1
+      },
+      "array_shapes": [
+        [
+          9,
+          9
+        ]
+      ],
+      "outcome": {
+        "placements": 0,
+        "eliminations": 0
+      }
+    },
+    {
+      "scenario": "hint_stalled_without_notes",
+      "calls": {
+        "candidate_sets": 2,
+        "capture_candidates": 1,
+        "find_box_line": 1,
+        "find_hidden_pair": 1,
+        "find_hidden_single": 1,
+        "find_hidden_triple": 1,
+        "find_naked_pair": 1,
+        "find_naked_single": 1,
+        "find_naked_triple": 1,
+        "find_pointing_pair": 1,
+        "find_x_wing": 1,
+        "find_xy_wing": 1,
+        "masks_from_board": 1,
+        "next_step": 1
+      },
+      "array_shapes": [
+        [
+          9,
+          9
+        ]
+      ],
+      "outcome": "None"
+    },
+    {
+      "scenario": "hint_hidden_triple_existing_notes",
+      "calls": {
+        "candidate_sets": 3,
+        "capture_candidates": 1,
+        "find_hidden_pair": 1,
+        "find_hidden_single": 1,
+        "find_hidden_triple": 1,
+        "find_naked_pair": 1,
+        "find_naked_single": 1,
+        "find_naked_triple": 1,
+        "masks_from_board": 1,
+        "next_step": 1
+      },
+      "array_shapes": [
+        [
+          9,
+          9
+        ]
+      ],
+      "outcome": "Hidden Triple"
+    },
+    {
+      "scenario": "hint_hidden_single_without_notes",
+      "calls": {
+        "apply_placement": 1,
+        "candidate_sets": 3,
+        "capture_candidates": 1,
+        "find_hidden_single": 1,
+        "masks_from_board": 1,
+        "next_step": 1,
+        "project_hidden_single_evidence": 1
+      },
+      "array_shapes": [
+        [
+          9,
+          9
+        ]
+      ],
+      "outcome": "Hidden Single"
+    },
+    {
+      "scenario": "wrong_board_warning",
+      "calls": {},
+      "array_shapes": [],
+      "outcome": "请先修正错误"
+    },
+    {
+      "scenario": "hint_exception_fixed_empty_board",
+      "calls": {
+        "candidate_sets": 2,
+        "capture_candidates": 1,
+        "find_hidden_single": 1,
+        "masks_from_board": 1,
+        "next_step": 1
+      },
+      "array_shapes": [
+        [
+          9,
+          9
+        ]
+      ],
+      "outcome": {
+        "exception_type": "RuntimeError",
+        "message": "implementation_probe_exception"
+      }
+    }
+  ],
+  "measurement": "call_counts_and_input_shapes"
+}

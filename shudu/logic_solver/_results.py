@@ -20,10 +20,11 @@ class LogicStep:
     sources: tuple[Cell, ...]
     units: tuple[tuple[Cell, ...], ...]
     candidates: CandidatesSnapshot
+    technique_name: str | None = None
 
     @property
     def name(self) -> str:
-        result = self.message.partition(":")[0]
+        result = self.technique_name or self.message.partition(":")[0]
         return result
 
 

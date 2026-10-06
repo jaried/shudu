@@ -10,6 +10,7 @@ from ._results import (
     capture_candidates,
     step_changes,
 )
+from ._single import next_hint_step
 
 __all__ = (
     "CandidatesSnapshot",
@@ -19,5 +20,6 @@ __all__ = (
     "ShuduSolver",
     "SimpleSolveResult",
     "capture_candidates",
+    "next_hint_step",
     "step_changes",
 )
