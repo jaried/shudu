@@ -25,12 +25,5 @@ _INTERNAL_MODULES = (
     "sudoku_view",
 )
 
-_MODULE_ALIASES = {
-    "sudoku_logic": "shudu.logic_solver._engine",
-    "sudoku_step": "shudu.logic_solver._results",
-}
-
 for _name in _INTERNAL_MODULES:
     sys.modules[_name] = importlib.import_module(f"shudu.{_name}")
-for _name, _target in _MODULE_ALIASES.items():
-    sys.modules[_name] = importlib.import_module(_target)
