@@ -33,16 +33,6 @@ LEVEL119_PUZZLE = Puzzle(
 )
 
 
-def level119_candidate_notes():
-    board = LEVEL119_PUZZLE.grid()
-    candidates = candidate_grid(board)
-    result = {
-        cell: set(candidates[cell[0]][cell[1]])
-        for cell in CELLS
-        if not board[cell[0]][cell[1]]
-    }
-    return result
-
 
 def play_state(game):
     result = (deepcopy(game.board), deepcopy(game.notes), game.selected,
@@ -87,9 +77,12 @@ def test_hint_round_trip_preserves_all_play_data():
     "auto_techniques",
     (frozenset(), DEFAULT_AUTO_TECHNIQUES),
 )
-def test_level119_hint_uses_hidden_pair_even_when_auto_hidden_pair_is_disabled(auto_techniques):
+def test_level119_hint_uses_hidden_pair_from_existing_notes_even_when_auto_disabled(auto_techniques):
     game = Game(LEVEL119_PUZZLE, auto_techniques=auto_techniques)
-    game.notes = level119_candidate_notes()
+    game.notes = {
+        (5, 1): {3, 6, 7},
+        (5, 6): {3, 6},
+    }
     game.notes_mode = True
     assert "hidden_pair" not in game.auto_techniques
     game.hint()
@@ -98,29 +91,39 @@ def test_level119_hint_uses_hidden_pair_even_when_auto_hidden_pair_is_disabled(a
     assert hint.pending_eliminations == ((5, 1, 7),)
 
 
-def test_level119_complete_candidate_state_does_not_repeat_removed_7():
+def test_level119_existing_note_without_7_does_not_repeat_hidden_pair_deletion():
     game = Game(LEVEL119_PUZZLE, auto_techniques=set())
-    game.notes = level119_candidate_notes()
-    game.notes[(5, 1)].remove(7)
+    game.notes = {(5, 1): {3, 6}}
     game.notes_mode = True
     game.hint()
     hint = game.hint_preview
     assert hint.step is None or (5, 1, 7) not in hint.step.eliminations
 
 
-def test_sparse_manual_notes_do_not_filter_hint_algorithms():
-    game = Game(LEVEL119_PUZZLE, auto_techniques=set())
-    game.notes = {(5, 1): {3, 6}}
-    game.notes_mode = True
-    game.hint()
-    hint = game.hint_preview
-    assert hint.step is not None and hint.step.name == "Hidden Pair"
-    assert hint.pending_eliminations == ((5, 1, 7),)
+def test_existing_notes_are_projected_per_cell(monkeypatch):
+    board = LEVEL119_PUZZLE.grid()
+    base = candidate_grid(board)
+    captured = {}
+    original = ShuduSolver.next_step
+
+    def tracked(solver):
+        captured["candidates"] = solver.algorithm_candidates()
+        result = original(solver)
+        return result
+
+    monkeypatch.setattr(ShuduSolver, "next_step", tracked)
+    pending_step(board, {(5, 1): {3, 6}})
+    candidates = captured["candidates"]
+    assert candidates[5][1] == {3, 6}
+    assert candidates[3][1] == set(base[3][1])
 
 
-def test_hint_requests_one_all_algorithm_step(monkeypatch):
+def test_hint_requests_one_all_algorithm_step_with_existing_notes(monkeypatch):
     game = Game(LEVEL119_PUZZLE, auto_techniques=set())
-    game.notes = level119_candidate_notes()
+    game.notes = {
+        (5, 1): {3, 6, 7},
+        (5, 6): {3, 6},
+    }
     calls = []
     original = ShuduSolver.next_step
 
@@ -137,7 +140,10 @@ def test_hint_requests_one_all_algorithm_step(monkeypatch):
 
 def test_hidden_pair_keeps_both_source_cells_green():
     game = Game(LEVEL119_PUZZLE, auto_techniques=set())
-    game.notes = level119_candidate_notes()
+    game.notes = {
+        (5, 1): {3, 6, 7},
+        (5, 6): {3, 6},
+    }
     game.hint()
     hint = game.hint_preview
     assert hint.step is not None and hint.step.name == "Hidden Pair"
