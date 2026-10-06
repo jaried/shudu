@@ -1,0 +1,352 @@
+{
+  "issueId": "S1-03",
+  "testedOid": "594be277321bc5d438422eddeac0caa09a96dbd6",
+  "sourceTip": "86a671eb820f03542544553ed871d5904f7a3895",
+  "currentTip": "594be277321bc5d438422eddeac0caa09a96dbd6",
+  "documentOnlyDrift": [],
+  "designVersion": "S1-03-design-v2",
+  "python": {
+    "python": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.venv\\Scripts\\python.exe",
+    "version": "3.12.9 | packaged by Anaconda, Inc. | (main, Feb  6 2025, 18:49:16) [MSC v.1929 64 bit (AMD64)]",
+    "os": "nt",
+    "cwd": "D:\\Tony\\Documents\\invest2026\\projects\\shudu"
+  },
+  "merge": {
+    "issue": "S1-03",
+    "actionKey": "4b4804e5d6c17e83c4fb6704c6bdb2655b6a68548a6c8ab51d39bbe53dc672d4",
+    "inputVersions": [
+      "S1-03-solution-v1",
+      "S1-03-design-v2",
+      "S1-03-implementation-v2",
+      "S1-03-implementation-review-v2"
+    ],
+    "request": {
+      "kind": "sprint_merge",
+      "issueId": "S1-03",
+      "sourceBranch": "issue/s1/s1-03",
+      "sourceTip": "86a671eb820f03542544553ed871d5904f7a3895",
+      "sprintBranch": "Sprint01",
+      "sprintTip": "594be277321bc5d438422eddeac0caa09a96dbd6",
+      "issueWorktree": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.worktrees\\S1-03",
+      "sprintWorktree": "D:\\Tony\\Documents\\invest2026\\projects\\shudu",
+      "publishStatus": "待验收",
+      "mergePolicy": {
+        "admission": "mergeable",
+        "dirtyState": "observation_only",
+        "ancestryState": "observation_only",
+        "conflictAction": "resolve_then_continue"
+      }
+    },
+    "rawReview": {
+      "isRecheck": false,
+      "requestBinding": "2cc0a9d4dc67aef7aa8f6102cc6af5dc19c9330db230325570f030ef80ad6ae4",
+      "artifactVersion": "S1-03-implementation-review-v1",
+      "firstArtifactVersion": "S1-03-implementation-review-v1",
+      "reviewedArtifactVersion": "S1-03-implementation-v1",
+      "firstReviewedArtifactVersion": "S1-03-implementation-v1",
+      "firstStatus": "changes_required",
+      "latestStatus": "changes_required",
+      "correctionCount": 0,
+      "blockerIds": [
+        "S1-03-IMPL-B01"
+      ],
+      "firstBlockerIds": [
+        "S1-03-IMPL-B01"
+      ],
+      "reviewerBindingKey": "Sprint01|S1-03|implementation",
+      "reviewerAgentId": "/root/s1_03_implementation_reviewer",
+      "firstReviewerBindingKey": "Sprint01|S1-03|implementation",
+      "firstReviewerAgentId": "/root/s1_03_implementation_reviewer",
+      "reviewedId": "S1-03",
+      "firstReviewedId": "S1-03",
+      "artifactHead": "827f80c2f4ca0ec6c2f0e20e7915f23616df3068",
+      "testedOid": "827f80c2f4ca0ec6c2f0e20e7915f23616df3068",
+      "firstTestedOid": "827f80c2f4ca0ec6c2f0e20e7915f23616df3068",
+      "reportPath": "docs/01_sprint记录/sprint01/S1-03/S1-03_方案实施评审报告.md",
+      "firstReportPath": "docs/01_sprint记录/sprint01/S1-03/S1-03_方案实施评审报告.md",
+      "firstRequestBinding": "2cc0a9d4dc67aef7aa8f6102cc6af5dc19c9330db230325570f030ef80ad6ae4"
+    },
+    "actualReceipt": {
+      "receipt_contract": "delivery.reviewer.receipt",
+      "contractVersion": "v1",
+      "request_binding": "7aece259ccf04a18c089cc2add6b7b23815941318dd499ab9bf7fe5ca7a2c900",
+      "issue_id": "S1-03",
+      "reviewer_binding_key": "Sprint01|S1-03|implementation",
+      "reviewer_agent_id": "/root/s1_03_implementation_reviewer",
+      "reviewed_id": "S1-03",
+      "review_mode": "recheck",
+      "outcome": "pass",
+      "review_release": "pass",
+      "report_path": "docs/01_sprint记录/sprint01/S1-03/S1-03_方案实施评审报告.md",
+      "artifact_version": "S1-03-implementation-review-v2",
+      "reviewed_artifact_version": "S1-03-implementation-v2",
+      "artifact_head": "42b31708c95f32275366cf06afe6d58e54829331",
+      "testedOid": "42b31708c95f32275366cf06afe6d58e54829331",
+      "review_correction_count": 1,
+      "blocker_ids": [],
+      "blocker_results": [
+        {
+          "findingId": "S1-03-IMPL-B01",
+          "status": "closed",
+          "evidence": "整改后正式 S1-03 target HEAD 42b31708c95f32275366cf06afe6d58e54829331 的 __init__.py 使用函数内 lazy import，_project.py 仅在成功 pass 路径局部加载 _diff。fresh Python subprocess 实测普通 `from shudu.logic_solver import ShuduSolver, NumbaLogicSolver` 为 {auto:false,diff:false}；固定 DATA-001 调用 solve_auto 后为 {auto:true,diff:true,placements:1}。新增 architecture import-scope regression、受影响 test_auto_result/test_architecture 共 35 passed；Worker 记录 required 100 passed、full 262 passed。公开 solve_auto 合同、异常 diff seam、原 Game/metadata/nopython 和实际执行面保持通过。"
+        }
+      ]
+    },
+    "result": {
+      "issueId": "S1-03",
+      "sourceTip": "86a671eb820f03542544553ed871d5904f7a3895",
+      "expectedSprintTip": "594be277321bc5d438422eddeac0caa09a96dbd6",
+      "status": "already_merged",
+      "verified": true,
+      "publicationDurationMs": 0,
+      "sprintTip": "594be277321bc5d438422eddeac0caa09a96dbd6"
+    },
+    "previousRecords": [
+      {
+        "actionKey": "6b530a724a9ab67339cee75f716e2b003a3b14495cb0769d2492e3a0f9c5ab67",
+        "request": {
+          "kind": "sprint_merge",
+          "issueId": "S1-03",
+          "sourceBranch": "issue/s1/s1-03",
+          "sourceTip": "86a671eb820f03542544553ed871d5904f7a3895",
+          "sprintBranch": "Sprint01",
+          "sprintTip": "87304c89979e94463ab394c4688ad4e083faff2f",
+          "issueWorktree": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.worktrees\\S1-03",
+          "sprintWorktree": "D:\\Tony\\Documents\\invest2026\\projects\\shudu",
+          "publishStatus": "待验收",
+          "mergePolicy": {
+            "admission": "mergeable",
+            "dirtyState": "observation_only",
+            "ancestryState": "observation_only",
+            "conflictAction": "resolve_then_continue"
+          }
+        },
+        "result": {
+          "issueId": "S1-03",
+          "sourceTip": "86a671eb820f03542544553ed871d5904f7a3895",
+          "expectedSprintTip": "87304c89979e94463ab394c4688ad4e083faff2f",
+          "status": "needs_semantics",
+          "verified": false,
+          "publicationDurationMs": 0,
+          "sprintTip": "87304c89979e94463ab394c4688ad4e083faff2f",
+          "semanticRequest": {
+            "kind": "merge_conflict",
+            "conflictSetId": "98caa229db9c322ea155413f0bc706aa5867ade0687956c608f01090d7eef9b6",
+            "phase": "issue_to_sprint",
+            "files": [
+              {
+                "path": "shudu/logic_solver/__init__.py",
+                "base": {
+                  "ref": "c4bfd4655ab15e2797839d522974ee1985ef193a",
+                  "path": "shudu/logic_solver/__init__.py"
+                },
+                "ours": {
+                  "ref": "87304c89979e94463ab394c4688ad4e083faff2f",
+                  "path": "shudu/logic_solver/__init__.py"
+                },
+                "theirs": {
+                  "ref": "86a671eb820f03542544553ed871d5904f7a3895",
+                  "path": "shudu/logic_solver/__init__.py"
+                }
+              },
+              {
+                "path": "shudu/logic_solver/_project.py",
+                "base": {
+                  "ref": "c4bfd4655ab15e2797839d522974ee1985ef193a",
+                  "path": "shudu/logic_solver/_project.py"
+                },
+                "ours": {
+                  "ref": "87304c89979e94463ab394c4688ad4e083faff2f",
+                  "path": "shudu/logic_solver/_project.py"
+                },
+                "theirs": {
+                  "ref": "86a671eb820f03542544553ed871d5904f7a3895",
+                  "path": "shudu/logic_solver/_project.py"
+                }
+              }
+            ]
+          }
+        },
+        "observedAt": "2026-10-06T13:13:02.946Z"
+      },
+      {
+        "actionKey": "6b530a724a9ab67339cee75f716e2b003a3b14495cb0769d2492e3a0f9c5ab67",
+        "request": {
+          "kind": "sprint_merge",
+          "issueId": "S1-03",
+          "sourceBranch": "issue/s1/s1-03",
+          "sourceTip": "86a671eb820f03542544553ed871d5904f7a3895",
+          "sprintBranch": "Sprint01",
+          "sprintTip": "87304c89979e94463ab394c4688ad4e083faff2f",
+          "issueWorktree": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.worktrees\\S1-03",
+          "sprintWorktree": "D:\\Tony\\Documents\\invest2026\\projects\\shudu",
+          "publishStatus": "待验收",
+          "mergePolicy": {
+            "admission": "mergeable",
+            "dirtyState": "observation_only",
+            "ancestryState": "observation_only",
+            "conflictAction": "resolve_then_continue"
+          }
+        },
+        "result": {
+          "issueId": "S1-03",
+          "sourceTip": "86a671eb820f03542544553ed871d5904f7a3895",
+          "expectedSprintTip": "87304c89979e94463ab394c4688ad4e083faff2f",
+          "status": "failed",
+          "verified": false,
+          "publicationDurationMs": 123,
+          "sprintTip": "594be277321bc5d438422eddeac0caa09a96dbd6",
+          "error": "sprint_merge_readback_failed"
+        },
+        "observedAt": "2026-10-06T13:13:58.938Z"
+      }
+    ],
+    "observedAt": "2026-10-06T13:14:11.431Z"
+  },
+  "checks": [
+    {
+      "check": {
+        "id": "S1-03-required-1",
+        "cwd": ".",
+        "argv": [
+          ".venv/Scripts/python.exe",
+          "-B",
+          "-m",
+          "pytest",
+          "-q",
+          "tests/test_auto_result.py",
+          "tests/test_auto_simple.py",
+          "tests/test_auto_technique_settings.py",
+          "tests/test_shudu_solver.py",
+          "tests/test_njit_core.py",
+          "tests/test_architecture.py"
+        ],
+        "platform": "windows"
+      },
+      "startedAt": "2026-10-06T13:14:28.241Z",
+      "completedAt": "2026-10-06T13:14:38.470Z",
+      "cwd": "D:\\Tony\\Documents\\invest2026\\projects\\shudu",
+      "argv": [
+        "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.venv\\Scripts\\python.exe",
+        "-B",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_auto_result.py",
+        "tests/test_auto_simple.py",
+        "tests/test_auto_technique_settings.py",
+        "tests/test_shudu_solver.py",
+        "tests/test_njit_core.py",
+        "tests/test_architecture.py"
+      ],
+      "exitCode": 0,
+      "timedOut": false,
+      "signal": null,
+      "stdout": "........................................................................ [ 71%]\r\n.............................                                            [100%]\r\n101 passed in 9.34s\r\n",
+      "stderr": "",
+      "result": {
+        "id": "S1-03-required-1",
+        "status": "pass",
+        "exitCode": 0
+      }
+    },
+    {
+      "check": {
+        "id": "S1-03-full",
+        "cwd": ".",
+        "argv": [
+          ".venv/Scripts/python.exe",
+          "-B",
+          "-m",
+          "pytest",
+          "-q"
+        ],
+        "platform": "windows"
+      },
+      "startedAt": "2026-10-06T13:14:38.470Z",
+      "completedAt": "2026-10-06T13:15:08.305Z",
+      "cwd": "D:\\Tony\\Documents\\invest2026\\projects\\shudu",
+      "argv": [
+        "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.venv\\Scripts\\python.exe",
+        "-B",
+        "-m",
+        "pytest",
+        "-q"
+      ],
+      "exitCode": 0,
+      "timedOut": false,
+      "signal": null,
+      "stdout": "........................................................................ [ 26%]\r\n........................................................................ [ 53%]\r\n........................................................................ [ 80%]\r\n.....................................................                    [100%]\r\n269 passed in 28.73s\r\n",
+      "stderr": "",
+      "result": {
+        "id": "S1-03-full",
+        "status": "pass",
+        "exitCode": 0
+      }
+    },
+    {
+      "check": {
+        "id": "S1-03-capability-integration",
+        "cwd": ".",
+        "argv": [
+          ".venv/Scripts/python.exe",
+          "-B",
+          "-m",
+          "pytest",
+          "-q",
+          "tests/test_s1_02_single.py",
+          "tests/test_auto_result.py",
+          "tests/test_architecture.py"
+        ],
+        "platform": "windows"
+      },
+      "startedAt": "2026-10-06T13:15:08.305Z",
+      "completedAt": "2026-10-06T13:15:11.776Z",
+      "cwd": "D:\\Tony\\Documents\\invest2026\\projects\\shudu",
+      "argv": [
+        "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.venv\\Scripts\\python.exe",
+        "-B",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_s1_02_single.py",
+        "tests/test_auto_result.py",
+        "tests/test_architecture.py"
+      ],
+      "exitCode": 0,
+      "timedOut": false,
+      "signal": null,
+      "stdout": "..........................................                               [100%]\r\n42 passed in 2.16s\r\n",
+      "stderr": "",
+      "result": {
+        "id": "S1-03-capability-integration",
+        "status": "pass",
+        "exitCode": 0
+      }
+    }
+  ],
+  "finalTipValidation": {
+    "contractVersion": "final-tip-validation-v1",
+    "status": "pass",
+    "validationSetId": "80d808d706135d6e252bbef45c2bbff897ccfcaa0a7af9d6df8726403bcb3197",
+    "targetTip": "594be277321bc5d438422eddeac0caa09a96dbd6",
+    "checkSetId": "764312f353ecee2c315ad934a76531f4c6566201d07d9676fb07830f0af98d29",
+    "results": [
+      {
+        "id": "S1-03-required-1",
+        "status": "pass",
+        "exitCode": 0
+      },
+      {
+        "id": "S1-03-full",
+        "status": "pass",
+        "exitCode": 0
+      },
+      {
+        "id": "S1-03-capability-integration",
+        "status": "pass",
+        "exitCode": 0
+      }
+    ]
+  }
+}
