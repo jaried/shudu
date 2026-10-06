@@ -51,10 +51,10 @@ shudu/
 `shudu/sudoku_hints.py` 只负责：
 
 1. 从当前正式棋盘构造项目 solver；
-2. 当 `Game.notes` 覆盖全部空格时，将缺失候选一次性投影为 solver 当前候选状态；零散 notes 不作为求解约束；
+2. 对每个已有 `Game.notes` 的空格，只把该格现有候选投影到 solver；没有笔记的空格保留 solver 基础候选；
 3. 只请求一次 `next_step()`，由 solver 按全部逻辑算法稳定顺序返回第一步，再转换为统一视觉语义和用户可读说明。
 
-`UserSettings.auto_techniques` 不进入 Hint recommendation。提示始终使用全部算法；完整候选状态只改变“当前盘面从哪里继续”，不改变“哪些算法可用于提示”。
+`UserSettings.auto_techniques` 不进入 Hint recommendation。提示始终使用全部算法；现有笔记逐格决定当前候选状态，不要求所有空格都有笔记。
 
 算法名字、模式判定和证据所有权集中在 solver；提示文案可以独立调整而不会改变数独规则。
 
@@ -103,7 +103,7 @@ shudu/
 - 根目录只允许五个 Python 可执行入口；
 - rules 不向 GUI / Game / Hint / solver orchestration 反向依赖；
 - Hint 只依赖项目级 `ShuduSolver` Interface；
-- Hint recommendation 固定使用全部算法；完整 notes 只投影当前候选状态，零散 notes 不约束 solver；
+- Hint recommendation 固定使用全部算法；已有 notes 逐格投影当前候选，没有 notes 的格保留基础候选；
 - Hint 不调用 solver 私有 step 方法，也不重新实现高级算法模式识别；
 - Hint View 不调用普通 View 私有绘制方法；
 - 截图深 Module 不依赖 GUI、Game 或 solver；
