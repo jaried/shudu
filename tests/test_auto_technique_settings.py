@@ -173,12 +173,20 @@ def test_master_on_only_executes_checked_algorithms():
 def test_settings_menu_defaults_match_previous_simple_algorithms(monkeypatch):
     root = tk.Tk()
     window = SudokuWindow(root, Game(auto_simple=True))
-    monkeypatch.setattr(window, "_popup", lambda menu: None)
-    window.show_settings()
-    checked = {name for name, variable in window._auto_technique_vars.items() if variable.get()}
-    assert set(window._auto_technique_vars) == set(EXPECTED_NAMES)
-    assert checked == EXPECTED_DEFAULTS
-    window.close()
+    try:
+        window.show_settings()
+        root.update()
+        popup = window._settings_popup
+        checked = {
+            name
+            for name in EXPECTED_NAMES
+            if popup.nametowidget(f"submenu.auto_technique_{name}").cget("image")
+            == (str(popup._check_icons[True]),)
+        }
+        assert set(popup._checked) >= {"auto_solve", "auto_clean"}
+        assert checked == EXPECTED_DEFAULTS
+    finally:
+        window.close()
 
 
 @pytest.mark.skipif(
@@ -189,12 +197,12 @@ def test_setting_change_is_saved_immediately(tmp_path, monkeypatch):
     store = UserSettingsStore(tmp_path / "settings.json")
     root = tk.Tk()
     window = SudokuWindow(root, Game(auto_techniques=set()), settings_store=store)
-    monkeypatch.setattr(window, "_popup", lambda menu: None)
-    window.show_settings()
-    window._auto_technique_vars["x_wing"].set(True)
-    window._set_auto_technique("x_wing")
-    assert store.load().auto_techniques == frozenset({"x_wing"})
-    window.close()
+    try:
+        window.show_settings()
+        window._settings_popup.nametowidget("submenu.auto_technique_x_wing").invoke()
+        assert store.load().auto_techniques == frozenset({"x_wing"})
+    finally:
+        window.close()
 
 
 @pytest.mark.skipif(
@@ -206,25 +214,22 @@ def test_master_menu_toggle_preserves_checks_and_saves_both_preferences(tmp_path
     root = tk.Tk()
     game = Game(AUTO_NOTES_PUZZLE, auto_techniques=AUTO_TECHNIQUE_NAMES)
     window = SudokuWindow(root, game, settings_store=store)
-    menus = []
-    monkeypatch.setattr(window, "_popup", menus.append)
     try:
         window.show_settings()
-        assert menus[-1].entrycget(0, "label") == "自动求解"
-        assert window._auto_solve.get()
+        popup = window._settings_popup
+        assert popup.nametowidget("menu.auto_solve").cget("text") == "自动求解"
         before = deepcopy((game.board, game.notes, game.history))
-        window._auto_solve.set(False)
-        window._set_auto_solve()
+        popup.nametowidget("menu.auto_solve").invoke()
         assert not game.auto_solve
         assert game.auto_techniques == set(AUTO_TECHNIQUE_NAMES)
         assert (game.board, game.notes, game.history) == before
         assert not store.load().auto_solve
         assert store.load().auto_techniques == set(AUTO_TECHNIQUE_NAMES)
         window.show_settings()
-        assert not window._auto_solve.get()
-        assert all(variable.get() for variable in window._auto_technique_vars.values())
-        window._auto_technique_vars["hidden_pair"].set(False)
-        window._set_auto_technique("hidden_pair")
+        popup = window._settings_popup
+        assert popup._checked["auto_solve"] is False
+        assert all(popup._checked[f"auto_technique:{name}"] for name in AUTO_TECHNIQUE_NAMES)
+        popup.nametowidget("submenu.auto_technique_hidden_pair").invoke()
         assert not store.load().auto_solve
         assert store.load().auto_techniques == set(AUTO_TECHNIQUE_NAMES) - {"hidden_pair"}
         window.restart()
@@ -239,14 +244,56 @@ def test_master_menu_toggle_preserves_checks_and_saves_both_preferences(tmp_path
     sys.platform.startswith("linux") and not os.environ.get("DISPLAY"),
     reason="GUI 测试需要显示环境或 xvfb-run",
 )
+def test_auto_clean_changes_only_memory_and_row(tmp_path, monkeypatch):
+    store = UserSettingsStore(tmp_path / "settings.json")
+    root = tk.Tk()
+    window = SudokuWindow(root, Game(auto_techniques=set()), settings_store=store)
+    try:
+        window.show_settings()
+        game = window.game
+        before = deepcopy((game.board, game.notes, game.history, game.message))
+        monkeypatch.setattr(game, "completed_units", lambda: pytest.fail("auto_clean must not scan completed units"))
+        monkeypatch.setattr(window.view, "draw", lambda: pytest.fail("auto_clean must not redraw"))
+        monkeypatch.setattr(window.view, "animate_completed_units", lambda units: pytest.fail("auto_clean must not animate"))
+        monkeypatch.setattr(store, "save", lambda settings: pytest.fail("auto_clean must not save"))
+        monkeypatch.setattr(store, "load", lambda: pytest.fail("auto_clean must not access store"))
+        window._settings_popup.nametowidget("menu.auto_clean").invoke()
+        assert game.auto_clean is False
+        assert (game.board, game.notes, game.history, game.message) == before
+    finally:
+        window.close()
+
+
+@pytest.mark.skipif(
+    sys.platform.startswith("linux") and not os.environ.get("DISPLAY"),
+    reason="GUI 测试需要显示环境或 xvfb-run",
+)
+def test_preference_save_failure_keeps_memory_and_reports_error(tmp_path, monkeypatch):
+    store = UserSettingsStore(tmp_path / "settings.json")
+    root = tk.Tk()
+    window = SudokuWindow(root, Game(auto_techniques=set()), settings_store=store)
+    errors = []
+    monkeypatch.setattr(store, "save", lambda settings: (_ for _ in ()).throw(OSError("disk full")))
+    monkeypatch.setattr("sudoku_gui.messagebox.showerror", lambda *args, **kwargs: errors.append(args))
+    try:
+        window.show_settings()
+        window._settings_popup.nametowidget("submenu.auto_technique_x_wing").invoke()
+        assert window.game.auto_techniques == {"x_wing"}
+        assert errors and "disk full" in errors[0][1]
+    finally:
+        window.close()
+
+
+@pytest.mark.skipif(
+    sys.platform.startswith("linux") and not os.environ.get("DISPLAY"),
+    reason="GUI 测试需要显示环境或 xvfb-run",
+)
 def test_algorithm_entry_is_a_cascade(monkeypatch):
     root = tk.Tk()
     window = SudokuWindow(root)
-    menus = []
-    monkeypatch.setattr(window, "_popup", menus.append)
     try:
         window.show_settings()
-        assert menus[-1].type(1) == "cascade"
+        assert window._settings_popup.nametowidget("menu.auto_technique").cget("text").startswith("自动解决算法")
     finally:
         window.close()
 
@@ -276,12 +323,12 @@ def test_algorithm_popup_stays_open_for_successive_mouse_selections(tmp_path):
         root.update()
         submenu = popup.nametowidget("submenu")
         assert not submenu.winfo_ismapped()
-        popup.nametowidget("menu.entry1").event_generate("<Enter>")
+        popup.nametowidget("menu.auto_technique").event_generate("<Enter>")
         root.update()
         assert submenu.winfo_ismapped()
         before = deepcopy((game.board, game.notes, game.history))
         for name, enabled in (("hidden_pair", True), ("hidden_triple", True), ("hidden_pair", False)):
-            button = submenu.nametowidget(f"entry{EXPECTED_NAMES.index(name)}")
+            button = submenu.nametowidget(f"auto_technique_{name}")
             assert button.winfo_class() == "TButton"
             button.event_generate("<Enter>", x=10, y=10)
             button.event_generate("<ButtonPress-1>", x=10, y=10)
@@ -291,21 +338,21 @@ def test_algorithm_popup_stays_open_for_successive_mouse_selections(tmp_path):
             assert button.cget("image") == (str(popup._check_icons[enabled]),)
             assert popup.winfo_ismapped() and submenu.winfo_ismapped() and popup.grab_current() == popup
             assert store.load().auto_techniques == game.auto_techniques
-        button = submenu.nametowidget("entry5")
+        button = submenu.nametowidget("auto_technique_hidden_triple")
         button.focus_force()
         root.update()
         button.event_generate("<KeyPress-space>")
         root.update()
         assert not game.auto_techniques and not store.load().auto_techniques
         assert submenu.winfo_ismapped()
-        popup.nametowidget("menu.entry0").event_generate("<Enter>")
+        popup.nametowidget("menu.auto_solve").event_generate("<Enter>")
         root.update()
         assert not submenu.winfo_ismapped()
         assert root.focus_displayof() == popup
         root.focus_displayof().event_generate("<KeyPress-space>")
         root.update()
         assert not game.auto_techniques and not store.load().auto_techniques
-        popup.nametowidget("menu.entry1").event_generate("<Enter>")
+        popup.nametowidget("menu.auto_technique").event_generate("<Enter>")
         root.update()
         assert submenu.winfo_ismapped()
         assert not store.load().auto_solve
@@ -331,7 +378,7 @@ def test_algorithm_popup_closes_on_outside_click_and_can_reopen():
         window.show_settings()
         root.update()
         popup = window._settings_popup
-        popup.nametowidget("menu.entry1").event_generate("<Enter>")
+        popup.nametowidget("menu.auto_technique").event_generate("<Enter>")
         root.update()
         popup.event_generate(
             "<ButtonPress-1>",
@@ -365,12 +412,12 @@ def test_settings_popup_preserves_master_toggle_and_restart_command(tmp_path):
         root.update()
         popup = window._settings_popup
         before = deepcopy((window.game.board, window.game.notes, window.game.history))
-        popup.nametowidget("menu.entry0").invoke()
+        popup.nametowidget("menu.auto_solve").invoke()
         root.update()
         assert not window.game.auto_solve and not store.load().auto_solve
         assert (window.game.board, window.game.notes, window.game.history) == before
         assert popup.winfo_ismapped()
-        restart = popup.nametowidget("menu.entry5")
+        restart = popup.nametowidget("menu.restart")
         restart.event_generate("<Enter>", x=10, y=10)
         restart.event_generate("<ButtonPress-1>", x=10, y=10)
         restart.event_generate("<Leave>", x=restart.winfo_width() + 10, y=10, state=0x100)
@@ -395,19 +442,19 @@ def test_settings_popup_preserves_master_toggle_and_restart_command(tmp_path):
 def test_algorithm_submenu_stays_inside_monitor_at_bottom_right(monkeypatch, bounds):
     root = tk.Tk()
     window = SudokuWindow(root)
-    monkeypatch.setattr("shudu.settings_popup._monitor_bounds", lambda root, x, y: bounds)
+    monkeypatch.setattr("shudu.settings_menu._popup.monitor_bounds", lambda root, x, y: bounds)
     try:
         root.update()
         window.show_settings()
         popup = window._settings_popup
         popup.post(bounds[2] - 10, bounds[3] - 10)
-        popup.nametowidget("menu.entry1").event_generate("<Enter>")
+        popup.nametowidget("menu.auto_technique").event_generate("<Enter>")
         root.update()
         assert popup.winfo_rootx() >= bounds[0]
         assert popup.winfo_rooty() >= bounds[1]
         assert popup.winfo_rootx() + popup.winfo_width() <= bounds[2]
         assert popup.winfo_rooty() + popup.winfo_height() <= bounds[3]
-        assert popup.nametowidget("submenu.entry9").winfo_viewable()
+        assert popup.nametowidget("submenu.auto_technique_xy_wing").winfo_viewable()
     finally:
         window.close()
 

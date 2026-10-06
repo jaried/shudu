@@ -174,6 +174,15 @@ def test_gui_owns_settings_lifecycle_through_store_interface():
     assert ".settings_store.save(" in source
 
 
+def test_settings_menu_has_one_public_entry_and_keeps_game_io_outside():
+    source = (PACKAGE / "settings_menu" / "__init__.py").read_text(encoding="utf-8")
+    modules = imported_modules(PACKAGE / "settings_menu" / "__init__.py")
+    assert "shudu.sudoku_game" not in modules
+    assert "shudu.user_settings" not in modules
+    assert "open_settings" in source
+    assert "SettingsMenuState" in source
+
+
 def test_completion_animation_is_view_only():
     game_source = (PACKAGE / "sudoku_game.py").read_text(encoding="utf-8")
     view_source = (PACKAGE / "sudoku_view.py").read_text(encoding="utf-8")
