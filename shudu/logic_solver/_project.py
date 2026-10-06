@@ -13,7 +13,6 @@ from shudu.auto_techniques import (
 )
 from shudu.sudoku_rules import CELLS, box_cells, col_cells, related, row_cells
 
-from ._diff import diff_changes
 from ._engine import NumbaLogicSolver
 from ._results import (
     Change,
@@ -67,6 +66,8 @@ class ShuduSolver(NumbaLogicSolver):
         before = self._masks.copy()
         for technique in self.techniques_for(names):
             if technique():
+                from ._diff import diff_changes
+
                 return True, diff_changes(before, self._masks)
         return False, ()
 

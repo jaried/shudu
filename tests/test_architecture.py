@@ -3,6 +3,9 @@
 from __future__ import annotations
 
 import ast
+import json
+import subprocess
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -146,6 +149,42 @@ def test_game_auto_path_consumes_only_the_public_result_capability():
     assert "solve_auto(self.board, self.auto_techniques, self.simple_eliminations)" in source
     assert "ShuduSolver" not in source
     assert "_solver_notes" not in source
+
+
+def test_logic_solver_auto_modules_load_only_for_auto_capability():
+    ordinary_code = (
+        "import json, sys; "
+        "from shudu.logic_solver import ShuduSolver, NumbaLogicSolver; "
+        "print(json.dumps({'auto': 'shudu.logic_solver._auto' in sys.modules, "
+        "'diff': 'shudu.logic_solver._diff' in sys.modules}))"
+    )
+    ordinary = subprocess.run(
+        [sys.executable, "-c", ordinary_code],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    assert json.loads(ordinary.stdout.strip()) == {"auto": False, "diff": False}
+
+    auto_code = (
+        "import json, sys; "
+        "from shudu.logic_solver import solve_auto; "
+        "board = [[int(char) if char != '.' else 0 for char in row] "
+        "for row in ('12345678.', '.........', '.........', '.........', "
+        "'.........', '.........', '.........', '.........', '.........')]; "
+        "solve_auto(board, {'hidden_single'}, ()); "
+        "print(json.dumps({'auto': 'shudu.logic_solver._auto' in sys.modules, "
+        "'diff': 'shudu.logic_solver._diff' in sys.modules}))"
+    )
+    auto = subprocess.run(
+        [sys.executable, "-c", auto_code],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    assert json.loads(auto.stdout.strip()) == {"auto": True, "diff": True}
 
 
 def test_hint_view_uses_public_view_drawing_interface():

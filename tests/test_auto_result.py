@@ -268,7 +268,7 @@ def test_game_keeps_full_snapshot_when_auto_capability_raises(monkeypatch, seam)
         def raise_diff(*args, **kwargs):
             raise RuntimeError(seam)
 
-        monkeypatch.setattr("shudu.logic_solver._project.diff_changes", raise_diff)
+        monkeypatch.setattr("shudu.logic_solver._diff.diff_changes", raise_diff)
     else:
         def raise_final_notes(*args, **kwargs):
             raise RuntimeError(seam)
