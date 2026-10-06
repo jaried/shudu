@@ -7,16 +7,36 @@
 from __future__ import annotations
 
 import tkinter as tk
+from collections.abc import Callable
 from math import cos, pi, sin
 from tkinter import font
-from typing import Callable
 
 from shudu.sudoku_game import CELLS, Cell, Game
 from shudu.sudoku_hint_view import draw_hint
 from shudu.sudoku_theme import (
-    WIDTH, HEIGHT, LEFT, TOP, SIDE, CELL, BG, INK, ACCENT, PEER,
-    SELECTED, SAME, LINE, BORDER, BLUE, MUTED, ERROR, ERROR_LIGHT, ERROR_INK, WHITE,
-    COMPLETE_LIGHT, COMPLETE_MID, COMPLETE_STRONG,
+    ACCENT,
+    BG,
+    BLUE,
+    BORDER,
+    CELL,
+    COMPLETE_LIGHT,
+    COMPLETE_MID,
+    COMPLETE_STRONG,
+    ERROR,
+    ERROR_INK,
+    ERROR_LIGHT,
+    HEIGHT,
+    INK,
+    LEFT,
+    LINE,
+    MUTED,
+    PEER,
+    SAME,
+    SELECTED,
+    SIDE,
+    TOP,
+    WHITE,
+    WIDTH,
 )
 
 COMPLETION_FRAME_MS = 70
@@ -74,7 +94,6 @@ class SudokuView(tk.Canvas):
         self._completion_colors: dict[Cell, str] = {}
         self._init_fonts()
         self._bind_events()
-        return
 
     def _init_fonts(self) -> None:
         self.chinese_font = choose_font(self, ("Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC"))
@@ -159,7 +178,6 @@ class SudokuView(tk.Canvas):
         self._completion_units = ()
         self._completion_colors = {}
         self._completion_frame = 0
-        return
 
     def _draw_completion_frame(self) -> None:
         max_rank = max(
@@ -385,8 +403,13 @@ class SudokuView(tk.Canvas):
             detail = f"用时 {self.game.time_text}  ·  提示 {self.game.hints_used} 次"
             self.text(WIDTH/2, 928, detail, 11, INK, tags="completion-detail")
         else:
-            self.text(WIDTH/2, 905, self.game.message, 12, INK, width=590*self.scale_factor)
+            self.text(WIDTH/2, 905, self.game.message, 12, INK, width=590*self.scale_factor, tags="status-message")
             self.text(WIDTH/2, 928, "N 笔记  ·  A 自动笔记  ·  H 提示  ·  Ctrl+Z 撤回  ·  空格 暂停", 10, MUTED)
+
+    def update_message(self, message: str) -> None:
+        items = self.find_withtag("status-message")
+        if items:
+            self.itemconfigure(items[0], text=message)
 
     def _draw_overlay(self) -> None:
         self.round_box((LEFT,TOP,LEFT+SIDE,TOP+SIDE), PEER, 18)

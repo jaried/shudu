@@ -9,10 +9,24 @@ import sys
 import tkinter as tk
 
 import pytest
+from sudoku_view import (
+    BG,
+    CELL,
+    ERROR,
+    ERROR_INK,
+    ERROR_LIGHT,
+    HEIGHT,
+    INK,
+    LEFT,
+    PEER,
+    SAME,
+    SELECTED,
+    TOP,
+    WHITE,
+    WIDTH,
+)
 
-from sudoku_game import Game
 from sudoku_gui import SudokuWindow
-from sudoku_view import BG, CELL, ERROR, ERROR_INK, ERROR_LIGHT, HEIGHT, INK, LEFT, PEER, SAME, SELECTED, TOP, WHITE, WIDTH
 
 pytestmark = pytest.mark.skipif(sys.platform.startswith("linux") and not os.environ.get("DISPLAY"), reason="GUI 测试需要显示环境或 xvfb-run")
 
@@ -48,6 +62,14 @@ def color(app, tag):
     item = app.view.find_withtag(tag)[0]
     result = app.view.itemcget(item, "fill")
     return result
+
+
+def test_update_message_changes_existing_footer_item(app, monkeypatch):
+    item = app.view.find_withtag("status-message")[0]
+    monkeypatch.setattr(app.view, "draw", lambda: pytest.fail("message update must not redraw"))
+    app.view.update_message("设置已更新")
+    assert app.view.find_withtag("status-message") == (item,)
+    assert app.view.itemcget(item, "text") == "设置已更新"
 
 
 def press(app, key, state=0):

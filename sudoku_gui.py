@@ -13,7 +13,15 @@ from pathlib import Path
 from tkinter import filedialog, messagebox
 
 from shudu.auto_techniques import DEFAULT_AUTO_SOLVE
-from shudu.settings_popup import SettingsPopup
+from shudu.settings_menu import (
+    CommandAction,
+    CommandItem,
+    SettingAction,
+    SettingsMenuState,
+    SettingsPopup,
+    TechniqueItem,
+    open_settings,
+)
 from shudu.sudoku_game import Game
 from shudu.sudoku_puzzles import PUZZLES, SCREENSHOT_PUZZLE, Puzzle, puzzle_from_text
 from shudu.sudoku_screenshot import load_screenshot_game
@@ -71,7 +79,6 @@ class SudokuWindow:
         self.root = root
         self.game = game if game is not None else Game()
         self.settings_store = settings_store
-        self._settings_menu: tk.Menu | None = None
         self._settings_popup: SettingsPopup | None = None
         self._configure_window()
         self.view = SudokuView(root, self.game, self.dispatch)
@@ -210,13 +217,8 @@ class SudokuWindow:
             menu.add_command(label=f"{puzzle.title} · {puzzle.difficulty}", command=lambda selected=puzzle: self._change_puzzle(selected))
 
     def _popup(self, menu: tk.Menu) -> None:
-        self._active_menu = menu
         x, y = self.root.winfo_pointerx(), self.root.winfo_pointery()
-        if menu is self._settings_menu:
-            self._settings_popup = SettingsPopup(self.root, menu, self._settings_popup_closed)
-            self._settings_popup.post(x, y)
-        else:
-            menu.tk_popup(x, y)
+        menu.tk_popup(x, y)
 
     def _settings_popup_closed(self) -> None:
         self._settings_popup = None
@@ -251,43 +253,53 @@ class SudokuWindow:
 
     def show_settings(self) -> None:
         self._close_settings_popup()
-        menu = self._menu()
-        self._settings_menu = menu
-        self._auto_solve = tk.BooleanVar(value=self.game.auto_solve)
-        menu.add_checkbutton(label="自动求解", variable=self._auto_solve, command=self._set_auto_solve)
-        self._add_auto_technique_menu(menu)
-        self._auto_clean = tk.BooleanVar(value=self.game.auto_clean)
-        menu.add_checkbutton(label="正确填数后，清理关联笔记", variable=self._auto_clean, command=self._set_auto_clean)
-        menu.add_separator()
-        menu.add_command(label="从截图导入…", command=self.import_screenshot)
-        menu.add_command(label="重新开始当前关卡", command=self.restart)
-        self._add_levels(menu)
-        menu.add_separator()
-        menu.add_command(label="操作说明", command=self.show_help)
-        self._popup(menu)
-
-    def _add_auto_technique_menu(self, menu: tk.Menu) -> None:
-        auto_menu = tk.Menu(menu, tearoff=False, font=(self.view.chinese_font, 11))
-        self._auto_technique_vars: dict[str, tk.BooleanVar] = {}
-        for name, label, enabled in self.game.auto_technique_settings():
-            variable = tk.BooleanVar(value=enabled)
-            self._auto_technique_vars[name] = variable
-            auto_menu.add_checkbutton(
-                label=label, variable=variable,
-                command=lambda selected=name: self._set_auto_technique(selected),
-            )
-        menu.add_cascade(label="自动解决算法", menu=auto_menu)
-
-    def _set_auto_solve(self) -> None:
-        self._apply_game_change(lambda: self.game.set_auto_solve(self._auto_solve.get()))
-        self._persist_auto_settings()
-
-    def _set_auto_technique(self, name: str) -> None:
-        enabled = self._auto_technique_vars[name].get()
-        self._apply_game_change(
-            lambda: self.game.set_auto_technique(name, enabled),
+        techniques = tuple(
+            TechniqueItem(name, label, enabled)
+            for name, label, enabled in self.game.auto_technique_settings()
         )
-        self._persist_auto_settings()
+        commands = (
+            CommandItem("import_screenshot", "从截图导入…"),
+            CommandItem("restart", "重新开始当前关卡"),
+            *(CommandItem("level", f"{puzzle.title} · {puzzle.difficulty}", puzzle) for puzzle in PUZZLES),
+            CommandItem("help", "操作说明"),
+        )
+        state = SettingsMenuState(self.game.auto_solve, self.game.auto_clean, techniques, commands)
+        x, y = self.root.winfo_pointerx(), self.root.winfo_pointery()
+        self._settings_popup = open_settings(
+            self.root,
+            state,
+            self._apply_setting,
+            self._run_settings_command,
+            self._settings_popup_closed,
+            (x, y),
+            font=(self.view.chinese_font, 11),
+        )
+
+    def _apply_setting(self, action: SettingAction) -> None:
+        if action.kind == "auto_solve":
+            self.game.set_auto_solve(action.enabled)
+            self.view.update_message(self.game.message)
+            self._persist_auto_settings()
+        elif action.kind == "auto_technique":
+            if action.name is None:
+                raise ValueError("自动算法动作必须提供名称")
+            self.game.set_auto_technique(action.name, action.enabled)
+            self.view.update_message(self.game.message)
+            self._persist_auto_settings()
+        else:
+            self.game.auto_clean = action.enabled
+
+    def _run_settings_command(self, action: CommandAction) -> None:
+        if action.item.kind == "import_screenshot":
+            self.import_screenshot()
+        elif action.item.kind == "restart":
+            self.restart()
+        elif action.item.kind == "level":
+            if not isinstance(action.item.value, Puzzle):
+                raise ValueError("关卡动作必须携带 Puzzle")
+            self._change_puzzle(action.item.value)
+        else:
+            self.show_help()
 
     def _persist_auto_settings(self) -> None:
         if self.settings_store is None:
@@ -302,9 +314,6 @@ class SudokuWindow:
                 parent=self.root,
             )
         return
-
-    def _set_auto_clean(self) -> None:
-        self.game.auto_clean = self._auto_clean.get()
 
     def show_help(self) -> None:
         messagebox.showinfo("操作说明", HELP_TEXT, parent=self.root)
