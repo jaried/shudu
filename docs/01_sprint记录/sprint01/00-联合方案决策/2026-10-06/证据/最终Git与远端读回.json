@@ -1,0 +1,103 @@
+{
+  "head": "b63fb89918e87f7476a710dc7ff0e050a9e258b4",
+  "parents": "0e5eb06cee85f5fbfb272d2ba306e40f06385659",
+  "message": "chore: 保存已交付 Issue 后置收尾与编排恢复记录",
+  "paths": [
+    ".codex/task-records/2026/10/06/sprint01-all-issues.md",
+    "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/全量Issue编排交付记录.md",
+    "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/证据/Sprint管理任务读回.json",
+    "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/证据/全量编排收尾读回.json",
+    "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/证据/联合执行面与回归读回.json",
+    "docs/01_sprint记录/sprint01/S1-02/S1-02_代码库优化候选.html",
+    "docs/01_sprint记录/sprint01/S1-02/S1-02_代码库优化候选.md",
+    "docs/01_sprint记录/sprint01/S1-02/S1-02_遗留问题.md",
+    "docs/01_sprint记录/sprint01/S1-03/S1-03_代码库优化候选.html",
+    "docs/01_sprint记录/sprint01/S1-03/S1-03_代码库优化候选.md",
+    "docs/01_sprint记录/sprint01/S1-03/S1-03_遗留问题.md"
+  ],
+  "status": "",
+  "index": "",
+  "ancestry": [
+    {
+      "id": "S1-01",
+      "sourceTip": "f7b03aa2b7887b0c507cc00327baf70c00837c4a",
+      "contained": true
+    },
+    {
+      "id": "S1-02",
+      "sourceTip": "1f368d528e8040f8eb4dc9b162521db9643bd6b9",
+      "contained": true
+    },
+    {
+      "id": "S1-03",
+      "sourceTip": "86a671eb820f03542544553ed871d5904f7a3895",
+      "contained": true
+    },
+    {
+      "id": "S1-04",
+      "sourceTip": "61d15ac59001e66799d49ff3acc23cf152ff377d",
+      "contained": true
+    }
+  ],
+  "productDriftSinceFullTest": false,
+  "documentOnlyDrift": [
+    ".codex/task-records/2026/10/06/sprint01-all-issues.md",
+    "docs/00_待办列表/Sprint待办列表/Sprint01.md",
+    "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/全量Issue编排交付记录.md",
+    "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/证据/Sprint管理任务读回.json",
+    "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/证据/全量编排收尾读回.json",
+    "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/证据/联合执行面与回归读回.json",
+    "docs/01_sprint记录/sprint01/S1-02/S1-02_代码库优化候选.html",
+    "docs/01_sprint记录/sprint01/S1-02/S1-02_代码库优化候选.md",
+    "docs/01_sprint记录/sprint01/S1-02/S1-02_遗留问题.md",
+    "docs/01_sprint记录/sprint01/S1-03/S1-03_代码库优化候选.html",
+    "docs/01_sprint记录/sprint01/S1-03/S1-03_代码库优化候选.md",
+    "docs/01_sprint记录/sprint01/S1-03/S1-03_方案实施总结.md",
+    "docs/01_sprint记录/sprint01/S1-03/S1-03_测试报告.md",
+    "docs/01_sprint记录/sprint01/S1-03/S1-03_遗留问题.md",
+    "docs/01_sprint记录/sprint01/S1-03/证据/S1-03-Sprint交付读回.json"
+  ],
+  "worktrees": "worktree D:/Tony/Documents/invest2026/projects/shudu\nHEAD b63fb89918e87f7476a710dc7ff0e050a9e258b4\nbranch refs/heads/Sprint01",
+  "push": {
+    "id": "approved-sprint-ref-push",
+    "argv": [
+      "git.exe",
+      "-c",
+      "credential.interactive=false",
+      "-c",
+      "core.sshCommand=ssh -oBatchMode=yes -oConnectTimeout=10",
+      "push",
+      "--porcelain",
+      "origin",
+      "refs/heads/Sprint01:refs/heads/Sprint01"
+    ],
+    "cwd": "D:\\Tony\\Documents\\invest2026\\projects\\shudu",
+    "exitCode": 128,
+    "timedOut": false,
+    "stdout": "",
+    "stderr": "git@github.com: Permission denied (publickey).\r\nfatal: Could not read from remote repository.\n\nPlease make sure you have the correct access rights\nand the repository exists.\n",
+    "observedAt": "2026-10-06T13:25:38.296Z"
+  },
+  "remote": {
+    "id": "independent-remote-sha-readback",
+    "argv": [
+      "git.exe",
+      "-c",
+      "credential.interactive=false",
+      "-c",
+      "core.sshCommand=ssh -oBatchMode=yes -oConnectTimeout=10",
+      "ls-remote",
+      "--heads",
+      "origin",
+      "refs/heads/Sprint01"
+    ],
+    "cwd": "D:\\Tony\\Documents\\invest2026\\projects\\shudu",
+    "exitCode": 128,
+    "timedOut": false,
+    "stdout": "",
+    "stderr": "git@github.com: Permission denied (publickey).\r\nfatal: Could not read from remote repository.\n\nPlease make sure you have the correct access rights\nand the repository exists.\n",
+    "observedAt": "2026-10-06T13:25:40.730Z"
+  },
+  "remoteSha": null,
+  "remotePublished": false
+}
