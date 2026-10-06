@@ -1,0 +1,299 @@
+{
+  "contract": "s1-01-implementation-evidence-v1",
+  "issue_id": "S1-01",
+  "stage": "implementation",
+  "worktree": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.worktrees\\S1-01",
+  "branch": "issue/s1/s1-01",
+  "baseline_tip": "bdb144d948c5d4d9d26aca490ea10099477a8971",
+  "source_tip": "c1bb6d9",
+  "interpreter": {
+    "probe": {
+      "command": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.worktrees\\S1-01\\.venv\\Scripts\\python.exe -c import sys,os; print(sys.executable); print(sys.version); print(os.name)",
+      "status": 0,
+      "stdout": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.worktrees\\S1-01\\.venv\\Scripts\\python.exe\r\n3.12.13 (main, Jul 18 2026, 17:08:38) [MSC v.1944 64 bit (AMD64)]\r\nnt\r\n",
+      "stderr": ""
+    },
+    "dependencies": {
+      "command": "D:/Tony/Documents/invest2026/projects/shudu/.worktrees/S1-01/.venv/Scripts/python.exe -B -c <dependency probe>",
+      "status": 0,
+      "stdout": "{\"python\": \"3.12.13 (main, Jul 18 2026, 17:08:38) [MSC v.1944 64 bit (AMD64)]\", \"os\": \"nt\", \"cwd\": \"D:\\\\Tony\\\\Documents\\\\invest2026\\\\projects\\\\shudu\\\\.worktrees\\\\S1-01\", \"numpy\": \"2.5.3\", \"numba\": \"0.67.0\", \"cv2\": \"4.14.0\", \"pytest\": \"9.1.1\"}\r\n",
+      "stderr": ""
+    }
+  },
+  "source_migration": {
+    "compileall": {
+      "command": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.worktrees\\S1-01\\.venv\\Scripts\\python.exe -m compileall -q logical_solver.py shudu shudu_solver.py tests",
+      "status": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "changed_paths": [
+      "README.md\n\"docs/01_sprint\\350\\256\\260\\345\\275\\225/sprint01/00-\\350\\201\\224\\345\\220\\210\\346\\226\\271\\346\\241\\210\\345\\206\\263\\347\\255\\226/2026-10-06/\\350\\257\\201\\346\\215\\256/shudu-execution-surface-baseline-20261006.py\"\n\"docs/01_sprint\\350\\256\\260\\345\\275\\225/sprint01/S1-01/S1-01_\\351\\201\\227\\347\\225\\231\\351\\227\\256\\351\\242\\230.md\"\ndocs/codebase-design-review.md\nlogical_solver.py\nshudu/logic_solver/__init__.py\nshudu/logic_solver/_engine.py\nshudu/logic_solver/_project.py\nshudu/logic_solver/_results.py\nshudu/sudoku_game.py\nshudu/sudoku_hints.py\nshudu/sudoku_logic.py\nshudu/sudoku_step.py\nshudu_solver.py\ntests/conftest.py\ntests/test_architecture.py\ntests/test_njit_core.py\n"
+    ]
+  },
+  "required_pytest": {
+    "result": {
+      "command": "D:/Tony/Documents/invest2026/projects/shudu/.worktrees/S1-01/.venv/Scripts/python.exe -B -m pytest -q tests/test_architecture.py tests/test_njit_core.py tests/test_shudu_solver.py tests/test_logical_solver.py tests/test_sudoku_hints.py tests/test_auto_simple.py",
+      "status": 0,
+      "stdout": "........................................................................ [ 82%]\r\n...............                                                          [100%]\r\n87 passed in 0.46s\r\n",
+      "stderr": ""
+    },
+    "gate": "pass",
+    "dependency_fact": "target .venv uv.lock dependencies restored; pytest/numpy/numba/cv2 import from target .venv",
+    "recheck": {
+      "command": "D:/Tony/Documents/invest2026/projects/shudu/.worktrees/S1-01/.venv/Scripts/python.exe -B -m pytest -q tests/test_architecture.py tests/test_njit_core.py",
+      "status": 0,
+      "stdout": ".............................                                            [100%]\r\n29 passed in 0.25s\r\n",
+      "stderr": ""
+    }
+  },
+  "cli_smoke": {
+    "logical_solver": {
+      "command": "D:/Tony/Documents/invest2026/projects/shudu/.worktrees/S1-01/.venv/Scripts/python.exe -B logical_solver.py",
+      "status": 0,
+      "stdout": "初始棋盘：\r\n+-------+-------+-------+\r\n| . . 3 | . . 5 | . 1 . |\r\n| . . 8 | 9 3 . | 4 5 . |\r\n| 2 . 5 | 7 . 4 | 3 6 . |\r\n+-------+-------+-------+\r\n| 5 3 . | . 4 7 | 1 9 . |\r\n| 7 8 . | 1 9 3 | . 4 5 |\r\n| . . 9 | 5 6 . | . 7 3 |\r\n+-------+-------+-------+\r\n| . . 7 | . 5 . | . 2 . |\r\n| . . 4 | . . 9 | . 3 . |\r\n| . . 1 | . . . | . 8 . |\r\n+-------+-------+-------+\r\n\r\n初始候选数：\r\n+--------------------------------------------------------------------------+\r\n| 469    4679    3    268    28      5    2789    1    2789  |\r\n| 16     167     8     9     3    126     4     5    27    |\r\n|  2    19      5     7    18      4     3     6    89    |\r\n+--------------------------------------------------------------------------+\r\n|  5     3    26     28      4     7     1     9    268   |\r\n|  7     8    26      1     9     3    26      4     5   |\r\n| 14     124     9     5     6    28     28      7     3   |\r\n+--------------------------------------------------------------------------+\r\n| 3689   69      7    3468    5    168    69      2    1469  |\r\n| 68     256     4    268    1278    9    567     3    167   |\r\n| 369    2569    1    2346   27     26     5679    8    4679  |\r\n+--------------------------------------------------------------------------+\r\n\r\n\r\n✓ 解题完成！\r\n\r\n推理步骤：\r\n\r\n  [  1] Naked Pair: (6,6), (6,7) 共享 [2, 8]，行 6 内 (6,2) 排除\r\n  [  2] Naked Pair: (7,2), (7,7) 共享 [6, 9]，行 7 内 (7,1), (7,4), (7,6), (7,9) 排除\r\n  [  3] Hidden Pair: (8,2), (9,2) 在 列 2 中出现数字 2,5，排除其他候选 [6, 9]\r\n  [  4] Hidden Pair: (7,4), (9,4) 在 列 4 中出现数字 3,4，排除其他候选 [2, 6, 8]\r\n  [  5] XY-Wing: 枢纽 (3,2) [1, 9]，翼 (2,1) [1, 6] + (7,2) [6, 9]，(1,2), (2,2), (8,1), (9,1) 排除 6\r\n  [  6] Naked Single: (8,1) = 8\r\n  [  7] Naked Single: (7,1) = 3\r\n  [  8] Naked Single: (7,4) = 4\r\n  [  9] Naked Single: (7,9) = 1\r\n  [ 10] Naked Single: (7,6) = 8\r\n  [ 11] Naked Single: (6,6) = 2\r\n  [ 12] Naked Single: (4,4) = 8\r\n  [ 13] Naked Single: (6,7) = 8\r\n  [ 14] Naked Single: (9,1) = 9\r\n  [ 15] Naked Single: (7,2) = 6\r\n  [ 16] Naked Single: (7,7) = 9\r\n  [ 17] Naked Single: (9,4) = 3\r\n  [ 18] Naked Single: (9,6) = 6\r\n  [ 19] Naked Single: (2,6) = 1\r\n  [ 20] Naked Single: (2,1) = 6\r\n  [ 21] Naked Single: (1,1) = 4\r\n  [ 22] Naked Single: (2,2) = 7\r\n  [ 23] Naked Single: (1,2) = 9\r\n  [ 24] Naked Single: (2,9) = 2\r\n  [ 25] Naked Single: (1,7) = 7\r\n  [ 26] Naked Single: (1,9) = 8\r\n  [ 27] Naked Single: (1,5) = 2\r\n  [ 28] Naked Single: (1,4) = 6\r\n  [ 29] Naked Single: (3,2) = 1\r\n  [ 30] Naked Single: (3,5) = 8\r\n  [ 31] Naked Single: (3,9) = 9\r\n  [ 32] Naked Single: (4,9) = 6\r\n  [ 33] Naked Single: (4,3) = 2\r\n  [ 34] Naked Single: (5,3) = 6\r\n  [ 35] Naked Single: (5,7) = 2\r\n  [ 36] Naked Single: (6,1) = 1\r\n  [ 37] Naked Single: (6,2) = 4\r\n  [ 38] Naked Single: (8,4) = 2\r\n  [ 39] Naked Single: (8,2) = 5\r\n  [ 40] Naked Single: (8,7) = 6\r\n  [ 41] Naked Single: (8,9) = 7\r\n  [ 42] Naked Single: (8,5) = 1\r\n  [ 43] Naked Single: (9,2) = 2\r\n  [ 44] Naked Single: (9,5) = 7\r\n  [ 45] Naked Single: (9,7) = 5\r\n  [ 46] Naked Single: (9,9) = 4\r\n\r\n+-------+-------+-------+\r\n| 4 9 3 | 6 2 5 | 7 1 8 |\r\n| 6 7 8 | 9 3 1 | 4 5 2 |\r\n| 2 1 5 | 7 8 4 | 3 6 9 |\r\n+-------+-------+-------+\r\n| 5 3 2 | 8 4 7 | 1 9 6 |\r\n| 7 8 6 | 1 9 3 | 2 4 5 |\r\n| 1 4 9 | 5 6 2 | 8 7 3 |\r\n+-------+-------+-------+\r\n| 3 6 7 | 4 5 8 | 9 2 1 |\r\n| 8 5 4 | 2 1 9 | 6 3 7 |\r\n| 9 2 1 | 3 7 6 | 5 8 4 |\r\n+-------+-------+-------+\r\n共 46 步推理，13 次排除\r\n",
+      "stderr": ""
+    },
+    "shudu_solver": {
+      "command": "D:/Tony/Documents/invest2026/projects/shudu/.worktrees/S1-01/.venv/Scripts/python.exe -B shudu_solver.py",
+      "status": 0,
+      "stdout": "初始棋盘：\r\n+-------+-------+-------+\r\n| . . . | . 9 . | 6 . 7 |\r\n| . . . | . . . | . 1 . |\r\n| 9 . 7 | . 2 . | 5 3 . |\r\n+-------+-------+-------+\r\n| 4 . . | . 5 . | . . . |\r\n| . . . | . . 8 | . . . |\r\n| 1 3 . | . 4 . | 7 9 . |\r\n+-------+-------+-------+\r\n| 6 . 8 | 9 . . | . . . |\r\n| . 1 . | 5 . . | . . 2 |\r\n| . . . | . . . | . 5 . |\r\n+-------+-------+-------+\r\n\r\n初始候选数：\r\n+--------------------------------------------------------------------------+\r\n| 2358   2458   12345  1348    9    1345    6    248     7   |\r\n| 2358   24568  23456  34678  3678   34567  2489    1    489   |\r\n|  9    468     7    1468    2    146     5     3    48    |\r\n+--------------------------------------------------------------------------+\r\n|  4    26789  269    12367   5    123679  1238   268    1368  |\r\n| 257    25679  2569   12367  1367    8    1234   246    13456 |\r\n|  1     3    256    26      4    26      7     9    568   |\r\n+--------------------------------------------------------------------------+\r\n|  6    2457    8     9    137    12347  134    47     134   |\r\n| 37      1    349     5    3678   3467   3489   4678    2   |\r\n| 237    2479   2349   1234678  13678  123467  13489   5    134689 |\r\n+--------------------------------------------------------------------------+\r\n\r\n\r\n✓ 解题完成！\r\n\r\n推理步骤：\r\n\r\n  [  1] Hidden Single: (1,3) = 1（列 3 唯一可能位置）\r\n  [  2] Hidden Single: (6,9) = 8（行 6 唯一可能位置）\r\n  [  3] Hidden Single: (4,2) = 8（行 4 唯一可能位置）\r\n  [  4] Hidden Single: (3,4) = 8（行 3 唯一可能位置）\r\n  [  5] Hidden Single: (3,6) = 1（行 3 唯一可能位置）\r\n  [  6] Hidden Single: (3,2) = 6（行 3 唯一可能位置）\r\n  [  7] Hidden Single: (3,9) = 4（行 3 唯一可能位置）\r\n  [  8] Hidden Single: (6,3) = 5（行 6 唯一可能位置）\r\n  [  9] Hidden Single: (5,9) = 5（行 5 唯一可能位置）\r\n  [ 10] Hidden Single: (4,6) = 9（列 6 唯一可能位置）\r\n  [ 11] Hidden Single: (4,4) = 7（行 4 唯一可能位置）\r\n  [ 12] Hidden Single: (7,2) = 5（行 7 唯一可能位置）\r\n  [ 13] Hidden Single: (7,6) = 2（行 7 唯一可能位置）\r\n  [ 14] Hidden Single: (6,4) = 2（行 6 唯一可能位置）\r\n  [ 15] Hidden Single: (6,6) = 6（行 6 唯一可能位置）\r\n  [ 16] Naked Single: (2,9) = 9\r\n  [ 17] Naked Pair: (1,2), (2,2) 共享 [2, 4]，列 2 内 (5,2), (9,2) 排除\r\n  [ 18] Naked Pair: (4,3), (4,8) 共享 [2, 6]，行 4 内 (4,7), (4,9) 排除\r\n  [ 19] Hidden Single: (9,9) = 6（列 9 唯一可能位置）\r\n  [ 20] Hidden Single: (2,4) = 6（列 4 唯一可能位置）\r\n  [ 21] Hidden Single: (8,5) = 6（列 5 唯一可能位置）\r\n  [ 22] Hidden Single: (9,5) = 8（列 5 唯一可能位置）\r\n  [ 23] Naked Pair: (5,4), (5,5) 共享 [1, 3]，行 5 内 (5,7) 排除\r\n  [ 24] Naked Pair: (1,2), (2,2) 共享 [2, 4]，宫 (1,1) 内 (1,1), (2,1), (2,3) 排除\r\n  [ 25] Naked Single: (2,3) = 3\r\n  [ 26] Naked Single: (2,5) = 7\r\n  [ 27] Hidden Single: (7,8) = 7（行 7 唯一可能位置）\r\n  [ 28] Hidden Single: (7,7) = 4（行 7 唯一可能位置）\r\n  [ 29] Hidden Single: (5,8) = 4（行 5 唯一可能位置）\r\n  [ 30] Hidden Single: (5,3) = 6（行 5 唯一可能位置）\r\n  [ 31] Hidden Single: (4,8) = 6（行 4 唯一可能位置）\r\n  [ 32] Hidden Single: (4,3) = 2（行 4 唯一可能位置）\r\n  [ 33] Hidden Single: (9,1) = 2（列 1 唯一可能位置）\r\n  [ 34] Hidden Single: (8,1) = 3（列 1 唯一可能位置）\r\n  [ 35] Hidden Single: (5,1) = 7（列 1 唯一可能位置）\r\n  [ 36] Hidden Single: (9,2) = 7（列 2 唯一可能位置）\r\n  [ 37] Hidden Single: (5,2) = 9（列 2 唯一可能位置）\r\n  [ 38] Hidden Single: (5,7) = 2（行 5 唯一可能位置）\r\n  [ 39] Hidden Single: (2,2) = 2（行 2 唯一可能位置）\r\n  [ 40] Hidden Single: (1,8) = 2（行 1 唯一可能位置）\r\n  [ 41] Hidden Single: (1,1) = 8（行 1 唯一可能位置）\r\n  [ 42] Hidden Single: (1,6) = 5（行 1 唯一可能位置）\r\n  [ 43] Hidden Single: (1,4) = 3（行 1 唯一可能位置）\r\n  [ 44] Hidden Single: (1,2) = 4（行 1 唯一可能位置）\r\n  [ 45] Hidden Single: (2,1) = 5（列 1 唯一可能位置）\r\n  [ 46] Hidden Single: (2,6) = 4（行 2 唯一可能位置）\r\n  [ 47] Hidden Single: (2,7) = 8（行 2 唯一可能位置）\r\n  [ 48] Hidden Single: (9,4) = 4（列 4 唯一可能位置）\r\n  [ 49] Hidden Single: (8,3) = 4（列 3 唯一可能位置）\r\n  [ 50] Hidden Single: (9,3) = 9（列 3 唯一可能位置）\r\n  [ 51] Hidden Single: (5,4) = 1（列 4 唯一可能位置）\r\n  [ 52] Hidden Single: (5,5) = 3（行 5 唯一可能位置）\r\n  [ 53] Hidden Single: (7,5) = 1（列 5 唯一可能位置）\r\n  [ 54] Hidden Single: (9,6) = 3（列 6 唯一可能位置）\r\n  [ 55] Hidden Single: (8,6) = 7（列 6 唯一可能位置）\r\n  [ 56] Hidden Single: (7,9) = 3（行 7 唯一可能位置）\r\n  [ 57] Hidden Single: (4,7) = 3（行 4 唯一可能位置）\r\n  [ 58] Hidden Single: (4,9) = 1（行 4 唯一可能位置）\r\n  [ 59] Hidden Single: (9,7) = 1（列 7 唯一可能位置）\r\n  [ 60] Hidden Single: (8,7) = 9（列 7 唯一可能位置）\r\n  [ 61] Hidden Single: (8,8) = 8（行 8 唯一可能位置）\r\n\r\n+-------+-------+-------+\r\n| 8 4 1 | 3 9 5 | 6 2 7 |\r\n| 5 2 3 | 6 7 4 | 8 1 9 |\r\n| 9 6 7 | 8 2 1 | 5 3 4 |\r\n+-------+-------+-------+\r\n| 4 8 2 | 7 5 9 | 3 6 1 |\r\n| 7 9 6 | 1 3 8 | 2 4 5 |\r\n| 1 3 5 | 2 4 6 | 7 9 8 |\r\n+-------+-------+-------+\r\n| 6 5 8 | 9 1 2 | 4 7 3 |\r\n| 3 1 4 | 5 6 7 | 9 8 2 |\r\n| 2 7 9 | 4 8 3 | 1 5 6 |\r\n+-------+-------+-------+\r\n共 61 步推理，8 次排除\r\n+-------+-------+-------+\r\n| 8 4 1 | 3 9 5 | 6 2 7 |\r\n| 5 2 3 | 6 7 4 | 8 1 9 |\r\n| 9 6 7 | 8 2 1 | 5 3 4 |\r\n+-------+-------+-------+\r\n| 4 8 2 | 7 5 9 | 3 6 1 |\r\n| 7 9 6 | 1 3 8 | 2 4 5 |\r\n| 1 3 5 | 2 4 6 | 7 9 8 |\r\n+-------+-------+-------+\r\n| 6 5 8 | 9 1 2 | 4 7 3 |\r\n| 3 1 4 | 5 6 7 | 9 8 2 |\r\n| 2 7 9 | 4 8 3 | 1 5 6 |\r\n+-------+-------+-------+\r\n",
+      "stderr": ""
+    },
+    "gate": "pass"
+  },
+  "uv_sync": {
+    "online": {
+      "status": 1,
+      "reason": "pluggy==1.6.0 download failed after 3 retries because Python package index tunnel connection was refused"
+    },
+    "offline": {
+      "status": 1,
+      "reason": "opencv-python-headless==4.14.0.94 missing from local cache"
+    },
+    "offline_retry": {
+      "status": 1,
+      "reason": "llvmlite==0.49.0 missing from local cache while resolving numba==0.67.0"
+    },
+    "last_observed": "recovery",
+    "recovery": {
+      "sync": {
+        "command": "uv sync --frozen --offline",
+        "status": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "pip_check": {
+        "command": "uv pip check --python D:/Tony/Documents/invest2026/projects/shudu/.worktrees/S1-01/.venv/Scripts/python.exe",
+        "status": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    }
+  },
+  "execution_surface": {
+    "status": "pass",
+    "command": "D:/Tony/Documents/invest2026/projects/shudu/.worktrees/S1-01/.venv/Scripts/python.exe -B -c <target-preloaded-runpy-execution-probe>",
+    "measurement": "call_counts_and_input_shapes",
+    "scenario_count": 8,
+    "observations": [
+      {
+        "scenario": "auto_stalled_all_ten",
+        "calls": {
+          "candidate_sets": 10,
+          "find_box_line": 1,
+          "find_hidden_pair": 1,
+          "find_hidden_single": 1,
+          "find_hidden_triple": 1,
+          "find_naked_pair": 1,
+          "find_naked_single": 1,
+          "find_naked_triple": 1,
+          "find_pointing_pair": 1,
+          "find_x_wing": 1,
+          "find_xy_wing": 1,
+          "masks_from_board": 1
+        },
+        "array_shapes": [
+          [
+            9,
+            9
+          ]
+        ],
+        "outcome": {
+          "placements": 0,
+          "eliminations": 0
+        }
+      },
+      {
+        "scenario": "auto_stalled_hidden_triple_only",
+        "calls": {
+          "candidate_sets": 1,
+          "find_hidden_triple": 1,
+          "masks_from_board": 1
+        },
+        "array_shapes": [
+          [
+            9,
+            9
+          ]
+        ],
+        "outcome": {
+          "placements": 0,
+          "eliminations": 0
+        }
+      },
+      {
+        "scenario": "hint_stalled_without_notes",
+        "calls": {
+          "candidate_sets": 2,
+          "find_box_line": 1,
+          "find_hidden_pair": 1,
+          "find_hidden_single": 1,
+          "find_hidden_triple": 1,
+          "find_naked_pair": 1,
+          "find_naked_single": 1,
+          "find_naked_triple": 1,
+          "find_pointing_pair": 1,
+          "find_x_wing": 1,
+          "find_xy_wing": 1,
+          "masks_from_board": 1,
+          "next_step": 1
+        },
+        "array_shapes": [
+          [
+            9,
+            9
+          ]
+        ],
+        "outcome": "None"
+      },
+      {
+        "scenario": "hint_hidden_triple_existing_notes",
+        "calls": {
+          "candidate_sets": 3,
+          "find_hidden_pair": 1,
+          "find_hidden_single": 1,
+          "find_hidden_triple": 1,
+          "find_naked_pair": 1,
+          "find_naked_single": 1,
+          "find_naked_triple": 1,
+          "masks_from_board": 1,
+          "next_step": 1
+        },
+        "array_shapes": [
+          [
+            9,
+            9
+          ]
+        ],
+        "outcome": "Hidden Triple"
+      },
+      {
+        "scenario": "hint_hidden_single_without_notes",
+        "calls": {
+          "apply_placement": 1,
+          "base_hidden_single_evidence": 1,
+          "candidate_sets": 3,
+          "find_hidden_single": 1,
+          "masks_from_board": 1,
+          "next_step": 1,
+          "project_hidden_single_evidence": 1
+        },
+        "array_shapes": [
+          [
+            9,
+            9
+          ]
+        ],
+        "outcome": "Hidden Single"
+      },
+      {
+        "scenario": "wrong_board_warning",
+        "calls": {},
+        "array_shapes": [],
+        "outcome": "请先修正错误"
+      },
+      {
+        "scenario": "auto_master_disabled_after_game_creation",
+        "calls": {},
+        "array_shapes": [],
+        "outcome": 0
+      },
+      {
+        "scenario": "one_technique_setting_toggle",
+        "calls": {
+          "completed_units": 2,
+          "full_view_draw": 1,
+          "animate_completed_units": 1,
+          "settings_save": 1
+        },
+        "outcome": "configuration_only"
+      }
+    ],
+    "baseline_reference": "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/证据/shudu-execution-surface-baseline-20261006.json"
+  },
+  "tk_smoke": {
+    "command": "D:/Tony/Documents/invest2026/projects/shudu/.worktrees/S1-01/.venv/Scripts/python.exe -B -c <Tk-create-draw-close-smoke>",
+    "status": "pass",
+    "exit_code": 0,
+    "stdout": "tk_smoke=pass\r\n",
+    "stderr": ""
+  },
+  "legacy": "LEG-S1-01-009 closed; original dependency download/cache failures retained",
+  "artifact_version": "S1-01-implementation-v3",
+  "previous_artifact_version": "S1-01-implementation-v2",
+  "recheck": {
+    "contract": "s1-01-implementation-recheck-v1",
+    "finding_id": "S1-01-REV-001",
+    "reviewed_artifact_version": "S1-01-implementation-v2",
+    "corrected_artifact_version": "S1-01-implementation-v3",
+    "correction_commit": "c1bb6d9",
+    "required_pytest": {
+      "status": 0,
+      "stdout": "........................................................................ [ 82%]\r\n...............                                                          [100%]\r\n87 passed in 0.46s\r\n",
+      "stderr": ""
+    },
+    "architecture_njit": {
+      "status": 0,
+      "stdout": ".............................                                            [100%]\r\n29 passed in 0.25s\r\n",
+      "stderr": ""
+    },
+    "old_path_scan": {
+      "status": "pass",
+      "raw_exit_code": 1,
+      "stdout": "",
+      "stderr": "",
+      "assertion": "no sudoku_logic/sudoku_step direct imports, _MODULE_ALIASES, or sys.modules registrations"
+    },
+    "identity_path": {
+      "status": 0,
+      "stdout": "identity_path=pass\r\n",
+      "stderr": ""
+    },
+    "cli": {
+      "logical_solver": {
+        "status": 0,
+        "stderr": ""
+      },
+      "shudu_solver": {
+        "status": 0,
+        "stderr": ""
+      }
+    },
+    "execution_surface": {
+      "status": "pass",
+      "measurement": "call_counts_and_input_shapes",
+      "scenario_count": 8,
+      "scenarios": [
+        "auto_stalled_all_ten",
+        "auto_stalled_hidden_triple_only",
+        "hint_stalled_without_notes",
+        "hint_hidden_triple_existing_notes",
+        "hint_hidden_single_without_notes",
+        "wrong_board_warning",
+        "auto_master_disabled_after_game_creation",
+        "one_technique_setting_toggle"
+      ]
+    }
+  }
+}

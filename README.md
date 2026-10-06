@@ -135,8 +135,7 @@ techniques.py       技巧演示入口
 | `shudu/sudoku_njit_core.py` | Numba 位掩码计算核心和 9 种逻辑 finder |
 | `shudu/sudoku_rules.py` | 行、列、宫、peer 和基础候选真源 |
 | `shudu/sudoku_backtracking.py` | 公共完整解/校验能力 |
-| `shudu/sudoku_logic.py` | solver 状态、技巧编排、日志与算法证据 |
-| `shudu/sudoku_step.py` | 不可变 `LogicStep` Interface |
+| `shudu/logic_solver/` | 逻辑求解 deep Module；`_engine.py`、`_project.py`、`_results.py` 与唯一公开入口 |
 | `shudu/sudoku_hints.py` | `LogicStep → Hint` 语义适配 |
 | `shudu/sudoku_game.py` | 游戏状态、笔记、撤回、计时和自动算法 |
 | `shudu/sudoku_screenshot.py` | 截图输入深 Module |
@@ -150,9 +149,9 @@ techniques.py       技巧演示入口
 ```text
 sudoku_njit_core / sudoku_rules
             ↓
-      sudoku_logic
+      logic_solver
             ↓
-      shudu_solver
+      shudu_solver Adapter
             ↓
        LogicStep
             ↓

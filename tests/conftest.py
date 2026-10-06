@@ -17,12 +17,10 @@ _INTERNAL_MODULES = (
     "sudoku_game",
     "sudoku_hint_view",
     "sudoku_hints",
-    "sudoku_logic",
     "sudoku_njit_core",
     "sudoku_puzzles",
     "sudoku_rules",
     "sudoku_screenshot",
-    "sudoku_step",
     "sudoku_theme",
     "sudoku_view",
 )

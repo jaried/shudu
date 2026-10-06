@@ -9,7 +9,7 @@ ROOT = r"D:\Tony\Documents\invest2026\projects\shudu"
 sys.path.insert(0, ROOT)
 sys.path.insert(0, ROOT + r"\tests")
 import conftest  # 复用当前测试别名。
-import shudu.sudoku_logic as logic
+import shudu.logic_solver._engine as logic
 import shudu.sudoku_hints as hints
 import shudu_solver as project
 from shudu.auto_techniques import AUTO_TECHNIQUE_NAMES

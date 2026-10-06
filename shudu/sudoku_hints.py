@@ -9,8 +9,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from shudu.sudoku_rules import Cell, unit_name
-from shudu.sudoku_step import Change, LogicStep
-from shudu_solver import ShuduSolver
+from shudu.logic_solver import Change, LogicStep, ShuduSolver
 
 NAMES = {
     "Naked Single": "唯一候选数",
