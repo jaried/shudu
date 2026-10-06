@@ -73,7 +73,7 @@ def hint_foreground(hint: Hint, cell) -> str:
 def draw_hint_notes(view: SudokuView, hint: Hint, cell, x: float, y: float) -> None:
     values = view.game.notes.get(cell)
     relevant = hint.step is not None and cell in hint.regions | hint.sources | hint.targets
-    if relevant and not hint.use_visible_candidates:
+    if values is None and relevant:
         values = hint.step.candidates[cell[0]][cell[1]]
     values = () if values is None else values
     removed = set(hint.pending_eliminations)
