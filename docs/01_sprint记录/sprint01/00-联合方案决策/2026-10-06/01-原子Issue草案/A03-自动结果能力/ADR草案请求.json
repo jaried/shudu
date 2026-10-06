@@ -1,0 +1,15 @@
+{
+  "source_issue": "DIRECT-SHUDU-20261006-A03",
+  "source_stage": "solution-decision",
+  "design_doc": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\docs\\01_Sprint记录\\sprint01\\00-联合方案决策\\2026-10-06\\架构优化联合方案决策草案.md",
+  "phase": "approval_draft",
+  "action": "revise",
+  "target_adr": "ADR-003",
+  "target_scope": "project",
+  "rationale": "编排迁入能力目录，自动路径改为每轮掩码差分，维持现有finder和执行范围。",
+  "executor": "architecture-design",
+  "request_id": "4f891eb3-3d43-406c-9358-f6c240184a10",
+  "issue_dir": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\docs\\01_Sprint记录\\sprint01\\00-联合方案决策\\2026-10-06\\01-原子Issue草案\\A03-自动结果能力",
+  "draft_path": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\docs\\01_Sprint记录\\sprint01\\00-联合方案决策\\2026-10-06\\01-原子Issue草案\\A03-自动结果能力\\DIRECT-SHUDU-20261006-A03_ADR草案_Numba位掩码核心与按需差分.md",
+  "approval_locator": ""
+}

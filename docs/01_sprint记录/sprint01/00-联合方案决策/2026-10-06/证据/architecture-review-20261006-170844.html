@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Shudu · 架构优化候选 · 2026-10-06</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root{--ink:#202c31;--muted:#65726e;--paper:#f5f4ee;--line:#d9ded7;--accent:#166451;--warn:#8a6519;--red:#b74e45}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:"Microsoft YaHei","Segoe UI",sans-serif;line-height:1.65}
+    main{max-width:1120px;margin:auto;padding:54px 30px 64px}h1,h2,h3,p{margin:0}main h1{font-size:44px;font-weight:700;letter-spacing:-1.5px;line-height:1.2}main h2{font-size:23px;font-weight:600;line-height:1.4}main h3{font-size:17px;font-weight:600}a{color:var(--accent);text-underline-offset:4px}code{font-family:Consolas,monospace;font-size:12px;overflow-wrap:anywhere}
+    .eyebrow{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);font-weight:700}.header{border-bottom:2px solid var(--ink);padding-bottom:26px}.title-row{display:flex;gap:24px;justify-content:space-between;align-items:end;margin-top:12px}.stamp{font-family:Consolas,monospace;font-size:12px;text-align:right;color:var(--muted)}.meta{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px;font-size:12px;color:var(--muted)}.meta span{padding:4px 10px;background:#e9ede6;border-radius:4px}.legend{display:flex;gap:24px;flex-wrap:wrap;font-size:11px;color:var(--muted);margin-top:18px}.legend i{display:inline-block;width:18px;height:10px;margin-right:6px;border:1px solid var(--muted)}.legend .deep-key{background:var(--ink)}.legend .seam-key{height:0;border:0;border-top:2px dashed var(--muted)}.legend .leak-key{height:0;border:0;border-top:2px solid var(--red)}
+    .nav{display:flex;gap:12px;flex-wrap:wrap;margin:25px 0 34px}.nav a{padding:7px 12px;border:1px solid var(--line);border-radius:4px;font-size:12px;text-decoration:none}.candidate{background:#fffefb;border:1px solid var(--line);border-top:3px solid var(--accent);padding:26px;margin:0 0 28px;scroll-margin-top:20px}.candidate.weak{border-top-color:#929d97}.card-head{display:flex;align-items:start;gap:16px;justify-content:space-between}.number{font-family:Georgia,serif;font-size:35px;color:var(--accent);line-height:1;margin-right:10px}.head-title{display:flex;align-items:center}.badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:3px;background:#f4ead3;color:var(--warn)}.badge.grey{background:#ecefeb;color:#59675f}.badge.green{background:#e3eee6;color:var(--accent)}.files{color:var(--muted);margin-top:17px;font-size:12px}
+    .diagrams{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:19px 0}.diagram{background:#f7f8f4;border:1px solid #e4e7df;padding:13px}.diagram-label{font-size:10px;letter-spacing:1.5px;color:var(--muted);margin-bottom:5px;font-weight:700}.diagram svg{display:block;width:100%;height:auto;aspect-ratio:430/244}.box{fill:white;stroke:#a5b2a9;stroke-width:1.3}.deep{fill:#223b34;stroke:#166451;stroke-width:2}.internal{fill:#37574c;stroke:#789087;stroke-width:1;stroke-dasharray:4 3}.t{font:12px "Microsoft YaHei","Segoe UI",sans-serif;fill:#24372d}.s{font:10px "Microsoft YaHei","Segoe UI",sans-serif;fill:#66756d}.white{fill:#fff}.light{fill:#d4e0d8}.arrow{stroke:#758b7c;stroke-width:1.5;fill:none}.leak{stroke:#b74e45;stroke-width:1.8;fill:none}.seam{stroke:#779187;stroke-width:1.2;stroke-dasharray:5 4;fill:none}.red{fill:#b74e45}.footnote{font-size:11px;color:var(--muted);margin-top:7px}
+    .facts{display:grid;grid-template-columns:64px 1fr;gap:7px 12px;font-size:13px}.facts dt{font-weight:700;color:var(--accent)}.facts dd{margin:0}.wins{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0}.wins span{font-size:11px;background:#edf1e9;padding:5px 9px;color:#385e48;border-radius:3px}.guard{background:#f1f3ed;border-left:3px solid #829d8a;padding:11px 13px;font-size:12px}.proof{margin-top:14px;border-top:1px solid var(--line);padding-top:10px;font-size:11px;color:var(--muted)}.proof summary{cursor:pointer;font-weight:700;color:#546c5f}.proof ul{padding-left:18px;margin:10px 0 2px}.proof li{margin:6px 0}.top{background:#233b33;color:#f6f7ed;padding:28px;border-radius:3px;margin:34px 0 27px}.top h2{margin:9px 0 10px}.top a{color:#c1e6cd}.top p{font-size:13px;max-width:830px}.evidence{display:grid;grid-template-columns:1fr 1fr;gap:25px;margin:25px 0}.evidence p,.evidence li{font-size:12px;color:var(--muted)}.evidence h3{margin-bottom:10px}.evidence ul{padding-left:17px;margin:0}.evidence li{margin-bottom:6px}.checks{border-collapse:collapse;width:100%;font-size:12px}.checks td{padding:8px 0;border-bottom:1px solid var(--line);vertical-align:top}.checks td:last-child{text-align:right;color:var(--accent);white-space:nowrap;padding-left:14px}.end{font-size:11px;color:var(--muted);border-top:2px solid var(--ink);padding-top:18px;margin-top:26px}.recommend-label{font-size:11px;letter-spacing:1.5px;color:#badbc7}.inline-source{font-size:11px;color:var(--muted);margin-top:10px}
+    @media(max-width:760px){main{padding:28px 16px}.title-row{display:block}main h1{font-size:32px}.stamp{text-align:left;margin-top:15px}.candidate{padding:19px}.diagrams,.evidence{grid-template-columns:1fr}.card-head{display:block}.number{font-size:27px}main h2{font-size:20px}.facts{grid-template-columns:52px 1fr}.legend{gap:12px}}
+    @media print{body{background:white}main{max-width:none;padding:0}.candidate{break-inside:avoid}.nav{display:none}.top{background:#edf1e9;color:#202c31}.top a,.recommend-label{color:#166451}}
+  </style>
+</head>
+<body class="antialiased">
+<main class="mx-auto">
+  <header class="header">
+    <div class="eyebrow">Codebase architecture review / Shudu</div>
+    <div class="title-row"><h1>把复杂度留在能力内部</h1><div class="stamp">2026-10-06<br>main · 60ec97c91d65<br>候选扫描 · 待选择</div></div>
+    <div class="meta"><span>2 项 Worth exploring</span><span>1 项 Speculative</span><span>128 项针对性回归通过</span><span>ADR-001 至 ADR-005 已核对</span></div>
+    <div class="legend"><span><i></i>现有 module</span><span><i class="deep-key"></i>加深后的 module</span><span><i class="seam-key"></i>seam</span><span><i class="leak-key"></i>调用方额外知识</span></div>
+  </header>
+  <nav class="nav" aria-label="候选目录"><a href="#candidate-1">01 自动求解结果</a><a href="#candidate-2">02 一步推理事实</a><a href="#candidate-3">03 设置菜单</a><a href="#validation">验证与 ADR</a></nav>
+
+  <article id="candidate-1" class="candidate">
+    <div class="card-head"><div><div class="head-title"><span class="number">01</span><h2>让自动求解产出完整一致的结果</h2></div><div class="badges"><span class="badge">Worth exploring</span><span class="badge grey">in-process</span><span class="badge green">优先推荐</span></div></div></div>
+    <div class="files"><code>shudu_solver.py:23,68,80 · shudu/sudoku_game.py:261,276,298</code></div>
+    <div class="diagrams">
+      <div class="diagram"><div class="diagram-label">BEFORE · Game 知道如何拼结果</div>
+        <svg viewBox="0 0 430 244" role="img" aria-label="优化前自动求解：Game 同时读取结果对象和可变 solver，再拼装棋盘笔记与撤回状态。">
+          <rect class="box" x="22" y="13" width="386" height="40" rx="4"/><text class="t" x="215" y="38" text-anchor="middle">ShuduSolver · 所选算法 → 固定点</text>
+          <path class="leak" d="M111 53 V79 M316 53 V79"/><text class="red s" x="215" y="70" text-anchor="middle">同一次执行，两个读取通道</text>
+          <rect class="box" x="22" y="80" width="178" height="49" rx="4"/><text class="t" x="111" y="100" text-anchor="middle">SimpleSolveResult</text><text class="s" x="111" y="117" text-anchor="middle">placements / eliminations</text>
+          <rect class="box" x="222" y="80" width="186" height="49" rx="4"/><text class="t" x="315" y="100" text-anchor="middle">可变 solver 状态</text><text class="s" x="315" y="117" text-anchor="middle">board / algorithm_candidates</text>
+          <path class="leak" d="M111 129 V150 H215 V164 M315 129 V150 H215"/>
+          <rect class="box" x="22" y="165" width="386" height="64" rx="4"/><text class="t" x="215" y="186" text-anchor="middle">Game · _apply_auto_result</text><text class="s" x="215" y="204" text-anchor="middle">重建 notes / 合并删除 / 撤回 / 完成状态</text><text class="s red" x="215" y="220" text-anchor="middle">候选快照知识跨过 solver seam</text>
+        </svg>
+      </div>
+      <div class="diagram"><div class="diagram-label">AFTER · 求解结果知识集中</div>
+        <svg viewBox="0 0 430 244" role="img" aria-label="优化方向：自动求解 module 内完成结果组装；Game 只处理游戏状态应用与撤回。具体 interface 待选定后讨论。">
+          <rect class="deep" x="22" y="13" width="386" height="125" rx="5"/><text class="t white" x="215" y="38" text-anchor="middle">自动求解 module</text>
+          <rect class="internal" x="40" y="53" width="350" height="65" rx="3"/><text class="t light" x="215" y="77" text-anchor="middle">所选算法 → 固定点 → 同轮结果组装</text><text class="s light" x="215" y="101" text-anchor="middle">棋盘、算法候选和真实删除保持一致</text>
+          <path class="seam" d="M10 149 H420"/><text class="s" x="395" y="164" text-anchor="end">现有 solver seam</text><path class="arrow" d="M215 138 V180"/>
+          <rect class="box" x="22" y="181" width="386" height="48" rx="4"/><text class="t" x="215" y="201" text-anchor="middle">Game · 触发条件与结果应用</text><text class="s" x="215" y="220" text-anchor="middle">撤回 / notes 状态 / 完成判定</text>
+        </svg>
+      </div>
+    </div>
+    <dl class="facts"><dt>摩擦</dt><dd><code>_apply_auto_result(solver, result, remember)</code> 同时依赖结果和可变 solver；Game 还负责把算法候选转为 notes。</dd><dt>方向</dt><dd>由已有自动求解 module 组装同一轮完整结果，把候选表示的读取细节留在其 implementation 中。</dd><dt>删除检验</dt><dd>收回 Game 的 <code>_solver_notes()</code> 与双通道读取后，复杂度集中到 solver；Game 继续拥有状态门禁、撤回与 notes。</dd></dl>
+    <div class="wins"><span>depth：能力结果闭合</span><span>locality：候选知识集中</span><span>leverage：Game 理解更少</span><span>测试经过同一 interface</span></div>
+    <div class="guard">ADR-002 / 003 / 005：总开关关闭等现有门禁继续在 Game 提前返回；自动笔记关闭自动求解时仍只生成基础候选。固定点只执行已勾选算法，恢复历史删除；提示继续独立走单步路径。</div>
+    <p class="inline-source">执行面：沿用当前 solver 创建、算法计算与状态应用；保留配置 IO 归属 GUI。现有每次失败技巧前的 81 格快照转换可确认，但尚无耗时测量。</p>
+    <details class="proof"><summary>代码与测试证据</summary><ul><li><code>shudu_solver.py:23</code> 的结果只含填入数量和删除；<code>sudoku_game.py:276</code> 分别读取 solver 的棋盘、最终候选与 result。</li><li><code>shudu_solver.py:68</code> 在每个技巧尝试前捕获候选快照，失败尝试也发生转换；性能收益需另行测量。</li><li><code>tests/test_auto_simple.py:50,78,129,148</code> 验证固定点、手工 notes 独立、累积删除保留、最终候选一致。</li><li><code>tests/test_auto_technique_settings.py:95,105,136,159</code> 验证总开关门禁、基础候选与只执行勾选算法。</li></ul></details>
+  </article>
+
+  <article id="candidate-2" class="candidate">
+    <div class="card-head"><div><div class="head-title"><span class="number">02</span><h2>集中产生一步推理事实</h2></div><div class="badges"><span class="badge">Worth exploring</span><span class="badge grey">in-process</span><span class="badge grey">涉及解释兼容</span></div></div></div>
+    <div class="files"><code>shudu/sudoku_logic.py:91,118,129 · shudu_solver.py:104,123,146,160 · shudu/sudoku_step.py:24</code></div>
+    <div class="diagrams">
+      <div class="diagram"><div class="diagram-label">BEFORE · 事实在两个位置形成</div>
+        <svg viewBox="0 0 430 244" role="img" aria-label="优化前一步推理：技巧执行先产出私有证据与日志，项目 solver 再通过差分、日志拆分和 Hidden Single 二次证据构造形成 LogicStep。">
+          <rect class="box" x="22" y="12" width="386" height="49" rx="4"/><text class="t" x="215" y="32" text-anchor="middle">sudoku_logic · 技巧执行</text><text class="s" x="215" y="51" text-anchor="middle">_last_sources / _last_units / 日志</text>
+          <path class="leak" d="M215 61 V88"/><path class="seam" d="M10 75 H420"/>
+          <rect class="box" x="22" y="89" width="386" height="91" rx="4"/><text class="t" x="215" y="111" text-anchor="middle">ShuduSolver · next_step</text><text class="s" x="215" y="132" text-anchor="middle">棋盘候选差分 → 日志拆分 → 读取私有证据</text><text class="s red" x="215" y="153" text-anchor="middle">Hidden Single：重新选择单位与寻找来源格</text><text class="s" x="215" y="172" text-anchor="middle">组合成 LogicStep</text>
+          <path class="arrow" d="M215 180 V198"/><rect class="box" x="22" y="199" width="386" height="32" rx="4"/><text class="t" x="215" y="220" text-anchor="middle">Hint adapter · 语义与文案</text>
+        </svg>
+      </div>
+      <div class="diagram"><div class="diagram-label">AFTER · 算法与证据拥有 locality</div>
+        <svg viewBox="0 0 430 244" role="img" aria-label="优化方向：技巧执行 module 完整产生一步事实，项目 solver 保留优先级和项目解释取舍，Hint adapter 消费事实。">
+          <rect class="deep" x="22" y="12" width="386" height="103" rx="5"/><text class="t white" x="215" y="37" text-anchor="middle">技巧执行 module</text><rect class="internal" x="40" y="51" width="350" height="47" rx="3"/><text class="t light" x="215" y="71" text-anchor="middle">技巧动作 + 来源格 + 单位 + 步骤事实</text><text class="s light" x="215" y="89" text-anchor="middle">在同一 execution context 产生</text>
+          <path class="arrow" d="M215 115 V135"/><rect class="box" x="22" y="136" width="386" height="43" rx="4"/><text class="t" x="215" y="154" text-anchor="middle">ShuduSolver · 既有项目 seam</text><text class="s" x="215" y="171" text-anchor="middle">项目优先级与解释取舍</text>
+          <path class="seam" d="M10 191 H420"/><path class="arrow" d="M215 179 V205"/><rect class="box" x="22" y="206" width="386" height="27" rx="4"/><text class="t" x="215" y="224" text-anchor="middle">Hint adapter · 直接消费 LogicStep</text>
+        </svg>
+      </div>
+    </div>
+    <dl class="facts"><dt>摩擦</dt><dd>公开一步结果需要私有旁路字段、棋盘差分和日志格式；Hidden Single 来源格还在两处生成。</dd><dt>方向</dt><dd>围绕已有单步 capability 集中产生事实，保留项目优先级和解释选择，让文案调整与推理事实减少耦合。</dd><dt>删除检验</dt><dd>将日志拆分和重复证据构造收回执行 module，会集中复杂度；项目 seam 仍承载真实的项目与 legacy 差异。</dd></dl>
+    <div class="wins"><span>depth：单步事实完整</span><span>locality：执行与证据同处</span><span>leverage：adapter 只读事实</span><span>interface 输出可核验</span></div>
+    <div class="guard">ADR-002 / 003：保留项目 Hidden Single 优先、legacy Naked Single 优先以及现有宫 → 行 → 列解释选择；Hint 按格投影 notes，仍只请求一次 <code>next_step()</code>，找到第一步即停止。</div>
+    <p class="inline-source">执行面：沿用现有 Numba finder 和执行前快照；提示保持只读，不进入完整求解或回溯。该候选尚未证明当前步骤输出错误。</p>
+    <details class="proof"><summary>代码、测试与设计风险</summary><ul><li><code>sudoku_logic.py:129</code> 和 <code>shudu_solver.py:146</code> 都寻找 Hidden Single 证据；后者承担执行前状态与项目解释选择，迁移时必须保留其语义。</li><li><code>shudu_solver.py:123,160</code> 依赖文案前缀与日志分隔符；<code>sudoku_step.py:24</code> 从 message 解析技巧名称。</li><li><code>tests/test_shudu_solver.py:15,23</code> 验证公共一步与实际变更；<code>tests/test_sudoku_hints.py:55,75,200,337</code> 验证 Hidden Triple、准确证据、一次 next_step 与输入只读。</li><li><code>tests/test_njit_core.py:38,52</code> 验证十种 finder 的 nopython 编译和两种优先级。</li><li><code>tests/test_architecture.py:108</code> 当前绑定根文件中的私有字段名称；用户选定后需要讨论如何保留其合同意图并以公开结果验证。</li></ul></details>
+  </article>
+
+  <article id="candidate-3" class="candidate weak">
+    <div class="card-head"><div><div class="head-title"><span class="number">03</span><h2>让设置菜单拥有自己的构造与交互</h2></div><div class="badges"><span class="badge grey">Speculative</span><span class="badge grey">in-process</span><span class="badge grey">后置探索</span></div></div></div>
+    <div class="files"><code>sudoku_gui.py:252,269,281 · shudu/settings_popup.py:60,139 · tests/test_auto_technique_settings.py:258</code></div>
+    <div class="diagrams">
+      <div class="diagram"><div class="diagram-label">BEFORE · 先构造 Menu，再构造弹层</div>
+        <svg viewBox="0 0 430 244" role="img" aria-label="优化前设置菜单：窗口创建 Menu、BooleanVar 和回调，SettingsPopup 反查 Tcl 字符串再生成 ttk 条目。配置回调还通过游戏完成检查与绘制路径。">
+          <rect class="box" x="22" y="12" width="386" height="44" rx="4"/><text class="t" x="215" y="32" text-anchor="middle">SudokuWindow · 设置条目与变量</text><text class="s" x="215" y="49" text-anchor="middle">tk.Menu / BooleanVar / 回调</text><path class="leak" d="M215 56 V77"/>
+          <rect class="box" x="22" y="78" width="386" height="56" rx="4"/><text class="t" x="215" y="100" text-anchor="middle">SettingsPopup · Tk 呈现 adapter</text><text class="s red" x="215" y="120" text-anchor="middle">entrycget / globalgetvar → ttk 条目</text><path class="arrow" d="M215 134 V157"/>
+          <rect class="box" x="22" y="158" width="386" height="72" rx="4"/><text class="t" x="215" y="180" text-anchor="middle">配置选择 → _apply_game_change</text><text class="s" x="215" y="201" text-anchor="middle">完成单位扫描 / 重绘 / 动画检查</text><text class="s" x="215" y="220" text-anchor="middle">随后保存完整偏好</text>
+        </svg>
+      </div>
+      <div class="diagram"><div class="diagram-label">AFTER · 菜单知识集中，保存归属 GUI</div>
+        <svg viewBox="0 0 430 244" role="img" aria-label="优化方向：现有设置菜单 module 集中条目构造、悬停、勾选与焦点；GUI 处理用户选择和保存，配置动作走所需执行路径。">
+          <rect class="deep" x="22" y="12" width="386" height="108" rx="5"/><text class="t white" x="215" y="38" text-anchor="middle">设置菜单 module</text><rect class="internal" x="40" y="51" width="350" height="51" rx="3"/><text class="t light" x="215" y="74" text-anchor="middle">条目 / 勾选 / 悬停 / 焦点 / grab</text><text class="s light" x="215" y="94" text-anchor="middle">同一个 Tk adapter 内完成呈现</text>
+          <path class="seam" d="M10 135 H420"/><path class="arrow" d="M215 120 V157"/>
+          <rect class="box" x="22" y="158" width="386" height="72" rx="4"/><text class="t" x="215" y="179" text-anchor="middle">SudokuWindow · 用户选择与持久化</text><text class="s" x="215" y="201" text-anchor="middle">修改配置 → 保存完整偏好</text><text class="s" x="215" y="220" text-anchor="middle">每类动作只运行其所需 capability</text>
+        </svg>
+      </div>
+    </div>
+    <dl class="facts"><dt>摩擦</dt><dd>设置条目先编码为 <code>tk.Menu</code>，再反查 Tcl 变量和 command 生成 ttk 条目；配置选择也经过完成单位扫描与重绘。</dd><dt>方向</dt><dd>在现有设置菜单 module 内集中条目构造与交互；GUI 接收选择并保存，配置动作按实际需要执行。</dd><dt>删除检验</dt><dd>去掉设置弹层的中间 Menu 表示可减少转换；已有焦点、grab、连续勾选和多显示器定位仍留在弹层内部。</dd></dl>
+    <div class="wins"><span>locality：菜单状态同处</span><span>depth：吸收中间转换</span><span>leverage：窗口少懂 Tk</span><span>测试面沿用真实交互</span></div>
+    <div class="guard">ADR-005：GUI 继续拥有 settings store 生命周期，Game / View 保持纯状态与展示职责。算法目录仍是名称与默认项真源；逐项选择即时保存，配置切换保持当前盘面、笔记和提示状态。</div>
+    <p class="inline-source">证据较弱：只有一个设置弹层调用方，现有行为回归通过；收益主要是减少表示转换。探索时需保留真实交互证据，权衡改动成本与 Tk 兼容风险。</p>
+    <details class="proof"><summary>当前行为覆盖</summary><ul><li><code>sudoku_gui.py:252,269</code> 构造 Menu 与 BooleanVar；<code>settings_popup.py:60,139</code> 读回标签、变量与 command，再创建 ttk 条目。</li><li><code>sudoku_gui.py:281,285</code> 的配置 setter 使用 <code>_apply_game_change()</code>；后者在第 121 行比较完成单位、重绘并调用动画。</li><li><code>tests/test_auto_technique_settings.py:258,325,358,395</code> 覆盖连续选择、键盘、外部点击、焦点关闭、重新打开、重启与显示器范围。</li><li>现有 SettingsPopup 已集中焦点、grab 与位置处理，具备实际 depth；本候选只考虑吸收菜单构造复杂度。</li></ul></details>
+  </article>
+
+  <section class="top" id="top-recommendation"><div class="recommend-label">TOP RECOMMENDATION</div><h2>先探索 01：自动求解结果闭合</h2><p>当前 Game 对结果对象和可变 solver 的双通道依赖有直接代码证据；先把结果组装收回已有 capability，能缩小调用方知识，同时保持算法判定、优先级与提示语义。<a href="#candidate-1">查看候选 01 ↑</a></p></section>
+
+  <section id="validation" class="evidence">
+    <div><h3>本轮验证</h3><table class="checks"><tr><td>架构 / 提示 / 算法设置 / 截图切换 / 完成动画</td><td>91 passed · 31.72s</td></tr><tr><td>项目 solver / 自动固定点 / Numba 核心 / legacy 逻辑</td><td>37 passed · 2.24s</td></tr><tr><td>uv 同步现有锁定环境</td><td>exit 0</td></tr><tr><td>项目 .venv 解释器</td><td>Python 3.12.9 · nt</td></tr></table><p style="margin-top:10px">两次针对性回归覆盖 9 个测试文件，共 128 项；完整套件本轮未运行。性能收益未测量，候选尚未实施。</p></div>
+    <div><h3>保持的架构决定</h3><ul><li>ADR-001：完整求解的回溯兜底仍由共享 module 承担。</li><li>ADR-002：Hint 消费 LogicStep，按格使用 notes，只请求一次 next_step。</li><li>ADR-003：位掩码属于 solver 内部，finder 继续走 Numba，保留两种 Single 优先级。</li><li>ADR-004：截图识别继续隐藏在路径 → Puzzle + notes 能力内。</li><li>ADR-005：目录是真源，偏好 IO 属于 GUI，完成动画属于 View。</li></ul></div>
+  </section>
+  <footer class="end">扫描范围：近期代码热点与其调用方、测试、5 份接受状态 ADR。未发现 CONTEXT.md，领域用语取自当前 ADR 与 README。生产代码、测试、ADR 与 Sprint tracker 保持原状态。报告描述能力归属方向，具体 interface 待选定候选后讨论。<br>工作区：D:\Tony\Documents\invest2026\projects\shudu · 快照 HEAD：60ec97c91d652d0fec4c71234c2e023d9ac786bf</footer>
+</main>
+</body>
+</html>

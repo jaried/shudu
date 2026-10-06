@@ -1,0 +1,12 @@
+{
+  "completed_at": "2026-10-06T17:49:43.3115806+08:00",
+  "writer_mode": "semantic approval_draft",
+  "approval_locator": "",
+  "status": "drafted",
+  "draft_locator": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\docs\\01_Sprint记录\\sprint01\\00-联合方案决策\\2026-10-06\\01-原子Issue草案\\A03-自动结果能力\\DIRECT-SHUDU-20261006-A03_ADR草案_Numba位掩码核心与按需差分.md",
+  "request_id": "4f891eb3-3d43-406c-9358-f6c240184a10",
+  "draft_sha256": "d875987edd4dd18caf700f3d7cb66960fa24717ada7a929ca74943ce6704415b",
+  "owner": "architecture-design",
+  "resulting_adr": "ADR-003",
+  "failure_reason": ""
+}

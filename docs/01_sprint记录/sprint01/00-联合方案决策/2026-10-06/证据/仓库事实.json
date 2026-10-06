@@ -1,0 +1,42 @@
+{
+  "observed_at": "2026-10-06T17:27:13.1205163+08:00",
+  "repository_root": "D:/Tony/Documents/invest2026/projects/shudu",
+  "branch": "main",
+  "head": "60ec97c91d652d0fec4c71234c2e023d9ac786bf",
+  "sprint_root": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\docs\\01_Sprint记录\\sprint01",
+  "draft_root": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\docs\\01_Sprint记录\\sprint01\\00-联合方案决策\\2026-10-06",
+  "status_before_draft": [],
+  "root_python": [
+    "logical_solver.py",
+    "shudu_solver.py",
+    "solver.py",
+    "sudoku_gui.py",
+    "techniques.py"
+  ],
+  "tracked_docs": [
+    "docs/00_待办列表/Sprint待办列表/Sprint01.md",
+    "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-05/01-原子Issue草案/BUG-D01-提示推荐与自动完成配置解耦/方案决策草案.md",
+    "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-05/ADR修订草案.md",
+    "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-05/联合方案决策草案.md",
+    "docs/02_架构决策记录/ADR-001-共享回溯兜底求解器.md",
+    "docs/02_架构决策记录/ADR-002-共享规则内核与求解器公共接口.md",
+    "docs/02_架构决策记录/ADR-003-Numba位掩码逻辑核心.md",
+    "docs/02_架构决策记录/ADR-004-截图输入深模块.md",
+    "docs/02_架构决策记录/ADR-005-本地自动算法偏好与完成动画.md",
+    "docs/02_架构决策记录/README.md",
+    "docs/codebase-design-review.md",
+    "docs/gui-acceptance.md"
+  ],
+  "physical_line_upper_bounds": {
+    "shudu/sudoku_logic.py": 548,
+    "shudu_solver.py": 199,
+    "sudoku_gui.py": 374,
+    "shudu/settings_popup.py": 169,
+    "tests/test_architecture.py": 182,
+    "tests/test_auto_technique_settings.py": 459,
+    "tests/test_sudoku_hints.py": 390
+  },
+  "client_date": "2026-10-06",
+  "production_write_scope": [],
+  "mode": "joint_solution_draft_only"
+}

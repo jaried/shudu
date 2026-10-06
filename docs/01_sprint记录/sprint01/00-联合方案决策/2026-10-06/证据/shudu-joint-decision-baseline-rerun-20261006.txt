@@ -1,0 +1,73 @@
+........................................................................ [ 30%]
+........................................................................ [ 60%]
+..........................E............................................. [ 90%]
+......................                                                   [100%]
+=================================== ERRORS ====================================
+_ ERROR at setup of test_auto_notes_keyboard_and_pen_switch_have_separate_actions _
+
+    @pytest.fixture
+    def app():
+>       root = tk.Tk()
+               ^^^^^^^
+
+tests\test_sudoku_gui.py:22: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <tkinter.Tk object .>, screenName = None, baseName = '__main__'
+className = 'Tk', useTk = True, sync = False, use = None
+
+    def __init__(self, screenName=None, baseName=None, className='Tk',
+                 useTk=True, sync=False, use=None):
+        """Return a new top level widget on screen SCREENNAME. A new Tcl interpreter will
+        be created. BASENAME will be used for the identification of the profile file (see
+        readprofile).
+        It is constructed from sys.argv[0] without extensions if None is given. CLASSNAME
+        is the name of the widget class."""
+        self.master = None
+        self.children = {}
+        self._tkloaded = False
+        # to avoid recursions in the getattr code in case of failure, we
+        # ensure that self.tk is always _something_.
+        self.tk = None
+        if baseName is None:
+            import os
+            baseName = os.path.basename(sys.argv[0])
+            baseName, ext = os.path.splitext(baseName)
+            if ext not in ('.py', '.pyc'):
+                baseName = baseName + ext
+        interactive = False
+>       self.tk = _tkinter.create(screenName, baseName, className, interactive, wantobjects, useTk, sync, use)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       _tkinter.TclError: Can't find a usable tk.tcl in the following directories: 
+E           D:/anaconda3/envs/base_python3.12/Library/lib/tcl8.6/tk8.6 D:/anaconda3/envs/base_python3.12/Library/lib/tk8.6 D:/anaconda3/envs/lib/tk8.6 D:/anaconda3/envs/lib/tk8.6 D:/anaconda3/lib/tk8.6 D:/anaconda3/envs/library
+E       
+E       D:/anaconda3/envs/base_python3.12/Library/lib/tk8.6/tk.tcl: couldn't read file "D:/anaconda3/envs/base_python3.12/Library/lib/tk8.6/ttk/defaults.tcl": no such file or directory
+E       couldn't read file "D:/anaconda3/envs/base_python3.12/Library/lib/tk8.6/ttk/defaults.tcl": no such file or directory
+E           while executing
+E       "source -encoding utf-8 D:/anaconda3/envs/base_python3.12/Library/lib/tk8.6/ttk/defaults.tcl"
+E           ("uplevel" body line 1)
+E           invoked from within
+E       "uplevel #0 [list source -encoding utf-8 [file join $library defaults.tcl]]"
+E           (procedure "ttk::LoadThemes" line 5)
+E           invoked from within
+E       "ttk::LoadThemes"
+E           (file "D:/anaconda3/envs/base_python3.12/Library/lib/tk8.6/ttk/ttk.tcl" line 159)
+E           invoked from within
+E       "source -encoding utf-8 D:/anaconda3/envs/base_python3.12/Library/lib/tk8.6/ttk/ttk.tcl"
+E           ("uplevel" body line 1)
+E           invoked from within
+E       "uplevel \#0 [list source -encoding utf-8 $::ttk::library/ttk.tcl]"
+E           (file "D:/anaconda3/envs/base_python3.12/Library/lib/tk8.6/tk.tcl" line 702)
+E           invoked from within
+E       "source -encoding utf-8 D:/anaconda3/envs/base_python3.12/Library/lib/tk8.6/tk.tcl"
+E           ("uplevel" body line 1)
+E           invoked from within
+E       "uplevel #0 [list source -encoding utf-8 $file]"
+E       
+E       
+E       This probably means that tk wasn't installed properly.
+
+D:\anaconda3\envs\base_python3.12\Lib\tkinter\__init__.py:2346: TclError
+=========================== short test summary info ===========================
+ERROR tests/test_sudoku_gui.py::test_auto_notes_keyboard_and_pen_switch_have_separate_actions
+237 passed, 1 error in 27.36s

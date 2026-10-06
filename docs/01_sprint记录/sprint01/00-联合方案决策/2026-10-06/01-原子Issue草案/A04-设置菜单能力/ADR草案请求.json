@@ -1,0 +1,15 @@
+{
+  "source_issue": "DIRECT-SHUDU-20261006-A04",
+  "source_stage": "solution-decision",
+  "design_doc": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\docs\\01_Sprint记录\\sprint01\\00-联合方案决策\\2026-10-06\\架构优化联合方案决策草案.md",
+  "phase": "approval_draft",
+  "action": "revise",
+  "target_adr": "ADR-005",
+  "target_scope": "project",
+  "rationale": "自动结果闭合与菜单直接构造，配置切换只更新消息和持久偏好。",
+  "executor": "architecture-design",
+  "request_id": "9b267d36-76a1-4e4b-a8ce-cd40eedc9f24",
+  "issue_dir": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\docs\\01_Sprint记录\\sprint01\\00-联合方案决策\\2026-10-06\\01-原子Issue草案\\A04-设置菜单能力",
+  "draft_path": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\docs\\01_Sprint记录\\sprint01\\00-联合方案决策\\2026-10-06\\01-原子Issue草案\\A04-设置菜单能力\\DIRECT-SHUDU-20261006-A04_ADR草案_自动偏好与设置菜单的能力执行面.md",
+  "approval_locator": ""
+}

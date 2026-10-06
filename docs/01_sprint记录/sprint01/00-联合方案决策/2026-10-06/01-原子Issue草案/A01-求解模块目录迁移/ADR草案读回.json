@@ -1,0 +1,12 @@
+{
+  "completed_at": "2026-10-06T17:49:43.5342530+08:00",
+  "writer_mode": "semantic approval_draft",
+  "approval_locator": "",
+  "status": "drafted",
+  "draft_locator": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\docs\\01_Sprint记录\\sprint01\\00-联合方案决策\\2026-10-06\\01-原子Issue草案\\A01-求解模块目录迁移\\DIRECT-SHUDU-20261006-A01_ADR草案_共享规则内核与能力级求解接口.md",
+  "request_id": "0ba0d1de-a8be-4125-9cda-d9083f8e6aea",
+  "draft_sha256": "6abc6b2cb6366d3028e97a1643d2b384aee9fb06a466746968df2d4fde59b137",
+  "owner": "architecture-design",
+  "resulting_adr": "ADR-002",
+  "failure_reason": ""
+}

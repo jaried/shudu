@@ -1,0 +1,15 @@
+{
+  "source_issue": "DIRECT-SHUDU-20261006-A01",
+  "source_stage": "solution-decision",
+  "design_doc": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\docs\\01_Sprint记录\\sprint01\\00-联合方案决策\\2026-10-06\\架构优化联合方案决策草案.md",
+  "phase": "approval_draft",
+  "action": "revise",
+  "target_adr": "ADR-002",
+  "target_scope": "project",
+  "rationale": "共享求解实现集中于单目录公共入口，保留项目和legacy兼容seam，公开按需capability。",
+  "executor": "architecture-design",
+  "request_id": "0ba0d1de-a8be-4125-9cda-d9083f8e6aea",
+  "issue_dir": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\docs\\01_Sprint记录\\sprint01\\00-联合方案决策\\2026-10-06\\01-原子Issue草案\\A01-求解模块目录迁移",
+  "draft_path": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\docs\\01_Sprint记录\\sprint01\\00-联合方案决策\\2026-10-06\\01-原子Issue草案\\A01-求解模块目录迁移\\DIRECT-SHUDU-20261006-A01_ADR草案_共享规则内核与能力级求解接口.md",
+  "approval_locator": ""
+}
