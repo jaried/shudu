@@ -25,6 +25,25 @@ def test_settings_round_trip_preserves_exact_selection(tmp_path):
     assert payload["auto_techniques"] == ["hidden_pair", "x_wing"]
 
 
+def test_settings_preserve_master_off_and_algorithm_selection(tmp_path):
+    path = tmp_path / "settings.json"
+    store = UserSettingsStore(path)
+    settings = UserSettings.from_auto_techniques({"hidden_triple", "x_wing"}, auto_solve=False)
+    store.save(settings)
+    assert store.load() == settings
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    assert payload["auto_solve"] is False
+    assert payload["auto_techniques"] == ["hidden_triple", "x_wing"]
+
+
+def test_old_settings_keep_selection_and_default_master_on(tmp_path):
+    path = tmp_path / "settings.json"
+    path.write_text(json.dumps({"version": 1, "auto_techniques": ["x_wing"]}), encoding="utf-8")
+    settings = UserSettingsStore(path).load()
+    assert settings.auto_solve is True
+    assert settings.auto_techniques == {"x_wing"}
+
+
 def test_corrupt_settings_falls_back_to_defaults(tmp_path):
     path = tmp_path / "settings.json"
     path.write_text("{bad-json", encoding="utf-8")

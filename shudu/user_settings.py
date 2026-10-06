@@ -6,14 +6,15 @@ Module 隐藏跨平台配置路径、JSON 兼容、校验和原子写入细节�
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 import json
 import os
-from pathlib import Path
 import sys
+from dataclasses import dataclass
+from pathlib import Path
 
 from shudu.auto_techniques import (
     AUTO_TECHNIQUE_NAMES,
+    DEFAULT_AUTO_SOLVE,
     DEFAULT_AUTO_TECHNIQUES,
     validate_auto_techniques,
 )
@@ -24,11 +25,14 @@ SETTINGS_VERSION = 1
 @dataclass(frozen=True)
 class UserSettings:
     auto_techniques: frozenset[str] = DEFAULT_AUTO_TECHNIQUES
+    auto_solve: bool = DEFAULT_AUTO_SOLVE
 
     @classmethod
-    def from_auto_techniques(cls, names) -> "UserSettings":
+    def from_auto_techniques(cls, names, auto_solve: bool = DEFAULT_AUTO_SOLVE) -> UserSettings:
         values = frozenset(validate_auto_techniques(names))
-        result = cls(values)
+        if not isinstance(auto_solve, bool):
+            raise TypeError("自动求解总开关必须是布尔值")
+        result = cls(values, auto_solve)
         return result
 
 
@@ -37,7 +41,6 @@ class UserSettingsStore:
 
     def __init__(self, path: str | Path | None = None):
         self.path = Path(path) if path is not None else _default_settings_path()
-        return
 
     def load(self) -> UserSettings:
         """读取偏好；文件不存在或内容损坏时回到产品默认配置。"""
@@ -54,9 +57,10 @@ class UserSettingsStore:
 
     def save(self, settings: UserSettings) -> None:
         """使用同目录临时文件 + replace 原子保存完整偏好。"""
-        validated = UserSettings.from_auto_techniques(settings.auto_techniques)
+        validated = UserSettings.from_auto_techniques(settings.auto_techniques, settings.auto_solve)
         payload = {
             "version": SETTINGS_VERSION,
+            "auto_solve": validated.auto_solve,
             "auto_techniques": [
                 name
                 for name in AUTO_TECHNIQUE_NAMES
@@ -68,17 +72,16 @@ class UserSettingsStore:
         text = json.dumps(payload, ensure_ascii=False, indent=2) + "\n"
         temporary.write_text(text, encoding="utf-8")
         os.replace(temporary, self.path)
-        return
 
 
 def _decode_settings(payload) -> UserSettings:
     if not isinstance(payload, dict):
-        raise ValueError("配置根节点必须是对象")
+        raise TypeError("配置根节点必须是对象")
     names = payload.get("auto_techniques")
     if not isinstance(names, list) or any(not isinstance(name, str) for name in names):
         raise ValueError("auto_techniques 必须是字符串列表")
     known = frozenset(name for name in names if name in AUTO_TECHNIQUE_NAMES)
-    result = UserSettings(known)
+    result = UserSettings.from_auto_techniques(known, payload.get("auto_solve", DEFAULT_AUTO_SOLVE))
     return result
 
 

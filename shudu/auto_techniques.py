@@ -8,6 +8,8 @@ from __future__ import annotations
 
 from collections.abc import Iterable
 
+DEFAULT_AUTO_SOLVE = True
+
 AUTO_TECHNIQUE_SPECS = (
     ("hidden_single", "Hidden Single", True),
     ("naked_single", "Naked Single", True),

@@ -6,24 +6,24 @@
 
 from __future__ import annotations
 
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable
 from dataclasses import dataclass
 from functools import lru_cache
 from time import monotonic
-from typing import Callable
 
-from shudu_solver import ShuduSolver
 from shudu.auto_techniques import (
     AUTO_TECHNIQUE_NAMES,
     AUTO_TECHNIQUE_SPECS,
+    DEFAULT_AUTO_SOLVE,
     DEFAULT_AUTO_TECHNIQUES,
     validate_auto_techniques,
 )
 from shudu.sudoku_backtracking import DEFAULT_BACKTRACKING_SOLVER
 from shudu.sudoku_hints import Hint, make_hint
-from shudu.sudoku_puzzles import Puzzle, SCREENSHOT_PUZZLE
+from shudu.sudoku_puzzles import SCREENSHOT_PUZZLE, Puzzle
 from shudu.sudoku_rules import CELLS, PEERS, UNITS, Cell, candidate_grid
 from shudu.sudoku_step import Change
+from shudu_solver import ShuduSolver
 
 Grid = tuple[tuple[int, ...], ...]
 
@@ -53,6 +53,7 @@ class Game:
         clock: Callable[[], float] = monotonic,
         auto_simple: bool = False,
         auto_techniques: Iterable[str] | None = None,
+        auto_solve: bool = DEFAULT_AUTO_SOLVE,
     ):
         self.puzzle = puzzle
         self.solution = solve_puzzle(puzzle)
@@ -62,8 +63,8 @@ class Game:
         self._elapsed = 0.0
         self._started = clock()
         self._init_play_state(auto_simple, auto_techniques)
+        self.auto_solve = bool(auto_solve)
         self.hint_preview: Hint | None = None
-        return
 
     def _init_play_state(self, auto_simple: bool, auto_techniques: Iterable[str] | None) -> None:
         self.notes: dict[Cell, set[int]] = {}
@@ -87,8 +88,8 @@ class Game:
 
     @property
     def auto_simple(self) -> bool:
-        """兼容旧开关：有任一自动算法启用时视为开启。"""
-        result = bool(self.auto_techniques)
+        """兼容旧查询：总开关开启且有勾选算法时，自动求解生效。"""
+        result = self.auto_solve and bool(self.auto_techniques)
         return result
 
     @auto_simple.setter
@@ -219,6 +220,14 @@ class Game:
                 if not self.notes[cell]:
                     self.notes.pop(cell)
 
+    def set_auto_solve(self, enabled: bool) -> None:
+        """切换自动求解总开关，保留算法选择和当前游戏状态。"""
+        self.auto_solve = bool(enabled)
+        if self.auto_solve:
+            self.message = "自动求解已开启；后续自动执行使用勾选算法。"
+        else:
+            self.message = "自动求解已关闭；已保留各算法的勾选状态。"
+
     def set_auto_technique(self, name: str, enabled: bool) -> None:
         """独立切换一个自动算法配置；设置变化本身不执行求解。"""
         if name not in AUTO_TECHNIQUE_NAMES:
@@ -230,17 +239,17 @@ class Game:
         label = self._technique_label(name)
         if enabled:
             self.auto_techniques.add(name)
-            self.message = f"已开启 {label} 自动求解；后续自动执行使用当前勾选集合。"
+            self.message = f"已勾选 {label}；自动求解开启时执行。"
         else:
             self.auto_techniques.remove(name)
-            self.message = f"已关闭 {label} 自动求解。"
+            self.message = f"已取消 {label} 的自动求解勾选。"
 
     def _technique_label(self, name: str) -> str:
         result = next(label for key, label, _ in AUTO_TECHNIQUE_SPECS if key == name)
         return result
 
     def set_auto_simple(self, enabled: bool) -> None:
-        """兼容旧总开关；True 启用默认集合，False 关闭全部自动算法。"""
+        """兼容旧简单算法选择；True 恢复默认集合，False 取消全部勾选。"""
         target = set(DEFAULT_AUTO_TECHNIQUES) if enabled else set()
         changed = target != self.auto_techniques
         self.auto_techniques = target
@@ -251,7 +260,7 @@ class Game:
 
     def auto_solve_enabled(self, remember: bool = False) -> int:
         """执行全部已启用算法到固定点，并同步最终算法候选小数字。"""
-        if not self.auto_techniques or self.status != "playing" or self.wrong_cells():
+        if not self.auto_simple or self.status != "playing" or self.wrong_cells():
             return 0
         solver = ShuduSolver(self.board)
         solver.apply_candidate_eliminations(self.simple_eliminations)
@@ -357,7 +366,7 @@ class Game:
         if self.wrong_cells():
             self.message = "请先修正红色错误格，再生成合法候选数。"
             return
-        if self.auto_techniques:
+        if self.auto_simple:
             self.auto_solve_enabled(remember=True)
             return
         candidates = candidate_grid(self.board)

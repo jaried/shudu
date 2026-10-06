@@ -9,8 +9,8 @@ import sys
 import tkinter as tk
 
 import pytest
-
 from sudoku_game import Game
+
 from sudoku_gui import SudokuWindow
 
 pytestmark = pytest.mark.skipif(
@@ -68,6 +68,18 @@ def test_screenshot_import_can_run_repeatedly(app, monkeypatch):
     assert app.game.message == "second.png"
 
 
+def test_screenshot_import_preserves_master_off_and_algorithm_selection(app, monkeypatch):
+    app.game.set_auto_technique("hidden_triple", True)
+    app.game.set_auto_solve(False)
+    selected = set(app.game.auto_techniques)
+    seen = []
+    monkeypatch.setattr("sudoku_gui.game_from_screenshot", _fake_loader(seen))
+    app._load_screenshot("first.png")
+    assert not app.game.auto_solve
+    assert app.game.auto_techniques == selected
+    assert app.game.notes == {(0, 0): {1}}
+
+
 def test_screenshot_import_failure_keeps_current_game(app, monkeypatch):
     original = app.game
     errors = []
@@ -80,10 +92,10 @@ def test_screenshot_import_failure_keeps_current_game(app, monkeypatch):
 
 
 def _fake_loader(seen):
-    def load(path, auto_techniques=None):
+    def load(path, auto_techniques=None, auto_solve=True):
         techniques = frozenset(auto_techniques or ())
         seen.append((path, techniques))
-        game = Game(auto_techniques=techniques)
+        game = Game(auto_techniques=techniques, auto_solve=auto_solve)
         game.notes = {(0, 0): {1}}
         game.notes_mode = True
         game.message = path
@@ -91,5 +103,5 @@ def _fake_loader(seen):
     return load
 
 
-def _failing_loader(path, auto_techniques=None):
+def _failing_loader(path, auto_techniques=None, auto_solve=True):
     raise ValueError("识别失败")
