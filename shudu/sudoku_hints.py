@@ -9,7 +9,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from shudu_solver import ShuduSolver
-from shudu.sudoku_rules import CELLS, Cell, unit_name
+from shudu.sudoku_rules import Cell, unit_name
 from shudu.sudoku_step import Change, LogicStep
 
 NAMES = {
