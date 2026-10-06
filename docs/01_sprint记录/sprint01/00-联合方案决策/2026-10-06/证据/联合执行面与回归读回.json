@@ -1,0 +1,660 @@
+{
+  "observedAt": "2026-10-06T13:17:12.402Z",
+  "repositoryRoot": "D:\\Tony\\Documents\\invest2026\\projects\\shudu",
+  "observedHead": "0e5eb06cee85f5fbfb272d2ba306e40f06385659",
+  "currentHead": "0e5eb06cee85f5fbfb272d2ba306e40f06385659",
+  "states": [
+    {
+      "id": "S1-01",
+      "status": "待验收",
+      "dependencies": []
+    },
+    {
+      "id": "S1-02",
+      "status": "待验收",
+      "dependencies": [
+        "S1-01"
+      ]
+    },
+    {
+      "id": "S1-03",
+      "status": "待验收",
+      "dependencies": [
+        "S1-01"
+      ]
+    },
+    {
+      "id": "S1-04",
+      "status": "待验收",
+      "dependencies": []
+    }
+  ],
+  "finalFullGate": {
+    "testedOid": "594be277321bc5d438422eddeac0caa09a96dbd6",
+    "documentOnlyDrift": [
+      "docs/00_待办列表/Sprint待办列表/Sprint01.md",
+      "docs/01_sprint记录/sprint01/S1-03/S1-03_方案实施总结.md",
+      "docs/01_sprint记录/sprint01/S1-03/S1-03_测试报告.md",
+      "docs/01_sprint记录/sprint01/S1-03/S1-03_遗留问题.md",
+      "docs/01_sprint记录/sprint01/S1-03/证据/S1-03-Sprint交付读回.json"
+    ],
+    "checks": [
+      {
+        "id": "S1-03-required-1",
+        "exitCode": 0,
+        "summary": "101 passed in 9.34s"
+      },
+      {
+        "id": "S1-03-full",
+        "exitCode": 0,
+        "summary": "269 passed in 28.73s"
+      },
+      {
+        "id": "S1-03-capability-integration",
+        "exitCode": 0,
+        "summary": "42 passed in 2.16s"
+      }
+    ],
+    "evidence": "../../../S1-03/证据/S1-03-Sprint交付读回.json"
+  },
+  "probeAdaptation": {
+    "source": "docs/01_sprint记录/sprint01/S1-02/证据/shudu-S1-02-execution-surface-20261006.py",
+    "sourceSha256": "48864294ede0ce1ca92920c59f4572395c0348d9261d066d3c33ad70d825823a",
+    "adaptedSha256": "b1a3ace09e73dc4d790161d794f5d24cc1d804ad96a1c3407d5e35a726578186",
+    "change": "仅将正式 Issue worktree 的 ROOT 常量换为当前 Sprint 根目录；固定 fixture、动作、计数和输出保持原样。"
+  },
+  "measurements": {
+    "observations": [
+      {
+        "scenario": "auto_stalled_all_ten",
+        "calls": {
+          "find_box_line": 1,
+          "find_hidden_pair": 1,
+          "find_hidden_single": 1,
+          "find_hidden_triple": 1,
+          "find_naked_pair": 1,
+          "find_naked_single": 1,
+          "find_naked_triple": 1,
+          "find_pointing_pair": 1,
+          "find_x_wing": 1,
+          "find_xy_wing": 1,
+          "masks_from_board": 1
+        },
+        "array_shapes": [
+          [
+            9,
+            9
+          ]
+        ],
+        "outcome": {
+          "placements": 0,
+          "eliminations": 0
+        }
+      },
+      {
+        "scenario": "auto_stalled_hidden_triple_only",
+        "calls": {
+          "find_hidden_triple": 1,
+          "masks_from_board": 1
+        },
+        "array_shapes": [
+          [
+            9,
+            9
+          ]
+        ],
+        "outcome": {
+          "placements": 0,
+          "eliminations": 0
+        }
+      },
+      {
+        "scenario": "hint_stalled_without_notes",
+        "calls": {
+          "candidate_sets": 2,
+          "capture_candidates": 1,
+          "find_box_line": 1,
+          "find_hidden_pair": 1,
+          "find_hidden_single": 1,
+          "find_hidden_triple": 1,
+          "find_naked_pair": 1,
+          "find_naked_single": 1,
+          "find_naked_triple": 1,
+          "find_pointing_pair": 1,
+          "find_x_wing": 1,
+          "find_xy_wing": 1,
+          "masks_from_board": 1,
+          "next_step": 1
+        },
+        "array_shapes": [
+          [
+            9,
+            9
+          ]
+        ],
+        "outcome": "None"
+      },
+      {
+        "scenario": "hint_hidden_triple_existing_notes",
+        "calls": {
+          "candidate_sets": 3,
+          "capture_candidates": 1,
+          "find_hidden_pair": 1,
+          "find_hidden_single": 1,
+          "find_hidden_triple": 1,
+          "find_naked_pair": 1,
+          "find_naked_single": 1,
+          "find_naked_triple": 1,
+          "masks_from_board": 1,
+          "next_step": 1
+        },
+        "array_shapes": [
+          [
+            9,
+            9
+          ]
+        ],
+        "outcome": "Hidden Triple"
+      },
+      {
+        "scenario": "hint_hidden_single_without_notes",
+        "calls": {
+          "apply_placement": 1,
+          "candidate_sets": 3,
+          "capture_candidates": 1,
+          "find_hidden_single": 1,
+          "masks_from_board": 1,
+          "next_step": 1,
+          "project_hidden_single_evidence": 1
+        },
+        "array_shapes": [
+          [
+            9,
+            9
+          ]
+        ],
+        "outcome": "Hidden Single"
+      },
+      {
+        "scenario": "wrong_board_warning",
+        "calls": {},
+        "array_shapes": [],
+        "outcome": "请先修正错误"
+      },
+      {
+        "scenario": "hint_exception_fixed_empty_board",
+        "calls": {
+          "candidate_sets": 2,
+          "capture_candidates": 1,
+          "find_hidden_single": 1,
+          "masks_from_board": 1,
+          "next_step": 1
+        },
+        "array_shapes": [
+          [
+            9,
+            9
+          ]
+        ],
+        "outcome": {
+          "exception_type": "RuntimeError",
+          "message": "implementation_probe_exception"
+        }
+      }
+    ],
+    "measurement": "call_counts_and_input_shapes"
+  },
+  "comparisons": [
+    {
+      "scenario": "auto_stalled_all_ten",
+      "outcomeEqual": true,
+      "shapeScopePreserved": true,
+      "counts": [
+        {
+          "key": "candidate_sets",
+          "before": 10,
+          "after": 0
+        },
+        {
+          "key": "capture_candidates",
+          "before": 10,
+          "after": 0
+        },
+        {
+          "key": "find_box_line",
+          "before": 1,
+          "after": 1
+        },
+        {
+          "key": "find_hidden_pair",
+          "before": 1,
+          "after": 1
+        },
+        {
+          "key": "find_hidden_single",
+          "before": 1,
+          "after": 1
+        },
+        {
+          "key": "find_hidden_triple",
+          "before": 1,
+          "after": 1
+        },
+        {
+          "key": "find_naked_pair",
+          "before": 1,
+          "after": 1
+        },
+        {
+          "key": "find_naked_single",
+          "before": 1,
+          "after": 1
+        },
+        {
+          "key": "find_naked_triple",
+          "before": 1,
+          "after": 1
+        },
+        {
+          "key": "find_pointing_pair",
+          "before": 1,
+          "after": 1
+        },
+        {
+          "key": "find_x_wing",
+          "before": 1,
+          "after": 1
+        },
+        {
+          "key": "find_xy_wing",
+          "before": 1,
+          "after": 1
+        },
+        {
+          "key": "masks_from_board",
+          "before": 1,
+          "after": 1
+        }
+      ]
+    },
+    {
+      "scenario": "auto_stalled_hidden_triple_only",
+      "outcomeEqual": true,
+      "shapeScopePreserved": true,
+      "counts": [
+        {
+          "key": "candidate_sets",
+          "before": 1,
+          "after": 0
+        },
+        {
+          "key": "capture_candidates",
+          "before": 1,
+          "after": 0
+        },
+        {
+          "key": "find_hidden_triple",
+          "before": 1,
+          "after": 1
+        },
+        {
+          "key": "masks_from_board",
+          "before": 1,
+          "after": 1
+        }
+      ]
+    },
+    {
+      "scenario": "hint_stalled_without_notes",
+      "outcomeEqual": true,
+      "shapeScopePreserved": true,
+      "counts": [
+        {
+          "key": "candidate_sets",
+          "before": 2,
+          "after": 2
+        },
+        {
+          "key": "capture_candidates",
+          "before": 1,
+          "after": 1
+        },
+        {
+          "key": "find_box_line",
+          "before": 1,
+          "after": 1
+        },
+        {
+          "key": "find_hidden_pair",
+          "before": 1,
+          "after": 1
+        },
+        {
+          "key": "find_hidden_single",
+          "before": 1,
+          "after": 1
+        },
+        {
+          "key": "find_hidden_triple",
+          "before": 1,
+          "after": 1
+        },
+        {
+          "key": "find_naked_pair",
+          "before": 1,
+          "after": 1
+        },
+        {
+          "key": "find_naked_single",
+          "before": 1,
+          "after": 1
+        },
+        {
+          "key": "find_naked_triple",
+          "before": 1,
+          "after": 1
+        },
+        {
+          "key": "find_pointing_pair",
+          "before": 1,
+          "after": 1
+        },
+        {
+          "key": "find_x_wing",
+          "before": 1,
+          "after": 1
+        },
+        {
+          "key": "find_xy_wing",
+          "before": 1,
+          "after": 1
+        },
+        {
+          "key": "masks_from_board",
+          "before": 1,
+          "after": 1
+        },
+        {
+          "key": "next_step",
+          "before": 1,
+          "after": 1
+        }
+      ]
+    },
+    {
+      "scenario": "hint_hidden_triple_existing_notes",
+      "outcomeEqual": true,
+      "shapeScopePreserved": true,
+      "counts": [
+        {
+          "key": "candidate_sets",
+          "before": 3,
+          "after": 3
+        },
+        {
+          "key": "capture_candidates",
+          "before": 1,
+          "after": 1
+        },
+        {
+          "key": "find_hidden_pair",
+          "before": 1,
+          "after": 1
+        },
+        {
+          "key": "find_hidden_single",
+          "before": 1,
+          "after": 1
+        },
+        {
+          "key": "find_hidden_triple",
+          "before": 1,
+          "after": 1
+        },
+        {
+          "key": "find_naked_pair",
+          "before": 1,
+          "after": 1
+        },
+        {
+          "key": "find_naked_single",
+          "before": 1,
+          "after": 1
+        },
+        {
+          "key": "find_naked_triple",
+          "before": 1,
+          "after": 1
+        },
+        {
+          "key": "masks_from_board",
+          "before": 1,
+          "after": 1
+        },
+        {
+          "key": "next_step",
+          "before": 1,
+          "after": 1
+        }
+      ]
+    },
+    {
+      "scenario": "hint_hidden_single_without_notes",
+      "outcomeEqual": true,
+      "shapeScopePreserved": true,
+      "counts": [
+        {
+          "key": "apply_placement",
+          "before": 1,
+          "after": 1
+        },
+        {
+          "key": "candidate_sets",
+          "before": 3,
+          "after": 3
+        },
+        {
+          "key": "capture_candidates",
+          "before": 1,
+          "after": 1
+        },
+        {
+          "key": "find_hidden_single",
+          "before": 1,
+          "after": 1
+        },
+        {
+          "key": "masks_from_board",
+          "before": 1,
+          "after": 1
+        },
+        {
+          "key": "next_step",
+          "before": 1,
+          "after": 1
+        },
+        {
+          "key": "project_hidden_single_evidence",
+          "before": 1,
+          "after": 1
+        }
+      ]
+    },
+    {
+      "scenario": "wrong_board_warning",
+      "outcomeEqual": true,
+      "shapeScopePreserved": true,
+      "counts": []
+    },
+    {
+      "scenario": "hint_exception_fixed_empty_board",
+      "outcomeEqual": true,
+      "shapeScopePreserved": true,
+      "counts": [
+        {
+          "key": "candidate_sets",
+          "before": 2,
+          "after": 2
+        },
+        {
+          "key": "capture_candidates",
+          "before": 1,
+          "after": 1
+        },
+        {
+          "key": "find_hidden_single",
+          "before": 1,
+          "after": 1
+        },
+        {
+          "key": "masks_from_board",
+          "before": 1,
+          "after": 1
+        },
+        {
+          "key": "next_step",
+          "before": 1,
+          "after": 1
+        }
+      ]
+    }
+  ],
+  "imports": [
+    {
+      "scenario": "public",
+      "actual": {
+        "single": false,
+        "evidence": false,
+        "auto": false,
+        "diff": false
+      },
+      "expected": {
+        "single": false,
+        "evidence": false,
+        "auto": false,
+        "diff": false
+      },
+      "verified": true
+    },
+    {
+      "scenario": "single",
+      "actual": {
+        "single": true,
+        "evidence": true,
+        "auto": false,
+        "diff": false
+      },
+      "expected": {
+        "single": true,
+        "evidence": true,
+        "auto": false,
+        "diff": false
+      },
+      "verified": true
+    },
+    {
+      "scenario": "auto",
+      "actual": {
+        "single": false,
+        "evidence": false,
+        "auto": true,
+        "diff": true
+      },
+      "expected": {
+        "single": false,
+        "evidence": false,
+        "auto": true,
+        "diff": true
+      },
+      "verified": true
+    },
+    {
+      "scenario": "metadata",
+      "actual": {
+        "single": false,
+        "evidence": false,
+        "auto": false,
+        "diff": true
+      },
+      "expected": {
+        "single": false,
+        "evidence": false,
+        "auto": false,
+        "diff": true
+      },
+      "verified": true
+    }
+  ],
+  "logs": [
+    {
+      "id": "existing-seven-fixed-scenarios",
+      "argv": [
+        "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.venv\\Scripts\\python.exe",
+        "-B",
+        "D:/temp/shudu-Sprint01-existing-execution-probe-20261006.py"
+      ],
+      "cwd": "D:\\Tony\\Documents\\invest2026\\projects\\shudu",
+      "exitCode": 0,
+      "timedOut": false,
+      "stdout": "{\r\n  \"observations\": [\r\n    {\r\n      \"scenario\": \"auto_stalled_all_ten\",\r\n      \"calls\": {\r\n        \"find_box_line\": 1,\r\n        \"find_hidden_pair\": 1,\r\n        \"find_hidden_single\": 1,\r\n        \"find_hidden_triple\": 1,\r\n        \"find_naked_pair\": 1,\r\n        \"find_naked_single\": 1,\r\n        \"find_naked_triple\": 1,\r\n        \"find_pointing_pair\": 1,\r\n        \"find_x_wing\": 1,\r\n        \"find_xy_wing\": 1,\r\n        \"masks_from_board\": 1\r\n      },\r\n      \"array_shapes\": [\r\n        [\r\n          9,\r\n          9\r\n        ]\r\n      ],\r\n      \"outcome\": {\r\n        \"placements\": 0,\r\n        \"eliminations\": 0\r\n      }\r\n    },\r\n    {\r\n      \"scenario\": \"auto_stalled_hidden_triple_only\",\r\n      \"calls\": {\r\n        \"find_hidden_triple\": 1,\r\n        \"masks_from_board\": 1\r\n      },\r\n      \"array_shapes\": [\r\n        [\r\n          9,\r\n          9\r\n        ]\r\n      ],\r\n      \"outcome\": {\r\n        \"placements\": 0,\r\n        \"eliminations\": 0\r\n      }\r\n    },\r\n    {\r\n      \"scenario\": \"hint_stalled_without_notes\",\r\n      \"calls\": {\r\n        \"candidate_sets\": 2,\r\n        \"capture_candidates\": 1,\r\n        \"find_box_line\": 1,\r\n        \"find_hidden_pair\": 1,\r\n        \"find_hidden_single\": 1,\r\n        \"find_hidden_triple\": 1,\r\n        \"find_naked_pair\": 1,\r\n        \"find_naked_single\": 1,\r\n        \"find_naked_triple\": 1,\r\n        \"find_pointing_pair\": 1,\r\n        \"find_x_wing\": 1,\r\n        \"find_xy_wing\": 1,\r\n        \"masks_from_board\": 1,\r\n        \"next_step\": 1\r\n      },\r\n      \"array_shapes\": [\r\n        [\r\n          9,\r\n          9\r\n        ]\r\n      ],\r\n      \"outcome\": \"None\"\r\n    },\r\n    {\r\n      \"scenario\": \"hint_hidden_triple_existing_notes\",\r\n      \"calls\": {\r\n        \"candidate_sets\": 3,\r\n        \"capture_candidates\": 1,\r\n        \"find_hidden_pair\": 1,\r\n        \"find_hidden_single\": 1,\r\n        \"find_hidden_triple\": 1,\r\n        \"find_naked_pair\": 1,\r\n        \"find_naked_single\": 1,\r\n        \"find_naked_triple\": 1,\r\n        \"masks_from_board\": 1,\r\n        \"next_step\": 1\r\n      },\r\n      \"array_shapes\": [\r\n        [\r\n          9,\r\n          9\r\n        ]\r\n      ],\r\n      \"outcome\": \"Hidden Triple\"\r\n    },\r\n    {\r\n      \"scenario\": \"hint_hidden_single_without_notes\",\r\n      \"calls\": {\r\n        \"apply_placement\": 1,\r\n        \"candidate_sets\": 3,\r\n        \"capture_candidates\": 1,\r\n        \"find_hidden_single\": 1,\r\n        \"masks_from_board\": 1,\r\n        \"next_step\": 1,\r\n        \"project_hidden_single_evidence\": 1\r\n      },\r\n      \"array_shapes\": [\r\n        [\r\n          9,\r\n          9\r\n        ]\r\n      ],\r\n      \"outcome\": \"Hidden Single\"\r\n    },\r\n    {\r\n      \"scenario\": \"wrong_board_warning\",\r\n      \"calls\": {},\r\n      \"array_shapes\": [],\r\n      \"outcome\": \"请先修正错误\"\r\n    },\r\n    {\r\n      \"scenario\": \"hint_exception_fixed_empty_board\",\r\n      \"calls\": {\r\n        \"candidate_sets\": 2,\r\n        \"capture_candidates\": 1,\r\n        \"find_hidden_single\": 1,\r\n        \"masks_from_board\": 1,\r\n        \"next_step\": 1\r\n      },\r\n      \"array_shapes\": [\r\n        [\r\n          9,\r\n          9\r\n        ]\r\n      ],\r\n      \"outcome\": {\r\n        \"exception_type\": \"RuntimeError\",\r\n        \"message\": \"implementation_probe_exception\"\r\n      }\r\n    }\r\n  ],\r\n  \"measurement\": \"call_counts_and_input_shapes\"\r\n}\r\n",
+      "stderr": ""
+    },
+    {
+      "id": "fresh-import-public",
+      "argv": [
+        "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.venv\\Scripts\\python.exe",
+        "-B",
+        "-c",
+        "import json,sys; from shudu.logic_solver import NumbaLogicSolver,ShuduSolver,next_hint_step,solve_auto; board=[[int(c) if c!='.' else 0 for c in row] for row in ('12345678.','.........','.........','.........','.........','.........','.........','.........','.........')]; print(json.dumps({name:('shudu.logic_solver._'+name) in sys.modules for name in ('single','evidence','auto','diff')}))"
+      ],
+      "cwd": "D:\\Tony\\Documents\\invest2026\\projects\\shudu",
+      "exitCode": 0,
+      "timedOut": false,
+      "stdout": "{\"single\": false, \"evidence\": false, \"auto\": false, \"diff\": false}\r\n",
+      "stderr": ""
+    },
+    {
+      "id": "fresh-import-single",
+      "argv": [
+        "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.venv\\Scripts\\python.exe",
+        "-B",
+        "-c",
+        "import json,sys; from shudu.logic_solver import NumbaLogicSolver,ShuduSolver,next_hint_step,solve_auto; board=[[int(c) if c!='.' else 0 for c in row] for row in ('12345678.','.........','.........','.........','.........','.........','.........','.........','.........')]; next_hint_step(board,{}); print(json.dumps({name:('shudu.logic_solver._'+name) in sys.modules for name in ('single','evidence','auto','diff')}))"
+      ],
+      "cwd": "D:\\Tony\\Documents\\invest2026\\projects\\shudu",
+      "exitCode": 0,
+      "timedOut": false,
+      "stdout": "{\"single\": true, \"evidence\": true, \"auto\": false, \"diff\": false}\r\n",
+      "stderr": ""
+    },
+    {
+      "id": "fresh-import-auto",
+      "argv": [
+        "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.venv\\Scripts\\python.exe",
+        "-B",
+        "-c",
+        "import json,sys; from shudu.logic_solver import NumbaLogicSolver,ShuduSolver,next_hint_step,solve_auto; board=[[int(c) if c!='.' else 0 for c in row] for row in ('12345678.','.........','.........','.........','.........','.........','.........','.........','.........')]; solve_auto(board,{'hidden_single'},()); print(json.dumps({name:('shudu.logic_solver._'+name) in sys.modules for name in ('single','evidence','auto','diff')}))"
+      ],
+      "cwd": "D:\\Tony\\Documents\\invest2026\\projects\\shudu",
+      "exitCode": 0,
+      "timedOut": false,
+      "stdout": "{\"single\": false, \"evidence\": false, \"auto\": true, \"diff\": true}\r\n",
+      "stderr": ""
+    },
+    {
+      "id": "fresh-import-metadata",
+      "argv": [
+        "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.venv\\Scripts\\python.exe",
+        "-B",
+        "-c",
+        "import json,sys; from shudu.logic_solver import NumbaLogicSolver,ShuduSolver,next_hint_step,solve_auto; board=[[int(c) if c!='.' else 0 for c in row] for row in ('12345678.','.........','.........','.........','.........','.........','.........','.........','.........')]; ShuduSolver(board).solve_techniques_result(('hidden_single',)); print(json.dumps({name:('shudu.logic_solver._'+name) in sys.modules for name in ('single','evidence','auto','diff')}))"
+      ],
+      "cwd": "D:\\Tony\\Documents\\invest2026\\projects\\shudu",
+      "exitCode": 0,
+      "timedOut": false,
+      "stdout": "{\"single\": false, \"evidence\": false, \"auto\": false, \"diff\": true}\r\n",
+      "stderr": ""
+    }
+  ],
+  "verified": true
+}
