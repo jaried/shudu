@@ -11,7 +11,7 @@ from sudoku_puzzles import Puzzle, puzzle_from_text
 from sudoku_game import CELLS, PEERS, Game
 from sudoku_hint_view import hint_background
 from sudoku_hints import make_hint, pending_step
-from sudoku_step import LogicStep
+from sudoku_rules import candidate_grid
 from sudoku_theme import SAME
 from sudoku_puzzles import PUZZLES
 
@@ -31,6 +31,17 @@ LEVEL119_PUZZLE = Puzzle(
         "........3",
     ),
 )
+
+
+def level119_candidate_notes():
+    board = LEVEL119_PUZZLE.grid()
+    candidates = candidate_grid(board)
+    result = {
+        cell: set(candidates[cell[0]][cell[1]])
+        for cell in CELLS
+        if not board[cell[0]][cell[1]]
+    }
+    return result
 
 
 def play_state(game):
@@ -76,105 +87,62 @@ def test_hint_round_trip_preserves_all_play_data():
     "auto_techniques",
     (frozenset(), DEFAULT_AUTO_TECHNIQUES),
 )
-def test_level119_hint_recommends_hidden_pair_independent_of_auto_settings(auto_techniques):
+def test_level119_hint_uses_hidden_pair_even_when_auto_hidden_pair_is_disabled(auto_techniques):
     game = Game(LEVEL119_PUZZLE, auto_techniques=auto_techniques)
-    assert "hidden_pair" not in game.auto_techniques
-    game.notes[(5, 1)] = {3, 6, 7}
-    game.notes[(5, 6)] = {3, 6}
+    game.notes = level119_candidate_notes()
     game.notes_mode = True
-    before = play_state(game)
+    assert "hidden_pair" not in game.auto_techniques
     game.hint()
     hint = game.hint_preview
     assert hint.step is not None and hint.step.name == "Hidden Pair"
     assert hint.pending_eliminations == ((5, 1, 7),)
-    assert play_state(game) == before
 
 
-def test_level119_hint_does_not_repeat_hidden_pair_after_7_is_removed():
+def test_level119_complete_candidate_state_does_not_repeat_removed_7():
     game = Game(LEVEL119_PUZZLE, auto_techniques=set())
-    game.notes[(5, 1)] = {3, 6}
-    game.notes[(5, 6)] = {3, 6}
+    game.notes = level119_candidate_notes()
+    game.notes[(5, 1)].remove(7)
     game.notes_mode = True
     game.hint()
     hint = game.hint_preview
-    assert (5, 1, 7) not in hint.pending_eliminations
-    assert not (
-        hint.step is not None
-        and hint.step.name == "Hidden Pair"
-        and (5, 1, 7) in hint.step.eliminations
-    )
+    assert hint.step is None or (5, 1, 7) not in hint.step.eliminations
 
 
-def test_partial_completed_eliminations_only_show_remaining_actions(monkeypatch):
-    candidates = tuple(
-        tuple(frozenset({1, 7}) for _ in range(9))
-        for _ in range(9)
-    )
-    step = LogicStep(
-        "Synthetic: elimination",
-        (),
-        ((0, 0, 7), (0, 1, 7)),
-        (),
-        (),
-        candidates,
-    )
-    monkeypatch.setattr(ShuduSolver, "next_step", lambda solver: step)
-    notes = {(0, 0): {1}, (0, 1): {1, 7}}
-    hint = make_hint([[0] * 9 for _ in range(9)], notes, set())
-    assert hint.step == step
-    assert hint.pending_eliminations == ((0, 1, 7),)
-    assert hint.targets == {(0, 1)}
+def test_sparse_manual_notes_do_not_filter_hint_algorithms():
+    game = Game(LEVEL119_PUZZLE, auto_techniques=set())
+    game.notes = {(5, 1): {3, 6}}
+    game.notes_mode = True
+    game.hint()
+    hint = game.hint_preview
+    assert hint.step is not None and hint.step.name == "Hidden Pair"
+    assert hint.pending_eliminations == ((5, 1, 7),)
 
 
-@pytest.mark.parametrize(
-    "name",
-    (
-        "Naked Pair",
-        "Hidden Pair",
-        "Naked Triple",
-        "Pointing Pair",
-        "Box-Line",
-        "X-Wing",
-        "XY-Wing",
-    ),
-)
-def test_completed_elimination_step_advances_to_next_solver_step(monkeypatch, name):
-    candidates = tuple(
-        tuple(frozenset({1, 7}) for _ in range(9))
-        for _ in range(9)
-    )
-    completed = LogicStep(
-        f"{name}: completed",
-        (),
-        ((0, 0, 7),),
-        (),
-        (),
-        candidates,
-    )
-    next_step = LogicStep(
-        "Synthetic: next",
-        ((0, 1, 1),),
-        (),
-        (),
-        (),
-        candidates,
-    )
-    steps = iter((completed, next_step))
-    monkeypatch.setattr(ShuduSolver, "next_step", lambda solver: next(steps))
-    hint = make_hint([[0] * 9 for _ in range(9)], {(0, 0): {1}}, set())
-    assert hint.step == next_step
+def test_hint_requests_one_all_algorithm_step(monkeypatch):
+    game = Game(LEVEL119_PUZZLE, auto_techniques=set())
+    game.notes = level119_candidate_notes()
+    calls = []
+    original = ShuduSolver.next_step
+
+    def tracked(solver):
+        calls.append(None)
+        result = original(solver)
+        return result
+
+    monkeypatch.setattr(ShuduSolver, "next_step", tracked)
+    game.hint()
+    assert game.hint_preview.step is not None
+    assert len(calls) == 1
 
 
 def test_hidden_pair_keeps_both_source_cells_green():
     game = Game(LEVEL119_PUZZLE, auto_techniques=set())
-    game.notes[(5, 1)] = {3, 6, 7}
-    game.notes[(5, 6)] = {3, 6}
+    game.notes = level119_candidate_notes()
     game.hint()
     hint = game.hint_preview
     assert hint.step is not None and hint.step.name == "Hidden Pair"
     assert len(hint.sources) == 2
     assert all(hint_background(hint, cell, 0) == SAME for cell in hint.sources)
-
 
 def test_hint_uses_existing_solver_priority_without_placing_value():
     game = Game()
