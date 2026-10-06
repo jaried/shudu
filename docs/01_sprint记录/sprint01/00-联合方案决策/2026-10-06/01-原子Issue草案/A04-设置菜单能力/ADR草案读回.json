@@ -1,11 +1,11 @@
 {
-  "completed_at": "2026-10-06T17:49:43.0330729+08:00",
+  "completed_at": "2026-10-06T10:12:04.2568697+00:00",
   "writer_mode": "semantic approval_draft",
   "approval_locator": "",
   "status": "drafted",
   "draft_locator": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\docs\\01_Sprint记录\\sprint01\\00-联合方案决策\\2026-10-06\\01-原子Issue草案\\A04-设置菜单能力\\DIRECT-SHUDU-20261006-A04_ADR草案_自动偏好与设置菜单的能力执行面.md",
   "request_id": "9b267d36-76a1-4e4b-a8ce-cd40eedc9f24",
-  "draft_sha256": "ba5b4d23892e76c18478387ce2e7b511933df0ecaf16d917d9449f40abd84b36",
+  "draft_sha256": "f5e88f2002c2408fa2a829887be605b53013115fdded2f4cee2e72b58b0f1d90",
   "owner": "architecture-design",
   "resulting_adr": "ADR-005",
   "failure_reason": ""

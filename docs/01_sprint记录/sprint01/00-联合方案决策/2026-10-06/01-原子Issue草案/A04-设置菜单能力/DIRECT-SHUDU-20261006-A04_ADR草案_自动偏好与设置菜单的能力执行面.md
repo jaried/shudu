@@ -15,11 +15,11 @@
 3. Game只应用同轮完整自动结果，保持撤回、累计删除和完成判定；Hint使用全算法与现有notes，两个能力分别执行。
 4. `shudu/settings_menu/`是设置菜单deep Module，公开入口`__init__.py`；model、popup、position为internal。它只接收当前设置、已有关卡元数据和业务动作回调。
 5. 菜单直接创建当前ttk条目，一次勾选只更新对应行；窗口接收具体设置或菜单命令。开关保持弹层，其他命令先关闭后执行。当前Tk是唯一实际Adapter。
-6. 配置动作直接调用Game setter、更新既有message项并保存完整偏好一次。View.update_message只修改该项text，无该项时结束；完成扫描、整盘重绘、动画、候选投影和solver均为0。
-7. GUI继续拥有UserSettingsStore的load/save生命周期；store内部沿用跨平台路径、JSON兼容、名称校验、同目录临时写入和os.replace。保存失败明确提示，内存配置保留；下次实际选择再保存，没有后台重试。
+6. 自动总开关/技法调用Game setter、更新既有message项并调用原_persist_auto_settings；已有store时保存完整自动偏好一次，无store时save为0。View.update_message只修改既有项text，无该项时结束；完成扫描、整盘重绘、动画、候选投影和solver均为0。auto_clean仅赋值Game.auto_clean与菜单标记，其message更新、store访问和save均为0。
+7. GUI继续拥有UserSettingsStore的load/save生命周期，持久化字段沿用auto_solve与auto_techniques；store内部沿用跨平台路径、JSON兼容、名称校验、同目录临时写入和os.replace。自动偏好保存失败明确提示、内存配置保留；下次自动总开关/技法选择再保存。
 8. 启动/重开/截图导入继承自动配置；截图初始notes沿用ADR-004；关闭自动求解的“自动笔记”仍生成基础候选。
 9. Game.completed_units是确定性查询；只有实际游戏操作前后由GUI比较新完成单位，动画的after和颜色状态归View。
-10. 菜单的悬停、连续鼠标/键盘选择、Esc/外部点击/失焦关闭、显示器工作区和grab释放保持；close效果一次且重复调用结束。
+10. 菜单的悬停、连续鼠标/键盘选择、Esc/外部点击/失焦关闭、显示器工作区和grab释放保持；close效果一次且重复调用结束。提示任意Canvas点击仍关闭提示；完成态仍可打开设置，完成文案、只读按钮和动画进度保持。直接Hint设置回调增加控件identity保持的资源保证，依据见[grilling事实](../../证据/grilling-业务事实核验.md)。
 
 ## 取舍与影响
 
