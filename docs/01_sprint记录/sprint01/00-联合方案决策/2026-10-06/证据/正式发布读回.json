@@ -1,5 +1,5 @@
 {
-  "status": "artifacts_validated_pending_commit_and_status_readback",
+  "status": "canonical_committed_status_written_pending_final_git_readback",
   "branch": "Sprint01",
   "request_binding": "d6e6cdbe-416c-4105-a1d5-64a536c6ffea",
   "approval_locator": "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/发布批准记录.md",
@@ -25,8 +25,8 @@
         "item_dependencies"
       ],
       "dependencies": [],
-      "solution_sha256": "7cb3587923873c1821404f3de6156c1085501ef58c6cfb0a38a37f9d7a1cdf6e",
-      "summary_sha256": "6f37e2a59142d49d3f366e80b6bc57d98262eeb50fe7fa51f6c5e81589e2ed68"
+      "solution_sha256": "215039cfa432784f29e3061ab8849c35b58f4f95fcb06610a3c46d0c7b9c3c31",
+      "summary_sha256": "67af7dd447d0b6ffcc74c75422bde565d74320bde940cb7904a7561f37f17f96"
     },
     {
       "issue_id": "S1-02",
@@ -105,14 +105,14 @@
       "status": "accepted",
       "path": "docs/02_架构决策记录\\ADR-002-共享规则内核与求解器公共接口.md",
       "approval_validation": "pass",
-      "result_sha256": "76794042f4b52a8ae79e055c4ab8bac7b64ee17c5c60668c274a0670bc92ab42"
+      "result_sha256": "f92d92f0115058848cba1611a832a222d298c065e74611b623f92e50ef67a831"
     },
     {
       "adr": "ADR-003",
       "status": "accepted",
       "path": "docs/02_架构决策记录\\ADR-003-Numba位掩码逻辑核心.md",
       "approval_validation": "pass",
-      "result_sha256": "3aa98863b98ca0e29fa93dc2ea1ff64ad3d454677ad684022aba8562abbd9aa8"
+      "result_sha256": "87e4a1a5360e3334619948fa8cd84ceb59678d4be0a8b08588619c07f91a8693"
     },
     {
       "adr": "ADR-005",
@@ -142,8 +142,50 @@
       "docs/01_Sprint记录/Sprint01/S1-03/S1-03_关联关系.md"
     ]
   },
-  "legacy_open_count": 5,
+  "legacy_open_count": 6,
   "implementation_test_status": "not_run_in_publication",
   "original_full_pytest_status": "237 passed / 1 error in each of two runs; preserved",
-  "production_mutation_count": 0
+  "production_mutation_count": 0,
+  "canonical_publication_commit": "329cccb65cfcef37db2183f6b260b48f9355f932",
+  "public_stage_pass": false,
+  "semantic_committed_readback_pass": true,
+  "tracker_status_readback": [
+    {
+      "id": "S1-01",
+      "status": "方案已决策",
+      "dependencies": []
+    },
+    {
+      "id": "S1-04",
+      "status": "方案已决策",
+      "dependencies": []
+    },
+    {
+      "id": "S1-03",
+      "status": "方案已决策",
+      "dependencies": [
+        "S1-01"
+      ]
+    },
+    {
+      "id": "S1-02",
+      "status": "方案已决策",
+      "dependencies": [
+        "S1-01"
+      ]
+    }
+  ],
+  "dag_ready": [
+    "S1-01",
+    "S1-04"
+  ],
+  "critical_path": [
+    "S1-01",
+    "S1-03"
+  ],
+  "critical_path_points": 13,
+  "structure_gate": "pass",
+  "publication_scope": "local Sprint01 branch",
+  "current_authorization": "all four Issues through design, implementation, review and Delivery to pending acceptance; same approved dependencies",
+  "original_publication_authorization_complete": true
 }

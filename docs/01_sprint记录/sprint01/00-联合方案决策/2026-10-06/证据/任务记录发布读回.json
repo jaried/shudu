@@ -1,0 +1,23 @@
+{
+  "writer_error": "TypeError: journal.findTaskRecordStates is not a function",
+  "effect_state": "complete",
+  "effect_outcome": "applied",
+  "ref": {
+    "action": "task-lifecycle.task-record.write",
+    "candidateDigest": "e797e429ab6f32bee78f3f3b01df9961a1b233cd589383887586bc157f9de8f3",
+    "contextKey": "4b542d71e27b404f85044f10cfb6144d15e25f5c3257a61495b367e64395cafe",
+    "issueId": "DIRECT-SHUDU-ARCHITECTURE-DRAFT",
+    "mutationId": "dd9abf9f-b769-49af-8e03-275109aaeefa",
+    "normalizationPolicyDigest": "3d88a22a16fb608bba10a596d47add7042bc2ace0aa56fc4625b570700d4ef6a",
+    "normalizationTargetEol": "lf",
+    "operationId": "7a2737da57d79436891d41a8da0d4c6cb3168f8f11ace35c7ab1a4c658231dca",
+    "rawDigest": "e797e429ab6f32bee78f3f3b01df9961a1b233cd589383887586bc157f9de8f3",
+    "relativePath": ".codex/task-records/2026/10/06/joint-architecture-decision-draft.md",
+    "requestBinding": "d6e6cdbe-416c-4105-a1d5-64a536c6ffea",
+    "sourceLocator": "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/发布批准记录.md",
+    "stage": "solution-decision-publication",
+    "status": "updated"
+  },
+  "observed_sha256": "e797e429ab6f32bee78f3f3b01df9961a1b233cd589383887586bc157f9de8f3",
+  "scope": ".codex/task-records/2026/10/06/joint-architecture-decision-draft.md"
+}

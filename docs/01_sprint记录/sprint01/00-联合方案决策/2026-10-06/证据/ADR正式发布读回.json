@@ -23,7 +23,7 @@
     "target_path": "docs/02_架构决策记录\\ADR-002-共享规则内核与求解器公共接口.md",
     "baseline_sha256": "f680f5707137fb031b2866f8336e75a16f78861971acea0db22da19049f22efa",
     "reused_existing_effect": true,
-    "result_sha256": "76794042f4b52a8ae79e055c4ab8bac7b64ee17c5c60668c274a0670bc92ab42",
+    "result_sha256": "f92d92f0115058848cba1611a832a222d298c065e74611b623f92e50ef67a831",
     "approval_validation": {
       "outcome": "pass",
       "operation": "verify-adr-mutation",
@@ -66,7 +66,7 @@
     "target_path": "docs/02_架构决策记录\\ADR-003-Numba位掩码逻辑核心.md",
     "baseline_sha256": "b58b648faf20aafaf81c2b2e64d6fd98dae9a2fd29b4e6bbbe7f0c7d828c2dee",
     "reused_existing_effect": true,
-    "result_sha256": "3aa98863b98ca0e29fa93dc2ea1ff64ad3d454677ad684022aba8562abbd9aa8",
+    "result_sha256": "87e4a1a5360e3334619948fa8cd84ceb59678d4be0a8b08588619c07f91a8693",
     "approval_validation": {
       "outcome": "pass",
       "operation": "verify-adr-mutation",

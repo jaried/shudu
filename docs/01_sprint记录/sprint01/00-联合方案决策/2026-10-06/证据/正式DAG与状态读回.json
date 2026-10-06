@@ -1,0 +1,250 @@
+{
+  "observed_canonical_head": "329cccb65cfcef37db2183f6b260b48f9355f932",
+  "status_batch": {
+    "status": "success",
+    "verified": true,
+    "sprintPath": "docs/00_待办列表/Sprint待办列表/Sprint01.md",
+    "changedPaths": [
+      "docs/00_待办列表/Sprint待办列表/Sprint01.md"
+    ],
+    "stats": {
+      "totalIssues": 4,
+      "totalPoints": 26,
+      "statusCounts": {
+        "待办": 0,
+        "方案已决策": 4,
+        "方案未设计": 0,
+        "方案设计中": 0,
+        "方案已设计": 0,
+        "实施中": 0,
+        "待验收": 0,
+        "已完成": 0,
+        "已取消": 0
+      }
+    },
+    "issueIds": [
+      "S1-01",
+      "S1-02",
+      "S1-03",
+      "S1-04"
+    ],
+    "remoteSyncRequest": {
+      "source": "update-backlog",
+      "businessKey": "docs/00_待办列表/Sprint待办列表/Sprint01.md|update_status_batch|S1-01,S1-02,S1-03,S1-04",
+      "direction": "outbound"
+    }
+  },
+  "tracker_readback": {
+    "sprint": "Unknown",
+    "issues": [
+      {
+        "id": "S1-01",
+        "type": "OPT",
+        "title": "求解模块目录迁移",
+        "rawStatus": "方案已决策",
+        "status": "方案已决策",
+        "priority": "P1",
+        "points": 5,
+        "dependencies": [],
+        "sprint": "Unknown",
+        "solutionVersion": "S1-01-solution-v1",
+        "implementationDelivered": false
+      },
+      {
+        "id": "S1-04",
+        "type": "OPT",
+        "title": "设置菜单能力",
+        "rawStatus": "方案已决策",
+        "status": "方案已决策",
+        "priority": "P1",
+        "points": 8,
+        "dependencies": [],
+        "sprint": "Unknown",
+        "solutionVersion": "S1-04-solution-v1",
+        "implementationDelivered": false
+      },
+      {
+        "id": "S1-03",
+        "type": "OPT",
+        "title": "自动结果能力",
+        "rawStatus": "方案已决策",
+        "status": "方案已决策",
+        "priority": "P1",
+        "points": 8,
+        "dependencies": [
+          "S1-01"
+        ],
+        "sprint": "Unknown",
+        "solutionVersion": "S1-03-solution-v1",
+        "implementationDelivered": false
+      },
+      {
+        "id": "S1-02",
+        "type": "OPT",
+        "title": "单步事实能力",
+        "rawStatus": "方案已决策",
+        "status": "方案已决策",
+        "priority": "P1",
+        "points": 5,
+        "dependencies": [
+          "S1-01"
+        ],
+        "sprint": "Unknown",
+        "solutionVersion": "S1-02-solution-v1",
+        "implementationDelivered": false
+      }
+    ]
+  },
+  "dag": {
+    "status": "ok",
+    "sprint": "Unknown",
+    "ready": [
+      {
+        "issueId": "S1-01",
+        "nextCommand": "design-plan",
+        "command": "/design-plan S1-01",
+        "title": "求解模块目录迁移",
+        "reason": "排序依据：状态=活跃态；待办=否；ready=是；dependencySatisfied=是；criticalPathPoints=13；issueId=S1-01；适用阶段=status,todo,ready,dependencySatisfied,criticalPathPoints,issueId",
+        "dependencies": [],
+        "type": "OPT",
+        "status": "方案已决策",
+        "priority": "P1",
+        "points": 5,
+        "criticalPathPoints": 13
+      },
+      {
+        "issueId": "S1-04",
+        "nextCommand": "design-plan",
+        "command": "/design-plan S1-04",
+        "title": "设置菜单能力",
+        "reason": "排序依据：状态=活跃态；待办=否；ready=是；dependencySatisfied=是；criticalPathPoints=8；issueId=S1-04；适用阶段=status,todo,ready,dependencySatisfied,criticalPathPoints,issueId",
+        "dependencies": [],
+        "type": "OPT",
+        "status": "方案已决策",
+        "priority": "P1",
+        "points": 8,
+        "criticalPathPoints": 8
+      }
+    ],
+    "waiting": [],
+    "deferred": [],
+    "warnings": [],
+    "issues": {
+      "S1-01": {
+        "id": "S1-01",
+        "type": "OPT",
+        "title": "求解模块目录迁移",
+        "rawStatus": "方案已决策",
+        "status": "方案已决策",
+        "priority": "P1",
+        "points": 5,
+        "dependencies": [],
+        "sprint": "Unknown",
+        "solutionVersion": "S1-01-solution-v1",
+        "implementationDelivered": false,
+        "criticalPathPoints": 13,
+        "nextCommand": "design-plan",
+        "reason": "排序依据：状态=活跃态；待办=否；ready=是；dependencySatisfied=是；criticalPathPoints=13；issueId=S1-01；适用阶段=status,todo,ready,dependencySatisfied,criticalPathPoints,issueId"
+      },
+      "S1-04": {
+        "id": "S1-04",
+        "type": "OPT",
+        "title": "设置菜单能力",
+        "rawStatus": "方案已决策",
+        "status": "方案已决策",
+        "priority": "P1",
+        "points": 8,
+        "dependencies": [],
+        "sprint": "Unknown",
+        "solutionVersion": "S1-04-solution-v1",
+        "implementationDelivered": false,
+        "criticalPathPoints": 8,
+        "nextCommand": "design-plan",
+        "reason": "排序依据：状态=活跃态；待办=否；ready=是；dependencySatisfied=是；criticalPathPoints=8；issueId=S1-04；适用阶段=status,todo,ready,dependencySatisfied,criticalPathPoints,issueId"
+      },
+      "S1-03": {
+        "id": "S1-03",
+        "type": "OPT",
+        "title": "自动结果能力",
+        "rawStatus": "方案已决策",
+        "status": "方案已决策",
+        "priority": "P1",
+        "points": 8,
+        "dependencies": [
+          "S1-01"
+        ],
+        "sprint": "Unknown",
+        "solutionVersion": "S1-03-solution-v1",
+        "implementationDelivered": false,
+        "criticalPathPoints": 8,
+        "nextCommand": "design-plan"
+      },
+      "S1-02": {
+        "id": "S1-02",
+        "type": "OPT",
+        "title": "单步事实能力",
+        "rawStatus": "方案已决策",
+        "status": "方案已决策",
+        "priority": "P1",
+        "points": 5,
+        "dependencies": [
+          "S1-01"
+        ],
+        "sprint": "Unknown",
+        "solutionVersion": "S1-02-solution-v1",
+        "implementationDelivered": false,
+        "criticalPathPoints": 5,
+        "nextCommand": "design-plan"
+      }
+    },
+    "dependencyStatus": {
+      "S1-01": {
+        "unsatisfied": []
+      },
+      "S1-04": {
+        "unsatisfied": []
+      },
+      "S1-03": {
+        "unsatisfied": [
+          "S1-01"
+        ]
+      },
+      "S1-02": {
+        "unsatisfied": [
+          "S1-01"
+        ]
+      }
+    },
+    "stats": {
+      "total": 4,
+      "frontPhase": 4,
+      "acceptance": 0,
+      "ready": 2,
+      "waiting": 0,
+      "deferred": 0
+    }
+  },
+  "critical_path_points": {
+    "S1-04": 8,
+    "S1-03": 8,
+    "S1-02": 5,
+    "S1-01": 13
+  },
+  "parallel_groups": [
+    [
+      "S1-01",
+      "S1-04"
+    ],
+    [
+      "S1-02",
+      "S1-03"
+    ]
+  ],
+  "critical_path": [
+    "S1-01",
+    "S1-03"
+  ],
+  "critical_path_estimated_points": 13,
+  "time_estimate": "not_measured",
+  "downstream_dispatched": false
+}

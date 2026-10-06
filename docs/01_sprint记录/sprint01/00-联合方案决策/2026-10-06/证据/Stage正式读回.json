@@ -1,0 +1,114 @@
+{
+  "observed_head": "329cccb65cfcef37db2183f6b260b48f9355f932",
+  "public_stage_results": [
+    {
+      "issue_id": "S1-01",
+      "effective": {
+        "status": "unavailable",
+        "error": "effective_solution_unavailable",
+        "reason": "solution_missing",
+        "locators": {
+          "summaryPath": "docs/01_Sprint记录/Sprint01/S1-01/S1-01_方案决策总结.md",
+          "solutionPath": "docs/01_Sprint记录/Sprint01/S1-01/S1-01_方案决策.md"
+        },
+        "observed": {}
+      },
+      "error": "Error: issue_dir_missing:S1-01"
+    },
+    {
+      "issue_id": "S1-02",
+      "effective": {
+        "status": "unavailable",
+        "error": "effective_solution_unavailable",
+        "reason": "solution_missing",
+        "locators": {
+          "summaryPath": "docs/01_Sprint记录/Sprint01/S1-02/S1-02_方案决策总结.md",
+          "solutionPath": "docs/01_Sprint记录/Sprint01/S1-02/S1-02_方案决策.md"
+        },
+        "observed": {}
+      },
+      "error": "Error: issue_dir_missing:S1-02"
+    },
+    {
+      "issue_id": "S1-03",
+      "effective": {
+        "status": "unavailable",
+        "error": "effective_solution_unavailable",
+        "reason": "solution_missing",
+        "locators": {
+          "summaryPath": "docs/01_Sprint记录/Sprint01/S1-03/S1-03_方案决策总结.md",
+          "solutionPath": "docs/01_Sprint记录/Sprint01/S1-03/S1-03_方案决策.md"
+        },
+        "observed": {}
+      },
+      "error": "Error: issue_dir_missing:S1-03"
+    },
+    {
+      "issue_id": "S1-04",
+      "effective": {
+        "status": "unavailable",
+        "error": "effective_solution_unavailable",
+        "reason": "solution_missing",
+        "locators": {
+          "summaryPath": "docs/01_Sprint记录/Sprint01/S1-04/S1-04_方案决策总结.md",
+          "solutionPath": "docs/01_Sprint记录/Sprint01/S1-04/S1-04_方案决策.md"
+        },
+        "observed": {}
+      },
+      "error": "Error: issue_dir_missing:S1-04"
+    }
+  ],
+  "public_stage_pass": false,
+  "semantic_host_readback": [
+    {
+      "issue_id": "S1-01",
+      "head": "329cccb65cfcef37db2183f6b260b48f9355f932",
+      "canonical_path": "docs/01_sprint记录/sprint01/S1-01/S1-01_方案决策.md",
+      "summary_path": "docs/01_sprint记录/sprint01/S1-01/S1-01_方案决策总结.md",
+      "solution_version": "S1-01-solution-v1",
+      "approval_locator": "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/发布批准记录.md",
+      "canonical_git_blob": "84a48adbefa30e4913f7f1f7d32fc659134259ea",
+      "summary_git_blob": "7e79f7bb3934d1ee6473eed13352a278987a836f",
+      "committed_metadata_check": "pass",
+      "handoff_summary_status": "completed"
+    },
+    {
+      "issue_id": "S1-02",
+      "head": "329cccb65cfcef37db2183f6b260b48f9355f932",
+      "canonical_path": "docs/01_sprint记录/sprint01/S1-02/S1-02_方案决策.md",
+      "summary_path": "docs/01_sprint记录/sprint01/S1-02/S1-02_方案决策总结.md",
+      "solution_version": "S1-02-solution-v1",
+      "approval_locator": "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/发布批准记录.md",
+      "canonical_git_blob": "a3ce860e819225c3c6b785ef053a341ea717c7d4",
+      "summary_git_blob": "a7545f6eb577112c7beb72aa5aa55cc06455a76e",
+      "committed_metadata_check": "pass",
+      "handoff_summary_status": "completed"
+    },
+    {
+      "issue_id": "S1-03",
+      "head": "329cccb65cfcef37db2183f6b260b48f9355f932",
+      "canonical_path": "docs/01_sprint记录/sprint01/S1-03/S1-03_方案决策.md",
+      "summary_path": "docs/01_sprint记录/sprint01/S1-03/S1-03_方案决策总结.md",
+      "solution_version": "S1-03-solution-v1",
+      "approval_locator": "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/发布批准记录.md",
+      "canonical_git_blob": "1fe92e6c8bf2e315b143e6c04fd0c25802372ae6",
+      "summary_git_blob": "03a3b71aa1c24eca827b15e9e2fc86fb1de6838c",
+      "committed_metadata_check": "pass",
+      "handoff_summary_status": "completed"
+    },
+    {
+      "issue_id": "S1-04",
+      "head": "329cccb65cfcef37db2183f6b260b48f9355f932",
+      "canonical_path": "docs/01_sprint记录/sprint01/S1-04/S1-04_方案决策.md",
+      "summary_path": "docs/01_sprint记录/sprint01/S1-04/S1-04_方案决策总结.md",
+      "solution_version": "S1-04-solution-v1",
+      "approval_locator": "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/发布批准记录.md",
+      "canonical_git_blob": "e7af76341aed84b68468e5f5400842868cc7367b",
+      "summary_git_blob": "3929786b092c4fecd2a77ec1f8c1d67f1e1e0b6c",
+      "committed_metadata_check": "pass",
+      "handoff_summary_status": "completed"
+    }
+  ],
+  "semantic_host_readback_pass": true,
+  "global_runtime_mutations": 0
+}

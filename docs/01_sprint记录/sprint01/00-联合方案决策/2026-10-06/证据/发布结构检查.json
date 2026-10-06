@@ -1,9 +1,9 @@
 {
   "status": "pass",
-  "files_read": 56,
+  "files_read": 60,
   "issues": 4,
   "adr_drafts": 3,
-  "local_links_checked": 145,
+  "local_links_checked": 148,
   "item_fields": 6,
   "actual_dag_edges": {
     "A04": [],
@@ -15,5 +15,7 @@
     ]
   },
   "dag_cycle": false,
-  "errors": []
+  "errors": [],
+  "scope": "current approved date directory, four formal Issues, ADR and Sprint01 tracker",
+  "historical_drafts": "original business content and state preserved; their links remain checked"
 }
