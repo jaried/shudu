@@ -139,7 +139,7 @@ def test_master_off_stops_correct_entries_and_legacy_auto_calls(monkeypatch):
     def forbidden_solver(*args, **kwargs):
         pytest.fail("总开关关闭时自动入口仍创建 solver")
 
-    monkeypatch.setattr("shudu.sudoku_game.ShuduSolver", forbidden_solver)
+    monkeypatch.setattr("shudu.sudoku_game.solve_auto", forbidden_solver)
     assert game.auto_solve_simple() == 0
     game.set_auto_simple(True)
     assert not game.auto_solve and not game.history

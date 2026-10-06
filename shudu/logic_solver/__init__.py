@@ -3,6 +3,7 @@
 from ._engine import NumbaLogicSolver
 from ._project import ShuduSolver
 from ._results import (
+    AutoSolveResult,
     CandidatesSnapshot,
     Change,
     LogicStep,
@@ -21,6 +22,7 @@ def next_hint_step(board, notes) -> LogicStep | None:
 
 
 __all__ = (
+    "AutoSolveResult",
     "CandidatesSnapshot",
     "Change",
     "LogicStep",
@@ -29,5 +31,13 @@ __all__ = (
     "SimpleSolveResult",
     "capture_candidates",
     "next_hint_step",
+    "solve_auto",
     "step_changes",
 )
+
+
+def solve_auto(board, names, proven_eliminations) -> AutoSolveResult:
+    """按需加载自动 capability，保持公开结果合同。"""
+    from ._auto import solve_auto as _solve_auto
+
+    return _solve_auto(board, names, proven_eliminations)

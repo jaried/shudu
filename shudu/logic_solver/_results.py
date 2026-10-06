@@ -34,6 +34,16 @@ class SimpleSolveResult:
     eliminations: tuple[Change, ...]
 
 
+@dataclass(frozen=True)
+class AutoSolveResult:
+    """自动 capability 的一次性结果 envelope。"""
+
+    board: list[list[int]]
+    notes: dict[Cell, set[int]]
+    placements: int
+    eliminations: tuple[Change, ...]
+
+
 def capture_candidates(candidates) -> CandidatesSnapshot:
     result = tuple(tuple(frozenset(values) for values in row) for row in candidates)
     return result

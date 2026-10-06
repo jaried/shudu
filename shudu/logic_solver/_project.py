@@ -58,19 +58,15 @@ class ShuduSolver(NumbaLogicSolver):
         result = self.apply_technique_step(DEFAULT_AUTO_TECHNIQUES)
         return result
 
-    def _apply_technique_step_with_eliminations(
-        self, names
-    ) -> tuple[bool, tuple[Change, ...]]:
-        """执行一步并返回这一步在算法候选中产生的全部删除。"""
-        result = False
-        eliminations: tuple[Change, ...] = ()
+    def _apply_technique_step_with_eliminations(self, names) -> tuple[bool, tuple[Change, ...]]:
+        """执行一个 pass，并用 mask 差分返回首个成功技巧的删除。"""
+        before = self._masks.copy()
         for technique in self.techniques_for(names):
-            before = capture_candidates(self.cands)
             if technique():
-                result = True
-                eliminations = _candidate_eliminations(before, self.cands)
-                break
-        return result, eliminations
+                from ._diff import diff_changes
+
+                return True, diff_changes(before, self._masks)
+        return False, ()
 
     def solve_techniques_result(self, names) -> SimpleSolveResult:
         """反复从最高优先级扫描，直到所选自动算法都无法继续。"""
@@ -145,13 +141,3 @@ class ShuduSolver(NumbaLogicSolver):
     def _last_message(self) -> str:
         result = self.steps[-1].split("] ", 1)[-1] if self.steps else ""
         return result
-
-
-def _candidate_eliminations(before, after) -> tuple[Change, ...]:
-    result = tuple(
-        (row, col, digit)
-        for row in range(9)
-        for col in range(9)
-        for digit in sorted(before[row][col] - set(after[row][col]))
-    )
-    return result

@@ -18,11 +18,11 @@ from shudu.auto_techniques import (
     DEFAULT_AUTO_TECHNIQUES,
     validate_auto_techniques,
 )
+from shudu.logic_solver import AutoSolveResult, Change, solve_auto
 from shudu.sudoku_backtracking import DEFAULT_BACKTRACKING_SOLVER
 from shudu.sudoku_hints import Hint, make_hint
 from shudu.sudoku_puzzles import SCREENSHOT_PUZZLE, Puzzle
 from shudu.sudoku_rules import CELLS, PEERS, UNITS, Cell, candidate_grid
-from shudu.logic_solver import Change, ShuduSolver
 
 Grid = tuple[tuple[int, ...], ...]
 
@@ -261,10 +261,8 @@ class Game:
         """执行全部已启用算法到固定点，并同步最终算法候选小数字。"""
         if not self.auto_simple or self.status != "playing" or self.wrong_cells():
             return 0
-        solver = ShuduSolver(self.board)
-        solver.apply_candidate_eliminations(self.simple_eliminations)
-        result = solver.solve_techniques_result(self.auto_techniques)
-        changed = self._apply_auto_result(solver, result, remember)
+        result = solve_auto(self.board, self.auto_techniques, self.simple_eliminations)
+        changed = self._apply_auto_result(result, remember)
         return result.placements if changed else 0
 
     def auto_solve_simple(self, remember: bool = False) -> int:
@@ -272,9 +270,9 @@ class Game:
         result = self.auto_solve_enabled(remember)
         return result
 
-    def _apply_auto_result(self, solver: ShuduSolver, result, remember: bool) -> bool:
-        next_board = [row[:] for row in solver.board]
-        next_notes = self._solver_notes(solver)
+    def _apply_auto_result(self, result: AutoSolveResult, remember: bool) -> bool:
+        next_board = result.board
+        next_notes = result.notes
         next_eliminations = self.simple_eliminations | set(result.eliminations)
         changed = self._auto_result_changed(next_board, next_notes, next_eliminations)
         if not changed:
@@ -292,15 +290,6 @@ class Game:
 
     def _auto_result_changed(self, board, notes, eliminations) -> bool:
         result = board != self.board or notes != self.notes or eliminations != self.simple_eliminations
-        return result
-
-    def _solver_notes(self, solver: ShuduSolver) -> dict[Cell, set[int]]:
-        candidates = solver.algorithm_candidates()
-        result = {
-            cell: set(candidates[cell[0]][cell[1]])
-            for cell in CELLS
-            if not solver.board[cell[0]][cell[1]] and candidates[cell[0]][cell[1]]
-        }
         return result
 
     def _set_auto_message(self, placements: int) -> None:
