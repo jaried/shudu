@@ -1,5 +1,5 @@
 {
-  "status": "canonical_committed_status_written_pending_final_git_readback",
+  "status": "published",
   "branch": "Sprint01",
   "request_binding": "d6e6cdbe-416c-4105-a1d5-64a536c6ffea",
   "approval_locator": "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/发布批准记录.md",
@@ -187,5 +187,41 @@
   "structure_gate": "pass",
   "publication_scope": "local Sprint01 branch",
   "current_authorization": "all four Issues through design, implementation, review and Delivery to pending acceptance; same approved dependencies",
-  "original_publication_authorization_complete": true
+  "original_publication_authorization_complete": true,
+  "status_publication_commit": "ff136626e17394052b86446eea5561d511ef5c03",
+  "committed_handoff": [
+    {
+      "issue_id": "S1-01",
+      "path_binding": "actual committed Git paths",
+      "public_handoff": {
+        "handoffStatus": "ready",
+        "pendingBoundary": null
+      }
+    },
+    {
+      "issue_id": "S1-02",
+      "path_binding": "actual committed Git paths",
+      "public_handoff": {
+        "handoffStatus": "pending",
+        "pendingBoundary": "dependency_release"
+      }
+    },
+    {
+      "issue_id": "S1-03",
+      "path_binding": "actual committed Git paths",
+      "public_handoff": {
+        "handoffStatus": "pending",
+        "pendingBoundary": "dependency_release"
+      }
+    },
+    {
+      "issue_id": "S1-04",
+      "path_binding": "actual committed Git paths",
+      "public_handoff": {
+        "handoffStatus": "ready",
+        "pendingBoundary": null
+      }
+    }
+  ],
+  "authorization": "all four Issues to pending acceptance"
 }

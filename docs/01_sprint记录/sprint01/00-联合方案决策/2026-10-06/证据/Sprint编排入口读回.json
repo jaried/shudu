@@ -1,0 +1,21 @@
+{
+  "observed_head": "ff136626e17394052b86446eea5561d511ef5c03",
+  "run_binding": "ce388b03-2859-4a95-bc23-4f9680b695a8",
+  "target_branch": "Sprint01",
+  "goal_observation": {
+    "goal": null
+  },
+  "public_cycle": {
+    "nextAction": "run_tool",
+    "reason": "host_effect_readback_required",
+    "request": {
+      "kind": "native_goal_context_required",
+      "capability": "ensure"
+    }
+  },
+  "recovery": "existing public DAG and HOST observations drive same authorized stage actions; no global Runtime mutation",
+  "entry_control": "all four Issues through pending acceptance; preserve approved dependencies; required tests real",
+  "temporary_worktrees": 0,
+  "health_interval_seconds": 300,
+  "dag_refresh_seconds": 30
+}
