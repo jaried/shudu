@@ -1,18 +1,18 @@
 {
   "status": "pass",
-  "files_read": 23,
+  "files_read": 26,
   "issues": 4,
   "adr_drafts": 3,
-  "local_links_checked": 55,
+  "local_links_checked": 67,
   "item_fields": 6,
   "actual_dag_edges": {
     "A04": [],
-    "A02": [],
+    "A03": [],
     "A01": [
       "A02",
       "A03"
     ],
-    "A03": []
+    "A02": []
   },
   "dag_cycle": false,
   "errors": []

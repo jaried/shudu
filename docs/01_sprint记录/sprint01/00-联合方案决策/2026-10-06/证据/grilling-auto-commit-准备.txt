@@ -1,0 +1,12 @@
+Error: ownership_projection_missing
+    at prepareSnapshot (file:///D:/Tony/ubuntu_settings/.claude/skills/auto-commit/scripts/snapshot-engine.ts:197:11)
+    at executePrepare (file:///D:/Tony/ubuntu_settings/.claude/skills/auto-commit/scripts/snapshot-engine.ts:382:20)
+    at Object.prepare (file:///D:/Tony/ubuntu_settings/.claude/skills/auto-commit/runtime/index.ts:149:39)
+    at file:///D:/temp/shudu-draft-host-20261006.ts:13:34
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+(node:25028) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///D:/Tony/ubuntu_settings/.claude/skills/auto-commit/runtime/index.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to D:\Tony\ubuntu_settings\.claude\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:25028) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+
