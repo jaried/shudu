@@ -50,11 +50,11 @@ shudu/
 
 `shudu/sudoku_hints.py` 只负责：
 
-1. 从当前正式棋盘构造项目 solver，按全部逻辑算法稳定顺序寻找下一步；
-2. 用现有 `Game.notes` 判断候选删除动作是否已经完成；已完成的 elimination step 在同一 solver 内推进，部分完成时只暴露仍待删除的候选；
-3. 将 `LogicStep.sources / units / targets` 转为统一视觉语义并生成用户可读说明。
+1. 从当前正式棋盘构造项目 solver；
+2. 对每个已有 `Game.notes` 的空格，只把该格现有候选投影到 solver；没有笔记的空格保留 solver 基础候选；
+3. 只请求一次 `next_step()`，由 solver 按全部逻辑算法稳定顺序返回第一步，再转换为统一视觉语义和用户可读说明。
 
-算法是否成立只由正式棋盘与 solver 决定；`Game.notes` 只是进度投影，`UserSettings.auto_techniques` 不进入 Hint recommendation。自动算法未勾选 Hidden Pair 等技巧时，Hint 仍可使用这些技巧。
+`UserSettings.auto_techniques` 不进入 Hint recommendation。提示始终使用全部算法；现有笔记逐格决定当前候选状态，不要求所有空格都有笔记。
 
 算法名字、模式判定和证据所有权集中在 solver；提示文案可以独立调整而不会改变数独规则。
 
@@ -103,7 +103,7 @@ shudu/
 - 根目录只允许五个 Python 可执行入口；
 - rules 不向 GUI / Game / Hint / solver orchestration 反向依赖；
 - Hint 只依赖项目级 `ShuduSolver` Interface；
-- Hint recommendation 的算法事实只来自正式棋盘；现有 notes 仅投影已完成候选删除，并可推进到第一条仍待执行的步骤；
+- Hint recommendation 固定使用全部算法；已有 notes 逐格投影当前候选，没有 notes 的格保留基础候选；
 - Hint 不调用 solver 私有 step 方法，也不重新实现高级算法模式识别；
 - Hint View 不调用普通 View 私有绘制方法；
 - 截图深 Module 不依赖 GUI、Game 或 solver；
