@@ -14,6 +14,7 @@ AUTO_TECHNIQUE_SPECS = (
     ("naked_pair", "Naked Pair", True),
     ("hidden_pair", "Hidden Pair", False),
     ("naked_triple", "Naked Triple", True),
+    ("hidden_triple", "Hidden Triple", False),
     ("pointing_pair", "Pointing Pair", True),
     ("box_line_reduction", "Box-Line Reduction", False),
     ("x_wing", "X-Wing", False),

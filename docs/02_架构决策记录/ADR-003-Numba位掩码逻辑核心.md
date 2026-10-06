@@ -2,7 +2,7 @@
 
 ## 状态
 
-已接受 — 2026-09-13
+已接受 — 2026-10-06 更新
 
 ## 背景
 
@@ -15,6 +15,7 @@
 - Naked Pair
 - Hidden Pair
 - Naked Triple
+- Hidden Triple
 - Pointing Pair
 - Box-Line Reduction
 - X-Wing
@@ -22,7 +23,9 @@
 
 ## 决策
 
-新增 `sudoku_njit_core.py`，将正式大数字推导出的候选统一编码为 1–9 的整数位掩码，并用 `@numba.njit(cache=True)` 实现基础候选计算、落子传播以及上述九种模式搜索。
+新增 `sudoku_njit_core.py`，将正式大数字推导出的候选统一编码为 1–9 的整数位掩码，并用 `@numba.njit(cache=True)` 实现基础候选计算、落子传播以及上述十种模式搜索。
+
+Hidden Triple 按单位枚举三个数字，仅当三个数字均存在候选、候选位置的并集恰为三个空格且存在额外候选时，保留这三格中的三个数字。它在 Naked Triple 之后检查，由共享 solver 直接产出三格来源、所属单位、候选快照与真实删除；Hint 沿用 ADR-002 的现有笔记投影和只读单步 Interface。自动求解目录提供 `hidden_triple` 独立选项，默认不勾选。
 
 新增 `sudoku_logic.py` 作为共享 Python orchestration 层：
 
@@ -53,4 +56,4 @@
 
 ## 验证
 
-`tests/test_njit_core.py` 会主动调用全部九种核心 finder，并断言每个 dispatcher 都产生 `nopython_signatures`。完整回归在 Python 3.12 环境执行；GUI 测试在需要时使用 Tk + Xvfb。
+`tests/test_njit_core.py` 会主动调用全部十种核心 finder，并断言每个 dispatcher 都产生 `nopython_signatures`。完整回归在 Python 3.12 环境执行；GUI 测试在需要时使用 Tk + Xvfb。

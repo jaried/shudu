@@ -6,7 +6,7 @@ Python 层负责算法编排、日志和结构化证据，提示层不再重新�
 
 from __future__ import annotations
 
-from typing import Iterable
+from collections.abc import Iterable
 
 import numpy as np
 
@@ -17,6 +17,7 @@ from shudu.sudoku_njit_core import (
     find_box_line,
     find_hidden_pair,
     find_hidden_single,
+    find_hidden_triple,
     find_naked_pair,
     find_naked_single,
     find_naked_triple,
@@ -26,7 +27,16 @@ from shudu.sudoku_njit_core import (
     mask_digits,
     masks_from_board,
 )
-from shudu.sudoku_rules import BOXES, COLS, ROWS, Cell, box_cells, col_cells, row_cells, unit_name
+from shudu.sudoku_rules import (
+    BOXES,
+    COLS,
+    ROWS,
+    Cell,
+    box_cells,
+    col_cells,
+    row_cells,
+    unit_name,
+)
 
 
 class NumbaLogicSolver:
@@ -42,7 +52,6 @@ class NumbaLogicSolver:
         self.error_message: str | None = None
         self._last_sources: tuple[Cell, ...] = ()
         self._last_units: tuple[tuple[Cell, ...], ...] = ()
-        return
 
     @property
     def cands(self):
@@ -67,6 +76,7 @@ class NumbaLogicSolver:
             self.naked_pair,
             self.hidden_pair,
             self.naked_triple,
+            self.hidden_triple,
             self.pointing_pair,
             self.box_line_reduction,
             self.x_wing,
@@ -90,25 +100,20 @@ class NumbaLogicSolver:
     def _reset_step_context(self) -> None:
         self._last_sources = ()
         self._last_units = ()
-        return
 
     def _set_step_context(self, sources=(), units=()) -> None:
         self._last_sources = tuple(dict.fromkeys(sources))
         self._last_units = tuple(dict.fromkeys(tuple(unit) for unit in units if unit))
-        return
 
     def _place(self, row: int, col: int, digit: int) -> None:
         self.board[row][col] = digit
         apply_placement(self._masks, row, col, digit)
-        return
 
     def _propagate_placement(self, row: int, col: int, digit: int) -> None:
         apply_placement(self._masks, row, col, digit)
-        return
 
     def _rebuild_candidates(self) -> None:
         self._masks = masks_from_board(self.board)
-        return
 
     def hidden_single(self) -> bool:
         unit_index, row, col, digit = find_hidden_single(self._board_array(), self._masks)
@@ -173,7 +178,6 @@ class NumbaLogicSolver:
         )
         self._discard_mask(targets, mask)
         self.elim_count += len(targets)
-        return
 
     def hidden_pair(self) -> bool:
         hit = find_hidden_pair(self._board_array(), self._masks)
@@ -197,7 +201,6 @@ class NumbaLogicSolver:
         )
         self._retain_mask(cells, pair_mask)
         self.elim_count += len(cells)
-        return
 
     def naked_triple(self) -> bool:
         hit = find_naked_triple(self._board_array(), self._masks)
@@ -218,7 +221,28 @@ class NumbaLogicSolver:
         )
         self._discard_mask(targets, mask)
         self.elim_count += len(targets)
-        return
+
+    def hidden_triple(self) -> bool:
+        hit = find_hidden_triple(self._board_array(), self._masks)
+        result = hit[0] >= 0
+        if result:
+            self._apply_hidden_triple(hit)
+        return result
+
+    def _apply_hidden_triple(self, hit) -> None:
+        unit_index, row_a, col_a, row_b, col_b, row_c, col_c, mask = hit
+        cells = ((row_a, col_a), (row_b, col_b), (row_c, col_c))
+        unit = _legacy_unit(unit_index)
+        extras = 0
+        for row, col in cells:
+            extras |= int(self._masks[row, col]) & ~mask
+        self._set_step_context(cells, (unit,))
+        self._log(
+            f"Hidden Triple: {_format_cells(cells)} 在 {unit_name(unit)} 中出现数字 "
+            f"{sorted(mask_digits(mask))}，排除其他候选 {sorted(mask_digits(extras))}"
+        )
+        self._retain_mask(cells, mask)
+        self.elim_count += len(cells)
 
     def pointing_pair(self) -> bool:
         hit = find_pointing_pair(self._board_array(), self._masks)
@@ -242,7 +266,6 @@ class NumbaLogicSolver:
         )
         self._discard_mask(targets, bit)
         self.elim_count += len(targets)
-        return
 
     def box_line_reduction(self) -> bool:
         hit = find_box_line(self._board_array(), self._masks)
@@ -266,7 +289,6 @@ class NumbaLogicSolver:
         )
         self._discard_mask(targets, bit)
         self.elim_count += len(targets)
-        return
 
     def x_wing(self) -> bool:
         hit = find_x_wing(self._board_array(), self._masks)
@@ -289,7 +311,6 @@ class NumbaLogicSolver:
         self._log(f"{message}，{_format_cells(targets)} 排除 {digit}")
         self._discard_mask(targets, 1 << digit)
         self.elim_count += len(targets)
-        return
 
     def xy_wing(self) -> bool:
         hit = find_xy_wing(self._board_array(), self._masks)
@@ -322,7 +343,6 @@ class NumbaLogicSolver:
         )
         self._discard_mask(targets, 1 << digit)
         self.elim_count += len(targets)
-        return
 
     def _unit_targets(self, unit_index: int, mask: int, excluded: set[Cell]) -> list[Cell]:
         unit = _legacy_unit(unit_index)
@@ -376,12 +396,10 @@ class NumbaLogicSolver:
     def _discard_mask(self, cells: Iterable[Cell], mask: int) -> None:
         for row, col in cells:
             self._masks[row, col] = int(self._masks[row, col]) & ~mask
-        return
 
     def _retain_mask(self, cells: Iterable[Cell], mask: int) -> None:
         for row, col in cells:
             self._masks[row, col] = int(self._masks[row, col]) & mask
-        return
 
     def _try_backtracking_fallback(self) -> bool:
         result = DEFAULT_BACKTRACKING_SOLVER.solve(self.board)
@@ -419,7 +437,6 @@ class NumbaLogicSolver:
         print("初始候选数：")
         self._show_candidates()
         print()
-        return
 
     def _print_solution(self) -> None:
         print()
@@ -428,13 +445,12 @@ class NumbaLogicSolver:
         self._print_steps()
         _print_board(self.board)
         print(f"共 {self.step_no} 步推理，{self.elim_count} 次排除")
-        return
 
     def _print_stalled_state(self) -> None:
         print()
         print("⚠ 卡住了！以下技巧不足：")
         print("  Naked/Hidden Single ✓   Naked/Hidden Pair ✓")
-        print("  Naked Triple ✓   Pointing Pair ✓   Box-Line ✓   X-Wing ✓")
+        print("  Naked/Hidden Triple ✓   Pointing Pair ✓   Box-Line ✓   X-Wing ✓")
         print()
         print("已填入：")
         _print_board(self.board)
@@ -442,7 +458,6 @@ class NumbaLogicSolver:
         self._show_candidates()
         print()
         print("开始使用公共回溯能力确认当前盘面是否有解。")
-        return
 
     def _print_steps(self) -> None:
         print("推理步骤：")
@@ -450,7 +465,6 @@ class NumbaLogicSolver:
         for line in self.steps:
             print(line)
         print()
-        return
 
     def _show_candidates(self) -> None:
         candidates = self.cands
@@ -464,7 +478,6 @@ class NumbaLogicSolver:
             if row in (2, 5):
                 print(horizontal)
         print(horizontal)
-        return
 
     def _candidate_text(self, row: int, col: int, candidates) -> str:
         value = self.board[row][col]
@@ -481,7 +494,6 @@ class NumbaLogicSolver:
     def _log(self, message: str) -> None:
         self.step_no += 1
         self.steps.append(f"  [{self.step_no:3d}] {message}")
-        return
 
 
 def _legacy_unit(unit_index: int) -> tuple[Cell, ...]:

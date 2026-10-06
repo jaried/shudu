@@ -9,11 +9,11 @@ import sys
 import tkinter as tk
 
 import pytest
-
-from shudu_solver import AUTO_TECHNIQUE_NAMES, DEFAULT_AUTO_TECHNIQUES, ShuduSolver
 from sudoku_game import Game
-from sudoku_gui import SudokuWindow, main
+
 from shudu.user_settings import UserSettings, UserSettingsStore
+from shudu_solver import AUTO_TECHNIQUE_NAMES, DEFAULT_AUTO_TECHNIQUES, ShuduSolver
+from sudoku_gui import SudokuWindow, main
 
 EXPECTED_NAMES = (
     "hidden_single",
@@ -21,6 +21,7 @@ EXPECTED_NAMES = (
     "naked_pair",
     "hidden_pair",
     "naked_triple",
+    "hidden_triple",
     "pointing_pair",
     "box_line_reduction",
     "x_wing",

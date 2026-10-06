@@ -3,18 +3,16 @@
 from copy import deepcopy
 
 import pytest
-
-from logical_solver import LogicSolver, parse
-from shudu_solver import DEFAULT_AUTO_TECHNIQUES, ShuduSolver
-from test_logical_solver import SECOND_PUZZLE
-from sudoku_puzzles import Puzzle, puzzle_from_text
 from sudoku_game import CELLS, PEERS, Game
 from sudoku_hint_view import hint_background
 from sudoku_hints import make_hint, pending_step
+from sudoku_puzzles import PUZZLES, Puzzle, puzzle_from_text
 from sudoku_rules import candidate_grid
 from sudoku_theme import SAME
-from sudoku_puzzles import PUZZLES
+from test_logical_solver import SECOND_PUZZLE
 
+from logical_solver import LogicSolver, parse
+from shudu_solver import AUTO_TECHNIQUE_NAMES, DEFAULT_AUTO_TECHNIQUES, ShuduSolver
 
 LEVEL119_PUZZLE = Puzzle(
     "关卡 119",
@@ -31,6 +29,73 @@ LEVEL119_PUZZLE = Puzzle(
         "........3",
     ),
 )
+
+
+SCREENSHOT_NOTES = {
+    (0, 4): {2, 6}, (0, 5): {2, 6}, (1, 4): {1, 5}, (1, 5): {1, 5},
+    (3, 1): {6, 7, 8}, (3, 2): {1, 4, 7}, (3, 3): {1, 7},
+    (3, 5): {1, 4, 5, 8}, (3, 7): {1, 6}, (3, 8): {1, 4, 5},
+    (4, 0): {3, 8, 9}, (4, 1): {3, 8}, (4, 2): {1, 4, 9},
+    (4, 4): {1, 2, 5, 9}, (4, 5): {1, 2, 4, 5, 8},
+    (4, 6): {3, 5}, (4, 8): {1, 4, 5},
+    (5, 1): {3, 6}, (5, 2): {1, 4, 7, 9}, (5, 3): {1, 7, 9},
+    (5, 4): {1, 4, 9}, (5, 5): {1, 4}, (5, 6): {3, 6},
+    (6, 0): {3, 8, 9}, (6, 1): {2, 3, 8}, (6, 2): {5, 9},
+    (6, 3): {1, 2, 9}, (6, 4): {1, 6, 9}, (6, 6): {5, 6, 8}, (6, 8): {1, 5},
+    (8, 0): {8, 9}, (8, 1): {2, 7, 8}, (8, 2): {5, 7, 9},
+    (8, 3): {1, 2, 9}, (8, 4): {1, 4, 6, 9}, (8, 5): {1, 4, 6},
+    (8, 6): {5, 6, 8}, (8, 7): {1, 6},
+}
+
+
+@pytest.mark.parametrize(
+    "auto_techniques",
+    (frozenset(), DEFAULT_AUTO_TECHNIQUES, {"hidden_pair"}, AUTO_TECHNIQUE_NAMES),
+)
+def test_screenshot_hint_finds_hidden_triple_from_current_notes(auto_techniques):
+    game = Game(LEVEL119_PUZZLE, auto_techniques=auto_techniques)
+    game.notes = deepcopy(SCREENSHOT_NOTES)
+    before = play_state(game)
+    game.hint()
+    hint = game.hint_preview
+    assert hint.step is not None and hint.step.name == "Hidden Triple"
+    assert hint.title == "隐性三数组"
+    assert hint.pending_eliminations == (
+        (3, 5, 1), (3, 5, 4), (4, 4, 1), (4, 4, 9), (4, 5, 1), (4, 5, 4),
+    )
+    assert hint.sources == {(3, 5), (4, 4), (4, 5)}
+    assert len(hint.units) == 1 and set(hint.units[0]) == {
+        (row, col) for row in range(3, 6) for col in range(3, 6)
+    }
+    assert all(hint_background(hint, cell, 0) == SAME for cell in hint.sources)
+    assert "[2, 5, 8]" in hint.message and "绿色三格" in hint.message
+    assert play_state(game) == before
+
+
+def test_hidden_triple_uses_public_solver_step_and_does_not_repeat_removed_notes():
+    notes = deepcopy(SCREENSHOT_NOTES)
+    first = pending_step(LEVEL119_PUZZLE.grid(), notes)
+    assert first is not None and first.name == "Hidden Triple"
+    solver = ShuduSolver(LEVEL119_PUZZLE.grid())
+    base = solver.algorithm_candidates()
+    solver.apply_candidate_eliminations(
+        (row, col, digit)
+        for (row, col), values in notes.items()
+        for digit in base[row][col] - values
+    )
+    assert solver.apply_technique_step({"hidden_triple"})
+    assert solver.algorithm_candidates()[3][5] == {5, 8}
+    assert solver.algorithm_candidates()[4][4] == {2, 5}
+    assert solver.algorithm_candidates()[4][5] == {2, 5, 8}
+    followup = solver.next_step()
+    assert followup is not None and followup.name == "Hidden Pair"
+    assert set(first.eliminations).isdisjoint(followup.eliminations)
+    for row, col, digit in first.eliminations:
+        notes[(row, col)].remove(digit)
+    second = pending_step(LEVEL119_PUZZLE.grid(), notes)
+    assert second is not None and second.name == "Hidden Pair"
+    assert second == followup
+    assert set(first.eliminations).isdisjoint(second.eliminations)
 
 
 

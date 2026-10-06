@@ -8,9 +8,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from shudu_solver import ShuduSolver
 from shudu.sudoku_rules import Cell, unit_name
 from shudu.sudoku_step import Change, LogicStep
+from shudu_solver import ShuduSolver
 
 NAMES = {
     "Naked Single": "唯一候选数",
@@ -18,6 +18,7 @@ NAMES = {
     "Naked Pair": "显性数对",
     "Hidden Pair": "隐性数对",
     "Naked Triple": "显性三数组",
+    "Hidden Triple": "隐性三数组",
     "Pointing Pair": "宫指向行列",
     "Box-Line": "行列指向宫",
     "X-Wing": "X-Wing",
@@ -56,7 +57,6 @@ def _apply_candidate_notes(solver: ShuduSolver, notes: dict[Cell, set[int]]) -> 
         if digit not in visible
     )
     solver.apply_candidate_eliminations(eliminations)
-    return
 
 
 def pending_step(board, notes: dict[Cell, set[int]]) -> LogicStep | None:
@@ -155,8 +155,8 @@ def step_message(step: LogicStep, units, sources) -> str:
         result = _placement_message(step, units)
     elif step.name in ("Naked Pair", "Naked Triple"):
         result = _naked_subset_message(step, units, sources)
-    elif step.name == "Hidden Pair":
-        result = _hidden_pair_message(step, units, sources)
+    elif step.name in ("Hidden Pair", "Hidden Triple"):
+        result = _hidden_subset_message(step, units, sources)
     elif step.name == "Pointing Pair":
         result = _pointing_message(step, units)
     elif step.name == "Box-Line":
@@ -185,10 +185,11 @@ def _naked_subset_message(step: LogicStep, units, sources) -> str:
     return result
 
 
-def _hidden_pair_message(step: LogicStep, units, sources) -> str:
+def _hidden_subset_message(step: LogicStep, units, sources) -> str:
     digits = _remaining_source_digits(step, sources)
     area = unit_name(units[0]) if units else "区域"
-    result = f"观察蓝框标出的{area}。数字 {digits} 只可能出现在绿色两格，因此这两格只能保留这两个数字，红色的其他候选可删除。"
+    count = "两" if len(sources) == 2 else "三"
+    result = f"观察蓝框标出的{area}。数字 {digits} 只可能出现在绿色{count}格，因此这{count}格只能保留这{count}个数字，红色的其他候选可删除。"
     return result
 
 

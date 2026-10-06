@@ -220,6 +220,51 @@ def find_naked_triple(board: np.ndarray, masks: np.ndarray) -> tuple[int, int, i
 
 
 @njit(cache=True)
+def find_hidden_triple(board: np.ndarray, masks: np.ndarray) -> tuple[int, int, int, int, int, int, int, int]:
+    for unit_index in range(UNIT_COUNT):
+        positions = np.zeros(10, dtype=np.int64)
+        for offset in range(9):
+            row, col = unit_cell(unit_index, offset)
+            if board[row, col] == 0:
+                for digit in range(1, 10):
+                    if masks[row, col] & (1 << digit):
+                        positions[digit] |= 1 << offset
+        for digit_a in range(1, 8):
+            if positions[digit_a] == 0:
+                continue
+            for digit_b in range(digit_a + 1, 9):
+                if positions[digit_b] == 0:
+                    continue
+                for digit_c in range(digit_b + 1, 10):
+                    if positions[digit_c] == 0:
+                        continue
+                    occupied = positions[digit_a] | positions[digit_b] | positions[digit_c]
+                    if count_bits(occupied) != 3:
+                        continue
+                    triple_mask = (1 << digit_a) | (1 << digit_b) | (1 << digit_c)
+                    first = -1
+                    second = -1
+                    third = -1
+                    has_extras = False
+                    for offset in range(9):
+                        if occupied & (1 << offset):
+                            row, col = unit_cell(unit_index, offset)
+                            has_extras = has_extras or bool(masks[row, col] & ~triple_mask)
+                            if first < 0:
+                                first = offset
+                            elif second < 0:
+                                second = offset
+                            else:
+                                third = offset
+                    if has_extras:
+                        row_a, col_a = unit_cell(unit_index, first)
+                        row_b, col_b = unit_cell(unit_index, second)
+                        row_c, col_c = unit_cell(unit_index, third)
+                        return unit_index, row_a, col_a, row_b, col_b, row_c, col_c, triple_mask
+    return -1, -1, -1, -1, -1, -1, -1, 0
+
+
+@njit(cache=True)
 def _box_digit_positions(board: np.ndarray, masks: np.ndarray, base_row: int, base_col: int, digit: int) -> tuple[int, int, int, int, int]:
     bit = 1 << digit
     count = 0
