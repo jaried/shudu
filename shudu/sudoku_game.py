@@ -22,8 +22,7 @@ from shudu.sudoku_backtracking import DEFAULT_BACKTRACKING_SOLVER
 from shudu.sudoku_hints import Hint, make_hint
 from shudu.sudoku_puzzles import SCREENSHOT_PUZZLE, Puzzle
 from shudu.sudoku_rules import CELLS, PEERS, UNITS, Cell, candidate_grid
-from shudu.sudoku_step import Change
-from shudu_solver import ShuduSolver
+from shudu.logic_solver import Change, ShuduSolver
 
 Grid = tuple[tuple[int, ...], ...]
 

@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from typing import List, Set, Tuple
 
-from shudu.sudoku_logic import NumbaLogicSolver
+from shudu.logic_solver import NumbaLogicSolver
 from shudu.sudoku_rules import BOXES, COLS, ROWS, candidate_grid, unit_name as shared_unit_name
 
 Board = List[List[int]]

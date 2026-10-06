@@ -22,8 +22,10 @@ shudu/
 ├─ sudoku_njit_core.py      Numba 纯计算核心
 ├─ sudoku_rules.py          行、列、宫与基础候选规则
 ├─ sudoku_backtracking.py   公共完整解能力
-├─ sudoku_logic.py          solver 状态、技巧编排、算法证据
-├─ sudoku_step.py           LogicStep Interface
+├─ logic_solver/            逻辑求解 deep Module 与唯一公开入口
+│  ├─ _engine.py            solver 状态、技巧编排、算法证据
+│  ├─ _project.py           项目优先级与兼容方法
+│  └─ _results.py           LogicStep、SimpleSolveResult 与结果快照
 ├─ sudoku_hints.py          LogicStep → Hint 语义适配
 ├─ sudoku_game.py           游戏状态机与完成单位查询
 ├─ sudoku_screenshot.py     截图输入深 Module

@@ -2,7 +2,7 @@
 
 import numpy as np
 import pytest
-from sudoku_logic import NumbaLogicSolver
+from shudu.logic_solver import NumbaLogicSolver
 from sudoku_njit_core import (
     candidate_masks,
     find_box_line,

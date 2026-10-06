@@ -51,7 +51,8 @@ def test_game_does_not_depend_on_legacy_logic_implementation():
 
 def test_hint_adapter_depends_on_project_solver_not_legacy_solver():
     modules = imported_modules(PACKAGE / "sudoku_hints.py")
-    assert "shudu_solver" in modules
+    assert "shudu.logic_solver" in modules
+    assert "shudu_solver" not in modules
     assert "logical_solver" not in modules
 
 
@@ -106,10 +107,35 @@ def test_hint_adapter_does_not_reimplement_algorithm_recognition():
 
 
 def test_project_solver_exports_step_evidence_directly():
-    source = (ROOT / "shudu_solver.py").read_text(encoding="utf-8")
+    source = (PACKAGE / "logic_solver" / "_project.py").read_text(encoding="utf-8")
     assert "self._last_sources" in source
     assert "self._last_units" in source
     assert "LogicStep(" in source
+
+
+def test_logic_solver_root_adapter_keeps_legacy_class_identity():
+    source = (ROOT / "logical_solver.py").read_text(encoding="utf-8")
+    assert "class LogicSolver(NumbaLogicSolver):" in source
+    assert "    pass" in source
+    assert "from shudu.logic_solver import NumbaLogicSolver" in source
+
+
+def test_legacy_solver_runtime_identity_stays_at_root_adapter():
+    from logical_solver import LogicSolver
+    from shudu.logic_solver import NumbaLogicSolver
+
+    assert LogicSolver.__module__ == "logical_solver"
+    assert issubclass(LogicSolver, NumbaLogicSolver)
+    assert LogicSolver([[0] * 9 for _ in range(9)]).__class__ is LogicSolver
+
+
+def test_logic_solver_module_owns_moved_implementation_files():
+    assert (PACKAGE / "logic_solver" / "__init__.py").is_file()
+    assert (PACKAGE / "logic_solver" / "_engine.py").is_file()
+    assert (PACKAGE / "logic_solver" / "_project.py").is_file()
+    assert (PACKAGE / "logic_solver" / "_results.py").is_file()
+    assert not (PACKAGE / "sudoku_logic.py").exists()
+    assert not (PACKAGE / "sudoku_step.py").exists()
 
 
 def test_hint_view_uses_public_view_drawing_interface():

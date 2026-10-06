@@ -17,15 +17,20 @@ _INTERNAL_MODULES = (
     "sudoku_game",
     "sudoku_hint_view",
     "sudoku_hints",
-    "sudoku_logic",
     "sudoku_njit_core",
     "sudoku_puzzles",
     "sudoku_rules",
     "sudoku_screenshot",
-    "sudoku_step",
     "sudoku_theme",
     "sudoku_view",
 )
 
+_MODULE_ALIASES = {
+    "sudoku_logic": "shudu.logic_solver._engine",
+    "sudoku_step": "shudu.logic_solver._results",
+}
+
 for _name in _INTERNAL_MODULES:
     sys.modules[_name] = importlib.import_module(f"shudu.{_name}")
+for _name, _target in _MODULE_ALIASES.items():
+    sys.modules[_name] = importlib.import_module(_target)

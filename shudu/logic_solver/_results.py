@@ -27,6 +27,12 @@ class LogicStep:
         return result
 
 
+@dataclass(frozen=True)
+class SimpleSolveResult:
+    placements: int
+    eliminations: tuple[Change, ...]
+
+
 def capture_candidates(candidates) -> CandidatesSnapshot:
     result = tuple(tuple(frozenset(values) for values in row) for row in candidates)
     return result
