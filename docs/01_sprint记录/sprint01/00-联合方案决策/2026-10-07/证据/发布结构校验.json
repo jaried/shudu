@@ -1,10 +1,10 @@
 {
   "status": "pass",
-  "observed_head": "92dfb3366adbc1f3573c7cb4153b31a702eb6b97",
+  "observed_head": "700b84c1a51dcc16a667432712d31495207a2a03",
   "branch": "Sprint01",
   "completed_at": "2026-10-07T11:46:59.132Z",
   "checked_markdown": 28,
-  "local_links": 118,
+  "local_links": 120,
   "item_count": 3,
   "active_issues": [
     "S1-06"
@@ -420,24 +420,8 @@
   },
   "files": [
     {
-      "path": "docs/01_Sprint记录/sprint01/S1-05/S1-05_原始需求.md",
-      "sha256": "104c64165722636940723899deaa33dca6ff20b197639c0a4e39d04343dad506"
-    },
-    {
-      "path": "docs/01_Sprint记录/sprint01/S1-05/S1-05_关联关系.md",
-      "sha256": "78287d9b59ad5a63175de1050941ab2db48ff724f334ba147f362ec8ed088fa9"
-    },
-    {
-      "path": "docs/01_Sprint记录/sprint01/S1-07/S1-07_原始需求.md",
-      "sha256": "1d34d1c5c05c1389974237024efd5ed9de956b6de993ce62e3ce21bc7aa309ed"
-    },
-    {
-      "path": "docs/01_Sprint记录/sprint01/S1-07/S1-07_关联关系.md",
-      "sha256": "ff0bb81ebd0a2f110767a3095f5470726639c2120e7680246a2047e41d322397"
-    },
-    {
       "path": "docs/01_Sprint记录/sprint01/S1-06/S1-06_遗留问题.md",
-      "sha256": "c005dacda8fce9ac16577354fd34c24a3c2eaf24bc3895d1319e9389a4b056e6"
+      "sha256": "fc428ff5032628e30b3594f06081ce897b7d54deac0fd3779cc825fcace45e6e"
     },
     {
       "path": "docs/01_Sprint记录/sprint01/S1-06/S1-06_方案决策总结.md",
@@ -454,6 +438,26 @@
     {
       "path": "docs/01_Sprint记录/sprint01/S1-06/S1-06_关联关系.md",
       "sha256": "1028de7a2d38c61c341a2a40ea46a9a89121e637a4f7c8f8429fddc8b7310242"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/S1-07/S1-07_原始需求.md",
+      "sha256": "1d34d1c5c05c1389974237024efd5ed9de956b6de993ce62e3ce21bc7aa309ed"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/S1-07/S1-07_关联关系.md",
+      "sha256": "ff0bb81ebd0a2f110767a3095f5470726639c2120e7680246a2047e41d322397"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/S1-05/S1-05_原始需求.md",
+      "sha256": "104c64165722636940723899deaa33dca6ff20b197639c0a4e39d04343dad506"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/S1-05/S1-05_关联关系.md",
+      "sha256": "78287d9b59ad5a63175de1050941ab2db48ff724f334ba147f362ec8ed088fa9"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/待确认问题.md",
+      "sha256": "8b282075b9d1857f1c4094ad84db919163c6bc069fb6d557cb3c5f688530ae45"
     },
     {
       "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/发布批准记录.md",
@@ -482,10 +486,6 @@
     {
       "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/截图导入联合方案决策草案.md",
       "sha256": "5d75d1bf84ae5d2cb91a5c3e719b9e65d0f19a96dffba1514b00956734e83daa"
-    },
-    {
-      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/待确认问题.md",
-      "sha256": "8b282075b9d1857f1c4094ad84db919163c6bc069fb6d557cb3c5f688530ae45"
     },
     {
       "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/范围修订记录.md",
@@ -518,6 +518,10 @@
     {
       "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/证据/一票发布提交公开读回.json",
       "sha256": "b6667d15fc47968fff337bf6fc8e75cb26cc9fe2996be47439f40707dad429e9"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/证据/Stage与正式Git读回.json",
+      "sha256": "b3d2448e53cbe1ad173846e8be767b143e4e688482a00cc6a57141ce91146208"
     },
     {
       "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/证据/S1-06正式发布机器事实.json",
@@ -581,8 +585,12 @@
     }
   ],
   "errors": [],
-  "final_surface_checked_at": "2026-10-07T11:53:28.204Z",
+  "final_surface_checked_at": "2026-10-07T11:57:35.053Z",
   "git_diff_check": "pass after removing additional terminal empty lines",
   "public_commit_candidate_complete": false,
-  "local_publication_mode": "authorized_HOST_exact_paths_and_Git_readback"
+  "local_publication_mode": "authorized_HOST_exact_paths_and_Git_readback",
+  "canonical_publication_commit": "700b84c1a51dcc16a667432712d31495207a2a03",
+  "public_stage_reader_available": false,
+  "public_stage_readback_locator": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/证据/Stage与正式Git读回.json",
+  "host_effective_solution_readback": "pass"
 }
