@@ -1,0 +1,55 @@
+{
+  "issue_id": "S1-06",
+  "solution_version": "S1-06-solution-v1",
+  "design_version": "S1-06-design-v1",
+  "base_head": "97fc75b6790de8fe36855c8ceba5e42ad0b09ebf",
+  "items": [
+    {
+      "item_id": "I01",
+      "semantic_slice": "原图及有效截图完整恢复\n\n- objective：公开截图加载准确恢复用户原图，保持正式值与笔记语义。\n- owner_surface：`shudu.sudoku_screenshot.load_screenshot_game` 的单格前景恢复能力。\n- allowed_scope：`_cell_binary`、内部floor常量及失效helper删除；原图bytes、独立标签和公开入口测试。\n- completion_evidence：新增行为测试真实RED→GREEN；81格/24given/57blank/notes{}；有效截图、执行计数、Game真实结果。\n- required_behavior_checks：int16相对背景、原裁边、边缘条件、一次Otsu至多两threshold；模板108/置信度0.50/3×3笔记保持；一读一解码；成功81、失败前缀；fixturehash及人工标签。\n- item_dependencies：[]。",
+      "owner_paths": [
+        "shudu/sudoku_screenshot.py",
+        "tests/test_screenshot_foreground.py",
+        "tests/fixtures/screenshots/level120-wechat.jpg",
+        "tests/fixtures/screenshots/level120-expected.json"
+      ],
+      "owner_symbols": [
+        "_cell_binary",
+        "EDGE_FOREGROUND_MIN_CONTRAST"
+      ],
+      "item_dependencies": [],
+      "semantic_digest": "53d7571c2e0f21fb4da9d5cd603c8128c292830436adcffbd975d26dfcb2c90b"
+    },
+    {
+      "item_id": "I02",
+      "semantic_slice": "首错定位和失败后保留棋局\n\n- objective：玩家定位首个无法识别格，当前棋局仍可继续。\n- owner_surface：`_read_cells` 的单格识别错误上下文与既有 GUI 导入契约。\n- allowed_scope：只包装 `_read_cell` ValueError；固定消息和cause；实际失败glyph、公开加载与真实Tk回归。\n- completion_evidence：位置行为测试RED→GREEN；真实首错、cause及GUI一次对话框/完整状态快照；其他owner错误保持。\n- required_behavior_checks：row-major一基首错；无额外读取/OCR；成功契约保持；失败无新局安装、board/notes/history/偏好/view绑定一致。\n- item_dependencies：[]。与I01函数修改互不重叠，允许同文件并行；主Agent按测试和编辑顺序执行。",
+      "owner_paths": [
+        "shudu/sudoku_screenshot.py",
+        "tests/test_screenshot_errors.py",
+        "tests/test_screenshot_import_menu.py"
+      ],
+      "owner_symbols": [
+        "_read_cells"
+      ],
+      "item_dependencies": [],
+      "semantic_digest": "7dc94ef49387529f906b98a99eb5939e50fbc28aad6a9b736b2c65a218237dc7"
+    },
+    {
+      "item_id": "I03",
+      "semantic_slice": "全量门禁、评审与交付\n\n- objective：当前全部测试修复并完成工程待验收。\n- owner_surface：本票required checks、真实Tk门禁和交付载体。\n- allowed_scope：本票测试、实际失败的焦点测试前置及ADR-005批准的必要生命周期整改、质量修正、评审整改、精确提交和Sprint集成。\n- completion_evidence：同一最终tip和环境连续三轮完整pytest退出0、ruff通过、独立实施评审release、Sprint合并及待验收readback。\n- required_behavior_checks：全部原测试和新增集合；原Hint/求解/偏好/Numba/UI语义保持；真实Windows焦点/资源行为；所有items证据可定位。\n- item_dependencies：[I01,I02]。\n\nItem DAG：I01与I02可并行 → I03。HOST材料化ID、owner paths/symbols、digest、Git OID、命令和exit code；LLM只判断语义和结果。每个Item先RED再实现、GREEN和required回归，最后独立评审及交付。",
+      "owner_paths": [
+        "tests/test_auto_technique_settings.py",
+        "shudu/settings_menu/_popup.py"
+      ],
+      "owner_symbols": [
+        "SettingsPopup._focus_out",
+        "SettingsPopup.close"
+      ],
+      "item_dependencies": [
+        "I01",
+        "I02"
+      ],
+      "semantic_digest": "3b3a535d9d0229749c85bd04eb0811d31b2204cad703358604162d7203f94ac9"
+    }
+  ]
+}
