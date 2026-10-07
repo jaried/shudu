@@ -1,0 +1,63 @@
+{
+  "issue_id": "S1-06",
+  "solution_version": "S1-06-solution-v1",
+  "design_version": "S1-06-design-v1",
+  "implementation_version": "S1-06-implementation-v1",
+  "tested_oid": "c85aba34ea338c90cdb8fc5cc56eb2457af4fc04",
+  "execution_payload_digest": "69df822843d9c2a395aa6686e3ee715bf5490037d43b93fbe461fa492db60b7f",
+  "full_runs": [
+    {
+      "exit_code": 0,
+      "tested_oid": "c85aba34ea338c90cdb8fc5cc56eb2457af4fc04",
+      "wall_seconds": 31.894
+    },
+    {
+      "exit_code": 0,
+      "tested_oid": "c85aba34ea338c90cdb8fc5cc56eb2457af4fc04",
+      "wall_seconds": 27.138
+    },
+    {
+      "exit_code": 0,
+      "tested_oid": "c85aba34ea338c90cdb8fc5cc56eb2457af4fc04",
+      "wall_seconds": 22.052
+    }
+  ],
+  "items": [
+    {
+      "item_id": "I01",
+      "semantic_digest": "53d7571c2e0f21fb4da9d5cd603c8128c292830436adcffbd975d26dfcb2c90b",
+      "status": "checks_passed",
+      "completion_evidence": [
+        "I01-RED.json",
+        "I01-GREEN-pass.json",
+        "final-execution-surface.json"
+      ],
+      "delivery_status": "pending_review_and_merge"
+    },
+    {
+      "item_id": "I02",
+      "semantic_digest": "7dc94ef49387529f906b98a99eb5939e50fbc28aad6a9b736b2c65a218237dc7",
+      "status": "checks_passed",
+      "completion_evidence": [
+        "I02-RED.json",
+        "I02-GREEN.json",
+        "full-regression-1.json",
+        "full-regression-2.json",
+        "full-regression-3.json"
+      ],
+      "delivery_status": "pending_review_and_merge"
+    },
+    {
+      "item_id": "I03",
+      "semantic_digest": "3b3a535d9d0229749c85bd04eb0811d31b2204cad703358604162d7203f94ac9",
+      "status": "checks_passed",
+      "completion_evidence": [
+        "full-regression-1.json",
+        "full-regression-2.json",
+        "full-regression-3.json",
+        "ruff-final-check.json"
+      ],
+      "delivery_status": "pending_review_and_merge"
+    }
+  ]
+}

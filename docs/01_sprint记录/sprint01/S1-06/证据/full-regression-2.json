@@ -1,0 +1,24 @@
+{
+  "repository_root": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.worktrees\\S1-06",
+  "branch": "issue/s1/s1-06",
+  "tested_oid": "c85aba34ea338c90cdb8fc5cc56eb2457af4fc04",
+  "execution_payload_digest": "69df822843d9c2a395aa6686e3ee715bf5490037d43b93fbe461fa492db60b7f",
+  "payload_file_count": 50,
+  "worktree_status_at_start": "?? docs/01_sprint记录/sprint01/S1-06/证据/full-regression-1.json\n",
+  "cwd": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.worktrees\\S1-06",
+  "argv": [
+    ".\\.venv\\Scripts\\python.exe",
+    "-B",
+    "-m",
+    "pytest",
+    "-ra"
+  ],
+  "started_at": "2026-10-07T12:28:35.833Z",
+  "completed_at": "2026-10-07T12:29:02.971Z",
+  "wall_seconds": 27.138,
+  "exit_code": 0,
+  "signal": null,
+  "error": null,
+  "stdout": "============================= test session starts =============================\r\nplatform win32 -- Python 3.12.13, pytest-9.1.1, pluggy-1.6.0\r\nrootdir: D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.worktrees\\S1-06\r\nconfigfile: pyproject.toml\r\ncollected 291 items\r\n\r\ntests\\test_architecture.py .......................                       [  7%]\r\ntests\\test_auto_result.py .............                                  [ 12%]\r\ntests\\test_auto_simple.py .............                                  [ 16%]\r\ntests\\test_auto_technique_settings.py .................................. [ 28%]\r\n..                                                                       [ 29%]\r\ntests\\test_completion_view.py .....                                      [ 30%]\r\ntests\\test_logical_solver.py ........                                    [ 33%]\r\ntests\\test_njit_core.py ..........                                       [ 37%]\r\ntests\\test_s1_02_single.py ......                                        [ 39%]\r\ntests\\test_screenshot_errors.py .....                                    [ 40%]\r\ntests\\test_screenshot_foreground.py ...............                      [ 46%]\r\ntests\\test_screenshot_import_menu.py .......                             [ 48%]\r\ntests\\test_settings_menu.py ..                                           [ 49%]\r\ntests\\test_shudu_solver.py ......                                        [ 51%]\r\ntests\\test_sudoku_game.py ............................................   [ 66%]\r\ntests\\test_sudoku_gui.py ...................................             [ 78%]\r\ntests\\test_sudoku_highlight.py ..................                        [ 84%]\r\ntests\\test_sudoku_hints.py ...............................               [ 95%]\r\ntests\\test_sudoku_rules.py .....                                         [ 96%]\r\ntests\\test_sudoku_screenshot.py ...                                      [ 97%]\r\ntests\\test_user_settings.py ......                                       [100%]\r\n\r\n============================ 291 passed in 26.09s =============================\r\n",
+  "stderr": ""
+}

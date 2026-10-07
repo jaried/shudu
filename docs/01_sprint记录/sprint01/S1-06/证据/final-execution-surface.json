@@ -1,0 +1,22 @@
+{
+  "repository_root": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.worktrees\\S1-06",
+  "branch": "issue/s1/s1-06",
+  "tested_oid": "c85aba34ea338c90cdb8fc5cc56eb2457af4fc04",
+  "execution_payload_digest": "69df822843d9c2a395aa6686e3ee715bf5490037d43b93fbe461fa492db60b7f",
+  "payload_file_count": 50,
+  "worktree_status_at_start": "?? docs/01_sprint记录/sprint01/S1-06/证据/full-regression-1.json\n?? docs/01_sprint记录/sprint01/S1-06/证据/full-regression-2.json\n?? docs/01_sprint记录/sprint01/S1-06/证据/full-regression-3.json\n",
+  "cwd": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.worktrees\\S1-06",
+  "argv": [
+    ".\\.venv\\Scripts\\python.exe",
+    "-B",
+    "D:\\temp\\shudu-s1-06-execution-probe.py"
+  ],
+  "started_at": "2026-10-07T12:32:10.700Z",
+  "completed_at": "2026-10-07T12:32:11.626Z",
+  "wall_seconds": 0.926,
+  "exit_code": 0,
+  "signal": null,
+  "error": null,
+  "stdout": "{\"environment\": {\"project_root\": \"D:\\\\Tony\\\\Documents\\\\invest2026\\\\projects\\\\shudu\\\\.worktrees\\\\S1-06\", \"cwd\": \"D:\\\\Tony\\\\Documents\\\\invest2026\\\\projects\\\\shudu\\\\.worktrees\\\\S1-06\", \"sys_executable\": \"D:\\\\Tony\\\\Documents\\\\invest2026\\\\projects\\\\shudu\\\\.worktrees\\\\S1-06\\\\.\\\\.venv\\\\Scripts\\\\python.exe\", \"python_version\": \"3.12.13 (main, Jul 18 2026, 17:08:38) [MSC v.1944 64 bit (AMD64)]\", \"os_name\": \"nt\", \"opencv\": \"4.14.0\", \"numpy\": \"2.5.3\", \"numba\": \"0.67.0\", \"pytest\": \"9.1.1\", \"tk\": 8.6}, \"rows\": [\"..4.8....\", \".....7..4\", \"..69.5..8\", \"1......6.\", \"34..7..85\", \"...5.....\", \"2.1......\", \".....9.3.\", \"8..1.2.5.\"], \"notes\": {}, \"counts\": {\"_read_image\": 1, \"_extract_board\": 1, \"_read_cell\": 81, \"cell_threshold\": 138, \"cell_otsu\": 81, \"_digit_templates\": 24, \"template_count\": 108}, \"audit_events\": [[\"open\", \"('D:\\\\\\\\Tony\\\\\\\\Documents\\\\\\\\invest2026\\\\\\\\projects\\\\\\\\shudu\\\\\\\\.worktrees\\\\\\\\S1-06\\\\\\\\tests\\\\\\\\fixtures\\\\\\\\screenshots\\\\\\\\level120-wechat.jpg', 'r', 32896)\"]], \"module\": \"D:\\\\Tony\\\\Documents\\\\invest2026\\\\projects\\\\shudu\\\\.worktrees\\\\S1-06\\\\shudu\\\\sudoku_screenshot.py\"}\r\n",
+  "stderr": ""
+}
