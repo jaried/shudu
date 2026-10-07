@@ -23,5 +23,16 @@
     "completed_at": "2026-10-07T09:01:56.469Z",
     "execution_mode": "semantic_with_HOST_validation",
     "formal_publication": false
+  },
+  "scope_choice_revision": {
+    "observed_head": "d048f8ac4cadb5915448c14a61786feec71a1659",
+    "completed_at": "2026-10-07T09:43:26.322Z",
+    "source": "functions.request_user_input",
+    "question_id": "image_import_failure_location",
+    "raw_answer": "1 加入位置提示 (Recommended)",
+    "selected_capability": "IMG-D03",
+    "draft_sha256": "96506c26f5e26c1a7b64e339334fdf49613109d3d861a0dc8e048d26bd883f3d",
+    "formal_publication": false,
+    "complete_solution_approval": false
   }
 }

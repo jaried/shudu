@@ -2,10 +2,10 @@
   "status": "pass",
   "repository_root": "D:\\Tony\\Documents\\invest2026\\projects\\shudu",
   "branch": "Sprint01",
-  "observed_head": "4f8e765014ffc7d07e3b76b80830e082630258c4",
-  "completed_at": "2026-10-07T09:22:17.681Z",
+  "observed_head": "d048f8ac4cadb5915448c14a61786feec71a1659",
+  "completed_at": "2026-10-07T09:44:57.542Z",
   "checked_markdown": 10,
-  "local_links": 49,
+  "local_links": 50,
   "item_count": 8,
   "mermaid_blocks": 4,
   "dag_acyclic": true,
@@ -16,43 +16,27 @@
     ],
     [
       "IMG-D01",
-      "IMG-D03 (Q1=1)"
+      "IMG-D03"
     ]
   ],
   "mermaid_rendered": false,
   "errors": [],
   "files": [
     {
-      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/证据与防回归.md",
-      "sha256": "ee597a0f321d498b5e1692e49ed2ae3584d47ff109e30f69ba57582af0997b60"
-    },
-    {
-      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/截图导入联合方案决策草案.md",
-      "sha256": "4c8efa7c729c1ae19d3a87d836f0cc826472709dfe86ba0bdd023078270369de"
-    },
-    {
-      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/待确认问题.md",
-      "sha256": "2ea45eec34b4d1779fe4f7cbaf07bfe5a534c33f8604ab58ed61bf7e84b237fb"
-    },
-    {
-      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/Issue-DAG.md",
-      "sha256": "ecd0d54b13625895b8c061c60fb21db3cdb8c65b9f8202f7ee47c4845010b04b"
-    },
-    {
-      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D04-设置弹层回归/方案决策草案.md",
-      "sha256": "3d372b9ff38250aac5149aa1b1724c1820278bc9e502037eb589a2a0c97ed07c"
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D01-截图能力目录/ADR草案请求与读回.json",
+      "sha256": "8443a5bb56de15abd495f8109d42e704c3a8ba35b3ec5d90e323a326c568f430"
     },
     {
       "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D01-截图能力目录/DIRECT-SHUDU-20261007-IMG-D01_ADR草案_截图输入目录与按需加载.md",
-      "sha256": "d6fdf8087d58eb81839fbd4e0ff2c18fed5efda9205395d7d8f89ac110c0ea69"
+      "sha256": "96506c26f5e26c1a7b64e339334fdf49613109d3d861a0dc8e048d26bd883f3d"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D01-截图能力目录/方案决策草案.md",
+      "sha256": "5309607eb0a01f81b53336426c0826145de9e8586d11524c92188306c69fd739"
     },
     {
       "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D01-截图能力目录/遗留问题草案.md",
-      "sha256": "d3ae735c4de6117e674af4ec9e72bfdea33c3dc0d3d4959b56b2dedcc88a6329"
-    },
-    {
-      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D01-截图能力目录/ADR草案请求与读回.json",
-      "sha256": "947cdcd429d516cb953481e4ead1c1f9c7f6e8ab6f34b67ca3e9aade1a5aae56"
+      "sha256": "726ee6581a48d82a6d715167dd4270044e255b7efb4ab7fc664936ec275744f4"
     },
     {
       "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D02-背景与数字识别/方案决策草案.md",
@@ -60,11 +44,27 @@
     },
     {
       "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D03-失败位置/方案决策草案.md",
-      "sha256": "55cc1432239bb827dbb317668cd92dbeb7450b1657847c87d085b5627d99ccea"
+      "sha256": "a034a82700484d8797dc1c4dbfa7d95f8b34fefb5cabfa04485f43a7972d8dbf"
     },
     {
-      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D01-截图能力目录/方案决策草案.md",
-      "sha256": "935a8480e367b9de0ad55062431694baa906bdf26c6680066d3b401ec9980129"
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D04-设置弹层回归/方案决策草案.md",
+      "sha256": "5f0dba9e5338b01f7fb7e4f79eeb744d734dc9a3988f34aff3a8835d5dc3d1e1"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/Issue-DAG.md",
+      "sha256": "e7f32bb5c9be2590ad7ca6ef112d1145cc6519232ecc7ec0030be6cc083e7442"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/待确认问题.md",
+      "sha256": "b60a37c10dfaf6ec1be883ef3c830b2a2fb3bdc1707867105291246e5c389dcf"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/截图导入联合方案决策草案.md",
+      "sha256": "ba4c6c93e7094b7a54f793309388b81515fcfa1ad4afa971427581a282438809"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/证据与防回归.md",
+      "sha256": "0744cd72748ca4f8ea2ca91f371f80c55561ee950c8f6b897ba41c1b5e72ea5b"
     }
   ],
   "source_unchanged": [
@@ -114,13 +114,110 @@
       "comparison_policy": "original_worktree_bytes_and_Git_path_clean_filter"
     }
   ],
-  "git_task_scope": "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-07",
+  "git_task_scope": {
+    "changed_paths": [
+      "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D01-截图能力目录/ADR草案请求与读回.json",
+      "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D01-截图能力目录/DIRECT-SHUDU-20261007-IMG-D01_ADR草案_截图输入目录与按需加载.md",
+      "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D01-截图能力目录/方案决策草案.md",
+      "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D01-截图能力目录/遗留问题草案.md",
+      "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D03-失败位置/方案决策草案.md",
+      "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D04-设置弹层回归/方案决策草案.md",
+      "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-07/Issue-DAG.md",
+      "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-07/待确认问题.md",
+      "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-07/截图导入联合方案决策草案.md",
+      "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-07/证据与防回归.md"
+    ],
+    "index_paths": [],
+    "outside_change_count": 0
+  },
   "graph_facts": [
+    {
+      "file": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/Issue-DAG.md",
+      "block": 1,
+      "nodes": 10,
+      "edges": 13,
+      "starts": [
+        "A"
+      ],
+      "terminals": [
+        "W"
+      ],
+      "unclosed": [],
+      "unstated": [],
+      "validation": "restricted_flowchart_structure_and_terminal_reachability",
+      "mermaid_rendered": false,
+      "node_labels": {
+        "A": "已批准方案与ADR004修订",
+        "D1": "IMG-D01 截图目录及lazy入口",
+        "D4": "IMG-D04 设置焦点与全部测试修复",
+        "D2": "IMG-D02 背景与数字识别",
+        "D3": "IMG-D03 失败格位置",
+        "H": "HOST逐票合并与验证",
+        "G": "HOST对集成tip执行完整旧测试及新增测试",
+        "R": "测试和独立评审通过",
+        "W": "对应Issue待验收 用户获得业务证据",
+        "F": "按finding所属票恢复 修复并完整复跑"
+      },
+      "edge_list": [
+        [
+          "A",
+          "D1"
+        ],
+        [
+          "A",
+          "D4"
+        ],
+        [
+          "D1",
+          "D2"
+        ],
+        [
+          "D1",
+          "D3"
+        ],
+        [
+          "D1",
+          "H"
+        ],
+        [
+          "D2",
+          "H"
+        ],
+        [
+          "D3",
+          "H"
+        ],
+        [
+          "D4",
+          "H"
+        ],
+        [
+          "H",
+          "G"
+        ],
+        [
+          "G",
+          "R"
+        ],
+        [
+          "R",
+          "W"
+        ],
+        [
+          "R",
+          "F"
+        ],
+        [
+          "F",
+          "H"
+        ]
+      ]
+    },
     {
       "file": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/截图导入联合方案决策草案.md",
       "block": 1,
-      "nodes": 22,
-      "edges": 27,
+      "nodes": 24,
+      "edges": 30,
       "starts": [
         "A",
         "A2"
@@ -143,7 +240,9 @@
         "E": "文件与棋盘可读取",
         "X": "GUI显示原原因并保留旧局",
         "F": "截图能力区分背景 数字和笔记",
-        "G": "全部格子可恢复且有正式值",
+        "G": "全部格子可恢复",
+        "Y": "截图能力给首个失败格补行列 原原因及重试建议",
+        "G1": "有正式值且Puzzle有效",
         "H": "GUI按原偏好创建Game并恢复笔记",
         "I": "Game输入校验成功",
         "J": "GUI一次安装新局 绑定命令和重绘",
@@ -193,10 +292,22 @@
         ],
         [
           "G",
+          "Y"
+        ],
+        [
+          "Y",
           "X"
         ],
         [
           "G",
+          "G1"
+        ],
+        [
+          "G1",
+          "X"
+        ],
+        [
+          "G1",
           "H"
         ],
         [
@@ -272,8 +383,8 @@
     {
       "file": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/截图导入联合方案决策草案.md",
       "block": 2,
-      "nodes": 23,
-      "edges": 29,
+      "nodes": 24,
+      "edges": 31,
       "starts": [
         "T",
         "S",
@@ -296,7 +407,8 @@
         "N": "GUI建立新Game",
         "S": "旧Game偏好快照",
         "V": "GUI与View绑定新Game",
-        "F": "文件或棋盘失败原因",
+        "F": "归各自owner的失败原因",
+        "CF": "首个格子失败的行列 原原因及重试建议",
         "U": "GUI提示错误 旧Game继续作为真源",
         "M": "玩家重新选择文件",
         "H": "HOST记录原图hash与独立人工题面标签",
@@ -346,6 +458,14 @@
         ],
         [
           "R",
+          "F"
+        ],
+        [
+          "C",
+          "CF"
+        ],
+        [
+          "CF",
           "F"
         ],
         [
@@ -433,8 +553,8 @@
     {
       "file": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/截图导入联合方案决策草案.md",
       "block": 3,
-      "nodes": 30,
-      "edges": 37,
+      "nodes": 31,
+      "edges": 38,
       "starts": [
         "A",
         "Q",
@@ -462,6 +582,7 @@
         "I": "既有连通域及大小位置分类",
         "J": "有正式数字主体",
         "K": "字形分数至少0.50",
+        "XE": "给首个失败格补行列 原原因及重试建议",
         "L": "保存正式值",
         "M": "按既有槽位保存笔记或空格",
         "N": "仍有下一格",
@@ -532,6 +653,10 @@
         ],
         [
           "K",
+          "XE"
+        ],
+        [
+          "XE",
           "X"
         ],
         [
@@ -631,88 +756,6 @@
           "T"
         ]
       ]
-    },
-    {
-      "file": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/Issue-DAG.md",
-      "block": 1,
-      "nodes": 10,
-      "edges": 13,
-      "starts": [
-        "A"
-      ],
-      "terminals": [
-        "W"
-      ],
-      "unclosed": [],
-      "unstated": [],
-      "validation": "restricted_flowchart_structure_and_terminal_reachability",
-      "mermaid_rendered": false,
-      "node_labels": {
-        "A": "已批准方案与ADR004修订",
-        "D1": "IMG-D01 截图目录及lazy入口",
-        "D4": "IMG-D04 设置焦点与全部测试修复",
-        "D2": "IMG-D02 背景与数字识别",
-        "D3": "IMG-D03 失败格位置",
-        "H": "HOST逐票合并与验证",
-        "G": "HOST对集成tip执行完整旧测试及新增测试",
-        "R": "测试和独立评审通过",
-        "W": "对应Issue待验收 用户获得业务证据",
-        "F": "按finding所属票恢复 修复并完整复跑"
-      },
-      "edge_list": [
-        [
-          "A",
-          "D1"
-        ],
-        [
-          "A",
-          "D4"
-        ],
-        [
-          "D1",
-          "D2"
-        ],
-        [
-          "D1",
-          "D3"
-        ],
-        [
-          "D1",
-          "H"
-        ],
-        [
-          "D2",
-          "H"
-        ],
-        [
-          "D3",
-          "H"
-        ],
-        [
-          "D4",
-          "H"
-        ],
-        [
-          "H",
-          "G"
-        ],
-        [
-          "G",
-          "R"
-        ],
-        [
-          "R",
-          "W"
-        ],
-        [
-          "R",
-          "F"
-        ],
-        [
-          "F",
-          "H"
-        ]
-      ]
     }
   ],
   "issue_edges_from_actual_diagram": [
@@ -726,7 +769,7 @@
     ]
   ],
   "objective_audit": {
-    "completion_scope": "requested_approval_draft_only",
+    "completion_scope": "scope_choice_consolidated_approval_draft_only",
     "implementation_and_user_confirmation": "subsequent_authorized_stages",
     "requirements": [
       {
@@ -828,9 +871,39 @@
   },
   "source_comparison_note": "Compare raw bytes with recorded worktree baseline and apply the tracked-path Git clean filter; raw CRLF bytes are not compared directly with LF commit blobs.",
   "authorized_revision_scope": [
-    "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/截图导入联合方案决策草案.md",
-    "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/草案结构校验.json",
-    "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D01-截图能力目录/遗留问题草案.md"
+    "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D01-截图能力目录/ADR草案请求与读回.json",
+    "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D01-截图能力目录/DIRECT-SHUDU-20261007-IMG-D01_ADR草案_截图输入目录与按需加载.md",
+    "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D01-截图能力目录/方案决策草案.md",
+    "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D01-截图能力目录/遗留问题草案.md",
+    "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D03-失败位置/方案决策草案.md",
+    "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D04-设置弹层回归/方案决策草案.md",
+    "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-07/Issue-DAG.md",
+    "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-07/待确认问题.md",
+    "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-07/截图导入联合方案决策草案.md",
+    "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-07/证据与防回归.md",
+    "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/草案结构校验.json"
   ],
-  "mermaid_validation_limit": "Static flowchart subset and semantic walkthrough; rendering and production implementation are subsequent verification."
+  "mermaid_validation_limit": "Static flowchart subset and semantic walkthrough; rendering and production implementation are subsequent verification.",
+  "scope_choice": {
+    "source": "functions.request_user_input",
+    "question_id": "image_import_failure_location",
+    "raw_answer": "1 加入位置提示 (Recommended)",
+    "mandatory_issues": [
+      "IMG-D01",
+      "IMG-D02",
+      "IMG-D03",
+      "IMG-D04"
+    ],
+    "business_choices_pending": 0,
+    "complete_solution_approval": false,
+    "formal_publication": false,
+    "implementation_started": false
+  },
+  "grilling_revision_checks": {
+    "fixed_error_contract": true,
+    "obsolete_branch_rules_removed": true,
+    "source_and_existing_tests_unchanged": true,
+    "adr_revision_digest_verified": true,
+    "issue_function_ownership_unchanged": true
+  }
 }
