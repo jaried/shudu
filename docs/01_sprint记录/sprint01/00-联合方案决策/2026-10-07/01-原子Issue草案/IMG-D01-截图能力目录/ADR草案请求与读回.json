@@ -1,0 +1,27 @@
+{
+  "request": {
+    "source_issue": "DIRECT-SHUDU-20261007-IMG-D01",
+    "source_stage": "solution-decision",
+    "design_doc": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/截图导入联合方案决策草案.md",
+    "phase": "approval_draft",
+    "action": "revise",
+    "target_adr": "ADR-004",
+    "target_scope": "project",
+    "rationale": "真实背景误判修复与能力级目录、唯一入口和依赖收缩要求。",
+    "executor": "architecture-design",
+    "request_id": "DIRECT-SHUDU-20261007-IMG-D01-ADR004-approval-draft",
+    "issue_dir": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D01-截图能力目录",
+    "draft_path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D01-截图能力目录/DIRECT-SHUDU-20261007-IMG-D01_ADR草案_截图输入目录与按需加载.md",
+    "approval_locator": ""
+  },
+  "result": {
+    "status": "drafted",
+    "resulting_adr": "ADR-004",
+    "draft_locator": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\docs\\01_Sprint记录\\sprint01\\00-联合方案决策\\2026-10-07\\01-原子Issue草案\\IMG-D01-截图能力目录\\DIRECT-SHUDU-20261007-IMG-D01_ADR草案_截图输入目录与按需加载.md",
+    "failure_reason": "",
+    "owner": "architecture-design",
+    "completed_at": "2026-10-07T09:01:56.469Z",
+    "execution_mode": "semantic_with_HOST_validation",
+    "formal_publication": false
+  }
+}

@@ -1,0 +1,93 @@
+{
+  "status": "pass",
+  "repository_root": "D:\\Tony\\Documents\\invest2026\\projects\\shudu",
+  "branch": "Sprint01",
+  "observed_head": "6b627606a9f9695078f1afad09d1d6922b294b87",
+  "completed_at": "2026-10-07T09:08:54.209Z",
+  "checked_markdown": 10,
+  "local_links": 49,
+  "item_count": 8,
+  "mermaid_blocks": 4,
+  "dag_acyclic": true,
+  "dag_edges": [
+    [
+      "IMG-D01",
+      "IMG-D02"
+    ],
+    [
+      "IMG-D01",
+      "IMG-D03 (Q1=1)"
+    ]
+  ],
+  "mermaid_rendered": false,
+  "errors": [],
+  "files": [
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/证据与防回归.md",
+      "sha256": "ee597a0f321d498b5e1692e49ed2ae3584d47ff109e30f69ba57582af0997b60"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/待确认问题.md",
+      "sha256": "2ea45eec34b4d1779fe4f7cbaf07bfe5a534c33f8604ab58ed61bf7e84b237fb"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/Issue-DAG.md",
+      "sha256": "ecd0d54b13625895b8c061c60fb21db3cdb8c65b9f8202f7ee47c4845010b04b"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/截图导入联合方案决策草案.md",
+      "sha256": "371a335342c344f0e0dc3142a1e381fed54f245db0b0cdc5e5aff0c77fa3843a"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D04-设置弹层回归/方案决策草案.md",
+      "sha256": "3d372b9ff38250aac5149aa1b1724c1820278bc9e502037eb589a2a0c97ed07c"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D02-背景与数字识别/方案决策草案.md",
+      "sha256": "717298f3af019ed80440a8bc37bd26427cf8e37ac674886d689d646058054ed5"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D01-截图能力目录/ADR草案请求与读回.json",
+      "sha256": "947cdcd429d516cb953481e4ead1c1f9c7f6e8ab6f34b67ca3e9aade1a5aae56"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D03-失败位置/方案决策草案.md",
+      "sha256": "55cc1432239bb827dbb317668cd92dbeb7450b1657847c87d085b5627d99ccea"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D01-截图能力目录/DIRECT-SHUDU-20261007-IMG-D01_ADR草案_截图输入目录与按需加载.md",
+      "sha256": "d6fdf8087d58eb81839fbd4e0ff2c18fed5efda9205395d7d8f89ac110c0ea69"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D01-截图能力目录/方案决策草案.md",
+      "sha256": "935a8480e367b9de0ad55062431694baa906bdf26c6680066d3b401ec9980129"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D01-截图能力目录/遗留问题草案.md",
+      "sha256": "b011b436a96e47d7c324186ef5cb9283f5db8e2078bea22f97c2cf52760fc5e4"
+    }
+  ],
+  "source_unchanged": [
+    {
+      "path": "shudu/sudoku_screenshot.py",
+      "unchanged": true
+    },
+    {
+      "path": "shudu/settings_menu/_popup.py",
+      "unchanged": true
+    },
+    {
+      "path": "sudoku_gui.py",
+      "unchanged": true
+    },
+    {
+      "path": "tests/test_sudoku_screenshot.py",
+      "unchanged": true
+    },
+    {
+      "path": "tests/test_auto_technique_settings.py",
+      "unchanged": true
+    }
+  ],
+  "git_task_scope": "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-07"
+}
