@@ -2,8 +2,8 @@
   "status": "pass",
   "repository_root": "D:\\Tony\\Documents\\invest2026\\projects\\shudu",
   "branch": "Sprint01",
-  "observed_head": "6b627606a9f9695078f1afad09d1d6922b294b87",
-  "completed_at": "2026-10-07T09:08:54.209Z",
+  "observed_head": "4f8e765014ffc7d07e3b76b80830e082630258c4",
+  "completed_at": "2026-10-07T09:22:17.681Z",
   "checked_markdown": 10,
   "local_links": 49,
   "item_count": 8,
@@ -27,6 +27,10 @@
       "sha256": "ee597a0f321d498b5e1692e49ed2ae3584d47ff109e30f69ba57582af0997b60"
     },
     {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/截图导入联合方案决策草案.md",
+      "sha256": "4c8efa7c729c1ae19d3a87d836f0cc826472709dfe86ba0bdd023078270369de"
+    },
+    {
       "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/待确认问题.md",
       "sha256": "2ea45eec34b4d1779fe4f7cbaf07bfe5a534c33f8604ab58ed61bf7e84b237fb"
     },
@@ -35,59 +39,798 @@
       "sha256": "ecd0d54b13625895b8c061c60fb21db3cdb8c65b9f8202f7ee47c4845010b04b"
     },
     {
-      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/截图导入联合方案决策草案.md",
-      "sha256": "371a335342c344f0e0dc3142a1e381fed54f245db0b0cdc5e5aff0c77fa3843a"
-    },
-    {
       "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D04-设置弹层回归/方案决策草案.md",
       "sha256": "3d372b9ff38250aac5149aa1b1724c1820278bc9e502037eb589a2a0c97ed07c"
-    },
-    {
-      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D02-背景与数字识别/方案决策草案.md",
-      "sha256": "717298f3af019ed80440a8bc37bd26427cf8e37ac674886d689d646058054ed5"
-    },
-    {
-      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D01-截图能力目录/ADR草案请求与读回.json",
-      "sha256": "947cdcd429d516cb953481e4ead1c1f9c7f6e8ab6f34b67ca3e9aade1a5aae56"
-    },
-    {
-      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D03-失败位置/方案决策草案.md",
-      "sha256": "55cc1432239bb827dbb317668cd92dbeb7450b1657847c87d085b5627d99ccea"
     },
     {
       "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D01-截图能力目录/DIRECT-SHUDU-20261007-IMG-D01_ADR草案_截图输入目录与按需加载.md",
       "sha256": "d6fdf8087d58eb81839fbd4e0ff2c18fed5efda9205395d7d8f89ac110c0ea69"
     },
     {
-      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D01-截图能力目录/方案决策草案.md",
-      "sha256": "935a8480e367b9de0ad55062431694baa906bdf26c6680066d3b401ec9980129"
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D01-截图能力目录/遗留问题草案.md",
+      "sha256": "d3ae735c4de6117e674af4ec9e72bfdea33c3dc0d3d4959b56b2dedcc88a6329"
     },
     {
-      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D01-截图能力目录/遗留问题草案.md",
-      "sha256": "b011b436a96e47d7c324186ef5cb9283f5db8e2078bea22f97c2cf52760fc5e4"
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D01-截图能力目录/ADR草案请求与读回.json",
+      "sha256": "947cdcd429d516cb953481e4ead1c1f9c7f6e8ab6f34b67ca3e9aade1a5aae56"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D02-背景与数字识别/方案决策草案.md",
+      "sha256": "717298f3af019ed80440a8bc37bd26427cf8e37ac674886d689d646058054ed5"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D03-失败位置/方案决策草案.md",
+      "sha256": "55cc1432239bb827dbb317668cd92dbeb7450b1657847c87d085b5627d99ccea"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D01-截图能力目录/方案决策草案.md",
+      "sha256": "935a8480e367b9de0ad55062431694baa906bdf26c6680066d3b401ec9980129"
     }
   ],
   "source_unchanged": [
     {
       "path": "shudu/sudoku_screenshot.py",
-      "unchanged": true
+      "unchanged": true,
+      "raw_sha256": "aed91a618d4bad1246b3eafcd0db337ced310653df633821060b51843fc63167",
+      "baseline_raw_sha256": "aed91a618d4bad1246b3eafcd0db337ced310653df633821060b51843fc63167",
+      "current_clean_blob": "2ae1574c4a3185e95360707fc2b3d4ae79c3ae0f",
+      "head_blob": "2ae1574c4a3185e95360707fc2b3d4ae79c3ae0f",
+      "comparison_policy": "original_worktree_bytes_and_Git_path_clean_filter"
     },
     {
       "path": "shudu/settings_menu/_popup.py",
-      "unchanged": true
+      "unchanged": true,
+      "raw_sha256": "9a8f277490d50779b829438fe97ebd8fa44982b6e723e4d2503aef7e1dcfece9",
+      "baseline_raw_sha256": "9a8f277490d50779b829438fe97ebd8fa44982b6e723e4d2503aef7e1dcfece9",
+      "current_clean_blob": "f116784f950c1f909e03979f80b1fb96e3d30228",
+      "head_blob": "f116784f950c1f909e03979f80b1fb96e3d30228",
+      "comparison_policy": "original_worktree_bytes_and_Git_path_clean_filter"
     },
     {
       "path": "sudoku_gui.py",
-      "unchanged": true
+      "unchanged": true,
+      "raw_sha256": "60d55c5d3a4359f39ded622431b4dc3c66b5694d712e8599e77c99718fb14040",
+      "baseline_raw_sha256": "60d55c5d3a4359f39ded622431b4dc3c66b5694d712e8599e77c99718fb14040",
+      "current_clean_blob": "8b9125f230de1a4b1283863905ba828516c8aece",
+      "head_blob": "8b9125f230de1a4b1283863905ba828516c8aece",
+      "comparison_policy": "original_worktree_bytes_and_Git_path_clean_filter"
     },
     {
       "path": "tests/test_sudoku_screenshot.py",
-      "unchanged": true
+      "unchanged": true,
+      "raw_sha256": "c035e77561426c784a26ca753b9f197c86bf9b78189774f8d96c2ba341349e18",
+      "baseline_raw_sha256": "c035e77561426c784a26ca753b9f197c86bf9b78189774f8d96c2ba341349e18",
+      "current_clean_blob": "7aa180627642ded0c056d0b71df5ebaca07fcfe7",
+      "head_blob": "7aa180627642ded0c056d0b71df5ebaca07fcfe7",
+      "comparison_policy": "original_worktree_bytes_and_Git_path_clean_filter"
     },
     {
       "path": "tests/test_auto_technique_settings.py",
-      "unchanged": true
+      "unchanged": true,
+      "raw_sha256": "55ba51537f4803364e64211669af6f7f9575379094c14cd8c9993578caf8f7de",
+      "baseline_raw_sha256": "55ba51537f4803364e64211669af6f7f9575379094c14cd8c9993578caf8f7de",
+      "current_clean_blob": "9d27d38f35aa14bb1fb507550c2f70e48533f261",
+      "head_blob": "9d27d38f35aa14bb1fb507550c2f70e48533f261",
+      "comparison_policy": "original_worktree_bytes_and_Git_path_clean_filter"
     }
   ],
-  "git_task_scope": "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-07"
+  "git_task_scope": "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-07",
+  "graph_facts": [
+    {
+      "file": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/截图导入联合方案决策草案.md",
+      "block": 1,
+      "nodes": 22,
+      "edges": 27,
+      "starts": [
+        "A",
+        "A2"
+      ],
+      "terminals": [
+        "K",
+        "L",
+        "F2"
+      ],
+      "unclosed": [],
+      "unstated": [],
+      "validation": "restricted_flowchart_structure_and_terminal_reachability",
+      "mermaid_rendered": false,
+      "node_labels": {
+        "A": "玩家选择从截图导入",
+        "B": "GUI执行现有进度确认与文件选择",
+        "C": "玩家确认且选择文件",
+        "K": "GUI保留旧局并结束",
+        "D": "截图能力读取该文件并定位棋盘",
+        "E": "文件与棋盘可读取",
+        "X": "GUI显示原原因并保留旧局",
+        "F": "截图能力区分背景 数字和笔记",
+        "G": "全部格子可恢复且有正式值",
+        "H": "GUI按原偏好创建Game并恢复笔记",
+        "I": "Game输入校验成功",
+        "J": "GUI一次安装新局 绑定命令和重绘",
+        "L": "玩家在新题面继续游戏",
+        "M": "玩家再次导入",
+        "A2": "玩家打开设置菜单",
+        "B2": "GUI通过既有菜单能力显示弹层",
+        "C2": "玩家的下一步操作",
+        "D2": "菜单保持开放 按原规则处理设置动作",
+        "E2": "菜单发送一次关闭通知并释放自有资源",
+        "G2": "菜单在事件批次结束时核对焦点",
+        "H2": "焦点属于弹层内部",
+        "F2": "本次菜单交互结束"
+      },
+      "edge_list": [
+        [
+          "A",
+          "B"
+        ],
+        [
+          "B",
+          "C"
+        ],
+        [
+          "C",
+          "K"
+        ],
+        [
+          "C",
+          "D"
+        ],
+        [
+          "D",
+          "E"
+        ],
+        [
+          "E",
+          "X"
+        ],
+        [
+          "E",
+          "F"
+        ],
+        [
+          "F",
+          "G"
+        ],
+        [
+          "G",
+          "X"
+        ],
+        [
+          "G",
+          "H"
+        ],
+        [
+          "H",
+          "I"
+        ],
+        [
+          "I",
+          "X"
+        ],
+        [
+          "I",
+          "J"
+        ],
+        [
+          "J",
+          "L"
+        ],
+        [
+          "X",
+          "M"
+        ],
+        [
+          "M",
+          "B"
+        ],
+        [
+          "M",
+          "K"
+        ],
+        [
+          "A2",
+          "B2"
+        ],
+        [
+          "B2",
+          "C2"
+        ],
+        [
+          "C2",
+          "D2"
+        ],
+        [
+          "D2",
+          "C2"
+        ],
+        [
+          "C2",
+          "E2"
+        ],
+        [
+          "C2",
+          "G2"
+        ],
+        [
+          "G2",
+          "H2"
+        ],
+        [
+          "H2",
+          "C2"
+        ],
+        [
+          "H2",
+          "E2"
+        ],
+        [
+          "E2",
+          "F2"
+        ]
+      ]
+    },
+    {
+      "file": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/截图导入联合方案决策草案.md",
+      "block": 2,
+      "nodes": 23,
+      "edges": 29,
+      "starts": [
+        "T",
+        "S",
+        "FE"
+      ],
+      "terminals": [
+        "A"
+      ],
+      "unclosed": [],
+      "unstated": [],
+      "validation": "restricted_flowchart_structure_and_terminal_reachability",
+      "mermaid_rendered": false,
+      "node_labels": {
+        "P": "玩家指定的单个截图文件",
+        "R": "截图能力读取和解码",
+        "B": "内存中的单个900乘900棋盘",
+        "C": "内存中逐格正式值与笔记",
+        "T": "Module内108项模板缓存",
+        "O": "不可变Puzzle与notes结果",
+        "N": "GUI建立新Game",
+        "S": "旧Game偏好快照",
+        "V": "GUI与View绑定新Game",
+        "F": "文件或棋盘失败原因",
+        "U": "GUI提示错误 旧Game继续作为真源",
+        "M": "玩家重新选择文件",
+        "H": "HOST记录原图hash与独立人工题面标签",
+        "Q": "公开Interface回归验证",
+        "E": "HOST保存真实命令 退出码 环境 tip与计数",
+        "W": "主Agent和独立Reviewer核对证据",
+        "A": "用户收到待验收业务结果",
+        "SM": "GUI构造现有设置菜单快照",
+        "MP": "菜单拥有窗口资源和瞬态pending检查",
+        "FE": "Tk产生真实焦点事件",
+        "FC": "菜单读取批次结束时的真实焦点",
+        "FR": "菜单保持弹层或执行一次关闭清理",
+        "GR": "GUI菜单引用保持或清空"
+      },
+      "edge_list": [
+        [
+          "P",
+          "R"
+        ],
+        [
+          "R",
+          "B"
+        ],
+        [
+          "B",
+          "C"
+        ],
+        [
+          "T",
+          "C"
+        ],
+        [
+          "C",
+          "O"
+        ],
+        [
+          "O",
+          "N"
+        ],
+        [
+          "S",
+          "N"
+        ],
+        [
+          "N",
+          "V"
+        ],
+        [
+          "R",
+          "F"
+        ],
+        [
+          "C",
+          "F"
+        ],
+        [
+          "N",
+          "F"
+        ],
+        [
+          "F",
+          "U"
+        ],
+        [
+          "F",
+          "M"
+        ],
+        [
+          "M",
+          "P"
+        ],
+        [
+          "P",
+          "H"
+        ],
+        [
+          "H",
+          "Q"
+        ],
+        [
+          "O",
+          "Q"
+        ],
+        [
+          "V",
+          "Q"
+        ],
+        [
+          "U",
+          "Q"
+        ],
+        [
+          "Q",
+          "E"
+        ],
+        [
+          "E",
+          "W"
+        ],
+        [
+          "W",
+          "A"
+        ],
+        [
+          "S",
+          "SM"
+        ],
+        [
+          "SM",
+          "MP"
+        ],
+        [
+          "FE",
+          "MP"
+        ],
+        [
+          "MP",
+          "FC"
+        ],
+        [
+          "FC",
+          "FR"
+        ],
+        [
+          "FR",
+          "GR"
+        ],
+        [
+          "GR",
+          "Q"
+        ]
+      ]
+    },
+    {
+      "file": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/截图导入联合方案决策草案.md",
+      "block": 3,
+      "nodes": 30,
+      "edges": 37,
+      "starts": [
+        "A",
+        "Q",
+        "EE"
+      ],
+      "terminals": [
+        "X",
+        "Z",
+        "T"
+      ],
+      "unclosed": [],
+      "unstated": [],
+      "validation": "restricted_flowchart_structure_and_terminal_reachability",
+      "mermaid_rendered": false,
+      "node_labels": {
+        "A": "一次截图请求",
+        "B": "读取 解码 定位",
+        "C": "当前步骤有效",
+        "X": "抛出原失败 保留旧局 结束",
+        "D": "按行列取当前单格",
+        "E": "背景相对Otsu",
+        "F": "前景触及内部四边",
+        "G": "使用至少8的对比度阈值",
+        "H": "保留首次相对mask",
+        "I": "既有连通域及大小位置分类",
+        "J": "有正式数字主体",
+        "K": "字形分数至少0.50",
+        "L": "保存正式值",
+        "M": "按既有槽位保存笔记或空格",
+        "N": "仍有下一格",
+        "O": "有正式值且Puzzle形状有效",
+        "P": "返回完整截图输入并创建Game",
+        "PP": "Game输入校验成功",
+        "GG": "GUI一次安装新局并重绘",
+        "Z": "本次导入结束",
+        "Q": "弹层收到FocusOut",
+        "R": "已有pending检查或已关闭",
+        "T": "本次事件处理结束",
+        "S": "安排一个idle检查",
+        "AA": "事件批次结束 清空pending",
+        "BB": "已关闭或焦点仍在弹层内",
+        "RR": "弹层已关闭",
+        "EE": "Esc 外部点击或命令关闭",
+        "CC": "标记closed 取消自有pending",
+        "DD": "一次回调 释放自有grab 销毁窗口"
+      },
+      "edge_list": [
+        [
+          "A",
+          "B"
+        ],
+        [
+          "B",
+          "C"
+        ],
+        [
+          "C",
+          "X"
+        ],
+        [
+          "C",
+          "D"
+        ],
+        [
+          "D",
+          "E"
+        ],
+        [
+          "E",
+          "F"
+        ],
+        [
+          "F",
+          "G"
+        ],
+        [
+          "F",
+          "H"
+        ],
+        [
+          "G",
+          "I"
+        ],
+        [
+          "H",
+          "I"
+        ],
+        [
+          "I",
+          "J"
+        ],
+        [
+          "J",
+          "K"
+        ],
+        [
+          "K",
+          "X"
+        ],
+        [
+          "K",
+          "L"
+        ],
+        [
+          "J",
+          "M"
+        ],
+        [
+          "L",
+          "N"
+        ],
+        [
+          "M",
+          "N"
+        ],
+        [
+          "N",
+          "D"
+        ],
+        [
+          "N",
+          "O"
+        ],
+        [
+          "O",
+          "X"
+        ],
+        [
+          "O",
+          "P"
+        ],
+        [
+          "P",
+          "PP"
+        ],
+        [
+          "PP",
+          "X"
+        ],
+        [
+          "PP",
+          "GG"
+        ],
+        [
+          "GG",
+          "Z"
+        ],
+        [
+          "Q",
+          "R"
+        ],
+        [
+          "R",
+          "T"
+        ],
+        [
+          "R",
+          "S"
+        ],
+        [
+          "S",
+          "AA"
+        ],
+        [
+          "AA",
+          "BB"
+        ],
+        [
+          "BB",
+          "T"
+        ],
+        [
+          "BB",
+          "RR"
+        ],
+        [
+          "EE",
+          "RR"
+        ],
+        [
+          "RR",
+          "T"
+        ],
+        [
+          "RR",
+          "CC"
+        ],
+        [
+          "CC",
+          "DD"
+        ],
+        [
+          "DD",
+          "T"
+        ]
+      ]
+    },
+    {
+      "file": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/Issue-DAG.md",
+      "block": 1,
+      "nodes": 10,
+      "edges": 13,
+      "starts": [
+        "A"
+      ],
+      "terminals": [
+        "W"
+      ],
+      "unclosed": [],
+      "unstated": [],
+      "validation": "restricted_flowchart_structure_and_terminal_reachability",
+      "mermaid_rendered": false,
+      "node_labels": {
+        "A": "已批准方案与ADR004修订",
+        "D1": "IMG-D01 截图目录及lazy入口",
+        "D4": "IMG-D04 设置焦点与全部测试修复",
+        "D2": "IMG-D02 背景与数字识别",
+        "D3": "IMG-D03 失败格位置",
+        "H": "HOST逐票合并与验证",
+        "G": "HOST对集成tip执行完整旧测试及新增测试",
+        "R": "测试和独立评审通过",
+        "W": "对应Issue待验收 用户获得业务证据",
+        "F": "按finding所属票恢复 修复并完整复跑"
+      },
+      "edge_list": [
+        [
+          "A",
+          "D1"
+        ],
+        [
+          "A",
+          "D4"
+        ],
+        [
+          "D1",
+          "D2"
+        ],
+        [
+          "D1",
+          "D3"
+        ],
+        [
+          "D1",
+          "H"
+        ],
+        [
+          "D2",
+          "H"
+        ],
+        [
+          "D3",
+          "H"
+        ],
+        [
+          "D4",
+          "H"
+        ],
+        [
+          "H",
+          "G"
+        ],
+        [
+          "G",
+          "R"
+        ],
+        [
+          "R",
+          "W"
+        ],
+        [
+          "R",
+          "F"
+        ],
+        [
+          "F",
+          "H"
+        ]
+      ]
+    }
+  ],
+  "issue_edges_from_actual_diagram": [
+    [
+      "D1",
+      "D2"
+    ],
+    [
+      "D1",
+      "D3"
+    ]
+  ],
+  "objective_audit": {
+    "completion_scope": "requested_approval_draft_only",
+    "implementation_and_user_confirmation": "subsequent_authorized_stages",
+    "requirements": [
+      {
+        "requirement": 1,
+        "evidence": "第3、11节；四票工程原则与实际Skills语义动作",
+        "covered_in_current_draft": true
+      },
+      {
+        "requirement": 2,
+        "evidence": "第1、2节及证据E01至E09；当前源码hash/历史tracker",
+        "covered_in_current_draft": true
+      },
+      {
+        "requirement": 3,
+        "evidence": "第3、4、6节；Module到布局及固定计算/错误/焦点合同",
+        "covered_in_current_draft": true
+      },
+      {
+        "requirement": 4,
+        "evidence": "四个原子草案及完整Items；luna责任",
+        "covered_in_current_draft": true
+      },
+      {
+        "requirement": 5,
+        "evidence": "DAG真实边、并行组与最长链",
+        "covered_in_current_draft": true
+      },
+      {
+        "requirement": 6,
+        "evidence": "第5节机制适用性及具体动作",
+        "covered_in_current_draft": true
+      },
+      {
+        "requirement": 7,
+        "evidence": "第7节及证据文件完整旧保障/新Interface矩阵",
+        "covered_in_current_draft": true
+      },
+      {
+        "requirement": 8,
+        "evidence": "第2节历史保护、重新决策、双向关系与Legacy关闭",
+        "covered_in_current_draft": true
+      },
+      {
+        "requirement": 9,
+        "evidence": "8个Items六字段；机器事实与语义分工",
+        "covered_in_current_draft": true
+      },
+      {
+        "requirement": 10,
+        "evidence": "本轮允许目录与动作；正式发布/实施后续授权",
+        "covered_in_current_draft": true
+      },
+      {
+        "requirement": 11,
+        "evidence": "真实sprint01/2026-10-07联合目录及各原子草案目录",
+        "covered_in_current_draft": true
+      },
+      {
+        "requirement": 12,
+        "evidence": "草案结束边界；Runtime独立遗留与后续待验收合同",
+        "covered_in_current_draft": true
+      },
+      {
+        "requirement": 13,
+        "evidence": "第3、5节能力入口、lazy依赖收缩和五类执行面门禁",
+        "covered_in_current_draft": true
+      },
+      {
+        "requirement": 14,
+        "evidence": "第5节njit和NumPy实际实验、DataFrame边界",
+        "covered_in_current_draft": true
+      },
+      {
+        "requirement": 15,
+        "evidence": "第8节截图/菜单业务图及正常异常走查",
+        "covered_in_current_draft": true
+      },
+      {
+        "requirement": 16,
+        "evidence": "第9节截图/菜单数据真源、瞬态状态、证据消费",
+        "covered_in_current_draft": true
+      },
+      {
+        "requirement": 17,
+        "evidence": "第10节输入失败、Game校验、焦点恢复与重复close",
+        "covered_in_current_draft": true
+      },
+      {
+        "requirement": 18,
+        "evidence": "第7节与D04完整三轮固定门禁，原失败保持真实",
+        "covered_in_current_draft": true
+      },
+      {
+        "requirement": 19,
+        "evidence": "D01 ADR004修订草案、依据和approval_draft读回",
+        "covered_in_current_draft": true
+      }
+    ]
+  },
+  "source_comparison_note": "Compare raw bytes with recorded worktree baseline and apply the tracked-path Git clean filter; raw CRLF bytes are not compared directly with LF commit blobs.",
+  "authorized_revision_scope": [
+    "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/截图导入联合方案决策草案.md",
+    "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/草案结构校验.json",
+    "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D01-截图能力目录/遗留问题草案.md"
+  ],
+  "mermaid_validation_limit": "Static flowchart subset and semantic walkthrough; rendering and production implementation are subsequent verification."
 }
