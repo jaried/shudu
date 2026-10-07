@@ -26,38 +26,45 @@
     {
       "item_id": "I01",
       "semantic_digest": "53d7571c2e0f21fb4da9d5cd603c8128c292830436adcffbd975d26dfcb2c90b",
-      "status": "checks_passed",
+      "status": "complete",
       "completion_evidence": [
         "I01-RED.json",
         "I01-GREEN-pass.json",
-        "final-execution-surface.json"
+        "final-execution-surface.json",
+        "S1-06_方案实施评审报告.md",
+        "sprint-integration-full.json"
       ],
-      "delivery_status": "pending_review_and_merge"
+      "delivery_status": "merged_and_pending_acceptance"
     },
     {
       "item_id": "I02",
       "semantic_digest": "7dc94ef49387529f906b98a99eb5939e50fbc28aad6a9b736b2c65a218237dc7",
-      "status": "checks_passed",
+      "status": "complete",
       "completion_evidence": [
         "I02-RED.json",
         "I02-GREEN.json",
         "full-regression-1.json",
         "full-regression-2.json",
-        "full-regression-3.json"
+        "full-regression-3.json",
+        "S1-06_方案实施评审报告.md",
+        "sprint-integration-full.json"
       ],
-      "delivery_status": "pending_review_and_merge"
+      "delivery_status": "merged_and_pending_acceptance"
     },
     {
       "item_id": "I03",
       "semantic_digest": "3b3a535d9d0229749c85bd04eb0811d31b2204cad703358604162d7203f94ac9",
-      "status": "checks_passed",
+      "status": "complete",
       "completion_evidence": [
         "full-regression-1.json",
         "full-regression-2.json",
         "full-regression-3.json",
-        "ruff-final-check.json"
+        "ruff-final-check.json",
+        "S1-06_方案实施评审报告.md",
+        "sprint-integration-full.json"
       ],
-      "delivery_status": "pending_review_and_merge"
+      "delivery_status": "merged_and_pending_acceptance"
     }
-  ]
+  ],
+  "sprint_merge_head": "80b9522693ea596c06e4511c20f7029ad1a10032"
 }
