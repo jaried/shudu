@@ -1,0 +1,37 @@
+{
+  "source": "HOST_and_Stage_public_metadata",
+  "plan": {
+    "issueId": "S1-06",
+    "artifactKind": "solution",
+    "requestBinding": "6908321a-f7a1-4e66-b542-3d0d3aad1b5a",
+    "expectedHead": "92dfb3366adbc1f3573c7cb4153b31a702eb6b97",
+    "targetPath": "docs/01_Sprint记录/Sprint01/S1-06/S1-06_方案决策.md",
+    "nextVersion": "S1-06-solution-v1",
+    "metadata": {
+      "solution_version": "S1-06-solution-v1",
+      "artifact_version": "S1-06-solution-v1"
+    },
+    "readback": {
+      "requestBinding": "6908321a-f7a1-4e66-b542-3d0d3aad1b5a",
+      "targetPath": "docs/01_Sprint记录/Sprint01/S1-06/S1-06_方案决策.md",
+      "expectedHead": "92dfb3366adbc1f3573c7cb4153b31a702eb6b97",
+      "artifactVersion": "S1-06-solution-v1"
+    }
+  },
+  "actual_canonical_path": "docs/01_sprint记录/sprint01/S1-06/S1-06_方案决策.md",
+  "path_case_note": "Stage目标路径与本机真实目录同指；Git readback沿现行index大小写。",
+  "requirement_version": "S1-06-requirement-v2",
+  "current_requirement_version": "S1-06-requirement-v1",
+  "approval_locator": "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-07/范围修订记录.md",
+  "approved_content_digest": "796875c6566cd7038dcc3c4c59a65d570159130c2301f8f8604eea6c3eacc381",
+  "requestBinding": "6908321a-f7a1-4e66-b542-3d0d3aad1b5a",
+  "published_issue_set": [
+    "S1-06"
+  ],
+  "cancelled_issue_set": [
+    "S1-05",
+    "S1-07",
+    "S1-08"
+  ],
+  "completed_at": "2026-10-07T11:34:11.114Z"
+}

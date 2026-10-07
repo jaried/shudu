@@ -1,0 +1,588 @@
+{
+  "status": "pass",
+  "observed_head": "92dfb3366adbc1f3573c7cb4153b31a702eb6b97",
+  "branch": "Sprint01",
+  "completed_at": "2026-10-07T11:46:59.132Z",
+  "checked_markdown": 28,
+  "local_links": 118,
+  "item_count": 3,
+  "active_issues": [
+    "S1-06"
+  ],
+  "issue_dag_edges": [],
+  "issue_dag_acyclic": true,
+  "cancelled": [
+    "S1-05",
+    "S1-07",
+    "S1-08"
+  ],
+  "historical_statuses_preserved": true,
+  "protected_baseline_files": 115,
+  "protected_source_unchanged": true,
+  "adr_unchanged": true,
+  "codebase_design_review": "pass_for_current_bug_scope",
+  "graph_facts": [
+    {
+      "file": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/联合方案决策.md",
+      "block": 1,
+      "nodes": 13,
+      "edges": 16,
+      "terminals": [
+        "K",
+        "L"
+      ],
+      "unclosed": [],
+      "unstated": [],
+      "node_labels": {
+        "A": "玩家选择截图导入",
+        "B": "确认并选文件",
+        "K": "旧局保持 本次结束",
+        "C": "截图能力读取 解码 定位",
+        "D": "文件与棋盘有效",
+        "X": "GUI显示失败原因 保留旧局",
+        "E": "背景处理 恢复各格",
+        "F": "格子识别成功",
+        "Y": "首错行列 原因及重试建议",
+        "G": "完整输入及Game有效",
+        "H": "一次安装新局 恢复笔记偏好",
+        "L": "玩家在新题面继续",
+        "J": "再次导入"
+      },
+      "edge_list": [
+        [
+          "A",
+          "B"
+        ],
+        [
+          "B",
+          "K"
+        ],
+        [
+          "B",
+          "C"
+        ],
+        [
+          "C",
+          "D"
+        ],
+        [
+          "D",
+          "X"
+        ],
+        [
+          "D",
+          "E"
+        ],
+        [
+          "E",
+          "F"
+        ],
+        [
+          "F",
+          "Y"
+        ],
+        [
+          "Y",
+          "X"
+        ],
+        [
+          "F",
+          "G"
+        ],
+        [
+          "G",
+          "X"
+        ],
+        [
+          "G",
+          "H"
+        ],
+        [
+          "H",
+          "L"
+        ],
+        [
+          "X",
+          "J"
+        ],
+        [
+          "J",
+          "B"
+        ],
+        [
+          "J",
+          "K"
+        ]
+      ],
+      "validation": "restricted_flowchart_structure_and_terminal_reachability",
+      "mermaid_rendered": false
+    },
+    {
+      "file": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/联合方案决策.md",
+      "block": 2,
+      "nodes": 16,
+      "edges": 20,
+      "terminals": [
+        "W"
+      ],
+      "unclosed": [],
+      "unstated": [],
+      "node_labels": {
+        "P": "指定单个截图",
+        "R": "Module读取解码",
+        "B": "内存棋盘和单格对比度",
+        "T": "原模板缓存",
+        "C": "逐格值与候选",
+        "O": "完整不可变输入",
+        "N": "GUI建立Game",
+        "S": "旧Game偏好",
+        "V": "GUI及View消费新局",
+        "F": "原owner失败原因",
+        "CF": "首格行列及原因",
+        "U": "GUI提示 旧局为真源",
+        "H": "原图hash和人工期望",
+        "Q": "公开入口及GUI回归",
+        "E": "HOST记录版本 环境 退出码和计数",
+        "W": "评审与用户消费交付证据"
+      },
+      "edge_list": [
+        [
+          "P",
+          "R"
+        ],
+        [
+          "R",
+          "B"
+        ],
+        [
+          "T",
+          "C"
+        ],
+        [
+          "B",
+          "C"
+        ],
+        [
+          "C",
+          "O"
+        ],
+        [
+          "O",
+          "N"
+        ],
+        [
+          "S",
+          "N"
+        ],
+        [
+          "N",
+          "V"
+        ],
+        [
+          "R",
+          "F"
+        ],
+        [
+          "C",
+          "CF"
+        ],
+        [
+          "CF",
+          "F"
+        ],
+        [
+          "N",
+          "F"
+        ],
+        [
+          "F",
+          "U"
+        ],
+        [
+          "P",
+          "H"
+        ],
+        [
+          "H",
+          "Q"
+        ],
+        [
+          "O",
+          "Q"
+        ],
+        [
+          "V",
+          "Q"
+        ],
+        [
+          "U",
+          "Q"
+        ],
+        [
+          "Q",
+          "E"
+        ],
+        [
+          "E",
+          "W"
+        ]
+      ],
+      "validation": "restricted_flowchart_structure_and_terminal_reachability",
+      "mermaid_rendered": false
+    },
+    {
+      "file": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/联合方案决策.md",
+      "block": 3,
+      "nodes": 13,
+      "edges": 16,
+      "terminals": [
+        "X",
+        "K"
+      ],
+      "unclosed": [],
+      "unstated": [],
+      "node_labels": {
+        "A": "一次截图请求",
+        "B": "读取定位有效",
+        "X": "失败 GUI保留旧局 本次结束",
+        "C": "当前单格 相对Otsu",
+        "D": "任一边有前景",
+        "E": "至少8的普通binary阈值",
+        "F": "保持首次mask",
+        "G": "原连通域及值笔记分类",
+        "H": "当前格可识别",
+        "Y": "首错行列及原因链",
+        "I": "有下一格",
+        "J": "完整输入及Game有效",
+        "K": "一次安装新局 本次结束"
+      },
+      "edge_list": [
+        [
+          "A",
+          "B"
+        ],
+        [
+          "B",
+          "X"
+        ],
+        [
+          "B",
+          "C"
+        ],
+        [
+          "C",
+          "D"
+        ],
+        [
+          "D",
+          "E"
+        ],
+        [
+          "D",
+          "F"
+        ],
+        [
+          "E",
+          "G"
+        ],
+        [
+          "F",
+          "G"
+        ],
+        [
+          "G",
+          "H"
+        ],
+        [
+          "H",
+          "Y"
+        ],
+        [
+          "Y",
+          "X"
+        ],
+        [
+          "H",
+          "I"
+        ],
+        [
+          "I",
+          "C"
+        ],
+        [
+          "I",
+          "J"
+        ],
+        [
+          "J",
+          "X"
+        ],
+        [
+          "J",
+          "K"
+        ]
+      ],
+      "validation": "restricted_flowchart_structure_and_terminal_reachability",
+      "mermaid_rendered": false
+    },
+    {
+      "file": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/Issue-DAG.md",
+      "block": 1,
+      "nodes": 5,
+      "edges": 5,
+      "terminals": [
+        "E"
+      ],
+      "unclosed": [],
+      "unstated": [],
+      "node_labels": {
+        "A": "一票批准合同",
+        "B": "S1-06 图片导入修复",
+        "C": "公开接口及完整回归",
+        "D": "门禁及评审通过",
+        "E": "待验收 用户获得业务证据"
+      },
+      "edge_list": [
+        [
+          "A",
+          "B"
+        ],
+        [
+          "B",
+          "C"
+        ],
+        [
+          "C",
+          "D"
+        ],
+        [
+          "D",
+          "B"
+        ],
+        [
+          "D",
+          "E"
+        ]
+      ],
+      "validation": "restricted_flowchart_structure_and_terminal_reachability",
+      "mermaid_rendered": false
+    }
+  ],
+  "mermaid_rendered": false,
+  "validation_limit": "Static flowchart subset and semantic walkthrough; implementation regression is subsequent.",
+  "formal_metadata": {
+    "canonical": {
+      "artifact_kind": "solution",
+      "issue_id": "S1-06",
+      "frozen": true,
+      "approval_state": "approved",
+      "approval_locator": "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-07/范围修订记录.md",
+      "request_binding": "6908321a-f7a1-4e66-b542-3d0d3aad1b5a",
+      "solution_version": "S1-06-solution-v1",
+      "artifact_version": "S1-06-solution-v1"
+    },
+    "summary": {
+      "issue_id": "S1-06",
+      "status": "completed",
+      "frozen": true,
+      "artifact_version": "S1-06-solution-v1",
+      "stage": "solution-decision",
+      "sprint_id": "Sprint01",
+      "owner": "solution-decision",
+      "completion_scope": "一票图片导入BUG的固定方案和正式发布",
+      "input_locators": [
+        "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-07/范围修订记录.md",
+        "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-07/联合方案决策.md",
+        "docs/01_Sprint记录/sprint01/S1-06/S1-06_原始需求.md"
+      ],
+      "output_locators": [
+        "docs/01_sprint记录/sprint01/S1-06/S1-06_方案决策.md",
+        "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-07/联合方案决策.md"
+      ],
+      "validation_locator": "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-07/证据/发布结构校验.json",
+      "legacy_locator": "docs/01_sprint记录/sprint01/S1-06/S1-06_遗留问题.md",
+      "legacy_ids": [
+        "LEG-S1-06-001",
+        "LEG-S1-06-002"
+      ],
+      "next_stage": "solution-design",
+      "next_stage_gate": "对应阶段授权与真实门禁满足后执行",
+      "handoff_verification": "一票固定规格、三个六字段Items、三图、owner及执行面闭合",
+      "publication_verification": "正式Git路径及HOST事实读回；Runtime错误单列"
+    },
+    "requirement": {
+      "artifact_kind": "requirement",
+      "artifact_version": "S1-06-requirement-v2",
+      "issue_id": "S1-06",
+      "frozen": true,
+      "draft_set_version": "796875c6566cd7038dcc3c4c59a65d570159130c2301f8f8604eea6c3eacc381"
+    }
+  },
+  "files": [
+    {
+      "path": "docs/01_Sprint记录/sprint01/S1-05/S1-05_原始需求.md",
+      "sha256": "104c64165722636940723899deaa33dca6ff20b197639c0a4e39d04343dad506"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/S1-05/S1-05_关联关系.md",
+      "sha256": "78287d9b59ad5a63175de1050941ab2db48ff724f334ba147f362ec8ed088fa9"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/S1-07/S1-07_原始需求.md",
+      "sha256": "1d34d1c5c05c1389974237024efd5ed9de956b6de993ce62e3ce21bc7aa309ed"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/S1-07/S1-07_关联关系.md",
+      "sha256": "ff0bb81ebd0a2f110767a3095f5470726639c2120e7680246a2047e41d322397"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/S1-06/S1-06_遗留问题.md",
+      "sha256": "c005dacda8fce9ac16577354fd34c24a3c2eaf24bc3895d1319e9389a4b056e6"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/S1-06/S1-06_方案决策总结.md",
+      "sha256": "1023f4582e3b1e55226c6b393a4dbeabf5c05547e2398dd48a98c45594bef7ee"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/S1-06/S1-06_方案决策.md",
+      "sha256": "74d01bf24c8f6ba893ba4df99bfc8f081ba9fc1e8b43e9d5bd14af223af63ffb"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/S1-06/S1-06_原始需求.md",
+      "sha256": "bd22bacbbe5aeb573df24ce48c4568b2e9d6deca7f843464171ea7caea87717e"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/S1-06/S1-06_关联关系.md",
+      "sha256": "1028de7a2d38c61c341a2a40ea46a9a89121e637a4f7c8f8429fddc8b7310242"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/发布批准记录.md",
+      "sha256": "49556a00a638e4eb5f26c353a0706fd47a1492614897ccca23f49fc47f1010b7"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/Issue-DAG.md",
+      "sha256": "c2844824d1c82b50ba5bb827e4a3553137aa136eaa01d764ba09dad2c21796ca"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/证据与防回归.md",
+      "sha256": "0744cd72748ca4f8ea2ca91f371f80c55561ee950c8f6b897ba41c1b5e72ea5b"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/S1-08/S1-08_原始需求.md",
+      "sha256": "113ed2d026544f042dba4c8f035a5326b24619b8ad3aa816fcd3f8366b4b84e6"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/S1-08/S1-08_关联关系.md",
+      "sha256": "201dca7a2a808bd83690fff7fef5da60f51d4ebcb6427f4f486c93ac4d59fc8f"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/联合方案决策.md",
+      "sha256": "796875c6566cd7038dcc3c4c59a65d570159130c2301f8f8604eea6c3eacc381"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/截图导入联合方案决策草案.md",
+      "sha256": "5d75d1bf84ae5d2cb91a5c3e719b9e65d0f19a96dffba1514b00956734e83daa"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/待确认问题.md",
+      "sha256": "8b282075b9d1857f1c4094ad84db919163c6bc069fb6d557cb3c5f688530ae45"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/范围修订记录.md",
+      "sha256": "47858565c310ee471b26a3cb4aa30f547219f63312b8809a5fe03520f0fa605f"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/草案结构校验.json",
+      "sha256": "c75a5b4e657b410455798c7cfe975b90279d39d7ba3f7237517e57363ce845d9"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/证据/登记提交效果读回.json",
+      "sha256": "b34df84784e87cbeb1aa94d51f7662d4f3466aa75758f3cb62a68a270d4655f0"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/证据/登记提交公开调用.json",
+      "sha256": "94eaf2ce7af0b2e4104d1634365aa40c61533de1c24b3640751353ebee13703b"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/证据/正式登记HOST读回.json",
+      "sha256": "f1acbd601614e1f521dc54f3b5fbf679e436691a7567eaa3befb2af91354ed73"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/证据/批准集合与初始事实.json",
+      "sha256": "e7092ed19e2b560b690acdc920cd532182d8b461c1170b57757e5c24f1d2672b"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/证据/一票状态与依赖读回.json",
+      "sha256": "9aa229e0f48c31a8c342a1515550da088deb933b2934b5837e93f46c993c0b13"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/证据/一票发布提交公开读回.json",
+      "sha256": "b6667d15fc47968fff337bf6fc8e75cb26cc9fe2996be47439f40707dad429e9"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/证据/S1-06正式发布机器事实.json",
+      "sha256": "a90bc486edbb59bf6b47db60d13df4caeb625d2aaeed7593c9b47bec0cf793c6"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/证据/IssueRegister登记执行.json",
+      "sha256": "d688e810844eeda0bc5ffbbd0938dbbae74cb45ea53406f4a8fbee5af5168544"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/证据/IssueRegister公开调用.json",
+      "sha256": "18f0d406a289e96b07f3d5cbde160ff123eb5d94742b45100e1771421494cefb"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/证据/IssueRegister修正输入读回.json",
+      "sha256": "4aed742fb8dbd818fdf929d1d4882eac6c3d01873e6f3fd661550a93f0954d3b"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D04-设置弹层回归/方案决策草案.md",
+      "sha256": "9a351da91a1e2ed4dcc8ba2cebca4060e38f844dba7156007c1fb3b2ac4edd44"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D02-背景与数字识别/方案决策草案.md",
+      "sha256": "65d22e1b140b5c5f57e13736e8e281178ea979c79d84c16face3a4a5f7d3c909"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D03-失败位置/方案决策草案.md",
+      "sha256": "ecf7de28ad48f7b14cea52755b9f0b3a5df6bf8f1c9b14cf78ede3b1caa6214b"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D01-截图能力目录/遗留问题草案.md",
+      "sha256": "726ee6581a48d82a6d715167dd4270044e255b7efb4ab7fc664936ec275744f4"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D01-截图能力目录/方案决策草案.md",
+      "sha256": "4192d1edde69d8c0289ef6ff9010171cd95113a32136b068dff2abe60d507b22"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D01-截图能力目录/DIRECT-SHUDU-20261007-IMG-D01_ADR草案_截图输入目录与按需加载.md",
+      "sha256": "d2452cef27cbe89e8951d92835e99811e2df93228699e065035304a577f40a36"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D01-截图能力目录/ADR草案请求与读回.json",
+      "sha256": "8443a5bb56de15abd495f8109d42e704c3a8ba35b3ec5d90e323a326c568f430"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/S1-01/S1-01_关联关系.md",
+      "sha256": "8941aa007bce732edd81ce41074e7120de70d97b5ac8ae42f79c269fb4ce82f4"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/S1-02/S1-02_关联关系.md",
+      "sha256": "26972411d304a615ecf04ba08224d0c54d9dafb52c318138684dea4d4c841237"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/S1-03/S1-03_关联关系.md",
+      "sha256": "4ca3393e49938fbab09a84e7392857fced313759720365e06d6ee6993adcce73"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/S1-04/S1-04_关联关系.md",
+      "sha256": "515895298e75b01b2d3155f9b40ca4a1c5766c959af34eeabd75fe59ba5ff626"
+    }
+  ],
+  "errors": [],
+  "final_surface_checked_at": "2026-10-07T11:53:28.204Z",
+  "git_diff_check": "pass after removing additional terminal empty lines",
+  "public_commit_candidate_complete": false,
+  "local_publication_mode": "authorized_HOST_exact_paths_and_Git_readback"
+}

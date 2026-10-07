@@ -1,0 +1,168 @@
+{
+  "input": {
+    "batch": {
+      "sprint": 1,
+      "routeKind": "semantic",
+      "requestBinding": "6908321a-f7a1-4e66-b542-3d0d3aad1b5a",
+      "declaredIssueCount": 4,
+      "approvedDraftHandoff": {
+        "requestBinding": "6908321a-f7a1-4e66-b542-3d0d3aad1b5a",
+        "approvalFrameId": "8c4e6692-66b4-4de4-8383-f2a00d6f6d46",
+        "approvalLocator": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/发布批准记录.md",
+        "draftSetVersion": "517b3d7756d4be0299cee06bc03bafc1a7b8e4825b48e5941697b661ea465673",
+        "solutionVersion": "517b3d7756d4be0299cee06bc03bafc1a7b8e4825b48e5941697b661ea465673",
+        "drafts": [
+          {
+            "draftKey": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D01-截图能力目录/方案决策草案.md",
+            "type": "OPT",
+            "title": "截图输入能力目录与按需加载",
+            "atomicResult": "截图恢复能力迁入一个目录、唯一公开入口及内部知识文件，现有行为保持，纯导入依赖缩小。",
+            "acceptance": [
+              "公开loader、不可变结果及note_map复制语义保持；原截图有效行为完整回归。",
+              "纯导入不加载图像、规则Numba、Game、Hint和solver；实际请求执行面按批准合同。",
+              "旧物理路径架构测试同步迁移，原有效验收语义保持。"
+            ],
+            "dependencies": [],
+            "priority": "P1",
+            "points": 3
+          },
+          {
+            "draftKey": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D02-背景与数字识别/方案决策草案.md",
+            "type": "BUG",
+            "title": "截图背景噪声与数字笔记恢复",
+            "atomicResult": "用户原图全部81格准确恢复，24个正式数字、57个空格及空笔记，原候选位置和有效字形保持。",
+            "acceptance": [
+              "原图字节hash和独立人工标签一致，公开loader与Game恢复全部题面及空笔记。",
+              "前景计算执行相对Otsu、四边条件及噪声门槛8，原0.50模板门槛和3×3笔记语义保持。",
+              "成功/失败/中文路径/高亮/浅色值及读取计算执行面防回归通过。"
+            ],
+            "dependencies": [
+              "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D01-截图能力目录/方案决策草案.md"
+            ],
+            "priority": "P1",
+            "points": 5
+          },
+          {
+            "draftKey": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D03-失败位置/方案决策草案.md",
+            "type": "US",
+            "title": "导入失败格位置提示",
+            "atomicResult": "首个格子识别失败时显示1起始行列、原原因及清晰截图重试建议，当前游戏完整保持。",
+            "acceptance": [
+              "按row-major只报告首个格子的ValueError，固定文案和原因链保持。",
+              "文件、棋盘定位及Game校验错误由原owner处理，成功路径结果和执行面保持。",
+              "GUI一次错误提示、零安装；旧Game/view/notes/history/偏好保持。"
+            ],
+            "dependencies": [
+              "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D01-截图能力目录/方案决策草案.md"
+            ],
+            "priority": "P1",
+            "points": 2
+          },
+          {
+            "draftKey": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D04-设置弹层回归/方案决策草案.md",
+            "type": "BUG",
+            "title": "设置焦点生命周期与全部测试修复",
+            "atomicResult": "设置菜单内部焦点瞬变保持、真实失焦按原规则关闭，修复首轮测试问题并通过全部测试。",
+            "acceptance": [
+              "after_idle单pending及合并事件，内部焦点保持，稳定外部/None焦点按原规则关闭。",
+              "close幂等并取消自有pending，回调/自有grab/窗口资源各清理一次；原连续设置与命令保持。",
+              "追踪原失败并取得修复证据；原269项及新增行为在最终集成版本同环境连续三轮完整通过。"
+            ],
+            "dependencies": [],
+            "priority": "P1",
+            "points": 5
+          }
+        ]
+      }
+    }
+  },
+  "output": {
+    "status": "blocked",
+    "operationIdentity": "issue-publication:6908321a-f7a1-4e66-b542-3d0d3aad1b5a:517b3d7756d4be0299cee06bc03bafc1a7b8e4825b48e5941697b661ea465673",
+    "state": {
+      "phase": "initial",
+      "operationIdentity": "issue-publication:6908321a-f7a1-4e66-b542-3d0d3aad1b5a:517b3d7756d4be0299cee06bc03bafc1a7b8e4825b48e5941697b661ea465673",
+      "batchFingerprint": "16080c01796f5fe293db301cafdc8c4b2adbe35fea8a911c37deca2227ddd904",
+      "frozenBatch": {
+        "sprint": 1,
+        "routeKind": "semantic",
+        "requestBinding": "6908321a-f7a1-4e66-b542-3d0d3aad1b5a",
+        "declaredIssueCount": 4,
+        "approvedDraftHandoff": {
+          "requestBinding": "6908321a-f7a1-4e66-b542-3d0d3aad1b5a",
+          "approvalFrameId": "8c4e6692-66b4-4de4-8383-f2a00d6f6d46",
+          "approvalLocator": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/发布批准记录.md",
+          "draftSetVersion": "517b3d7756d4be0299cee06bc03bafc1a7b8e4825b48e5941697b661ea465673",
+          "solutionVersion": "517b3d7756d4be0299cee06bc03bafc1a7b8e4825b48e5941697b661ea465673",
+          "drafts": [
+            {
+              "draftKey": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D01-截图能力目录/方案决策草案.md",
+              "type": "OPT",
+              "title": "截图输入能力目录与按需加载",
+              "atomicResult": "截图恢复能力迁入一个目录、唯一公开入口及内部知识文件，现有行为保持，纯导入依赖缩小。",
+              "acceptance": [
+                "公开loader、不可变结果及note_map复制语义保持；原截图有效行为完整回归。",
+                "纯导入不加载图像、规则Numba、Game、Hint和solver；实际请求执行面按批准合同。",
+                "旧物理路径架构测试同步迁移，原有效验收语义保持。"
+              ],
+              "dependencies": [],
+              "priority": "P1",
+              "points": 3
+            },
+            {
+              "draftKey": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D02-背景与数字识别/方案决策草案.md",
+              "type": "BUG",
+              "title": "截图背景噪声与数字笔记恢复",
+              "atomicResult": "用户原图全部81格准确恢复，24个正式数字、57个空格及空笔记，原候选位置和有效字形保持。",
+              "acceptance": [
+                "原图字节hash和独立人工标签一致，公开loader与Game恢复全部题面及空笔记。",
+                "前景计算执行相对Otsu、四边条件及噪声门槛8，原0.50模板门槛和3×3笔记语义保持。",
+                "成功/失败/中文路径/高亮/浅色值及读取计算执行面防回归通过。"
+              ],
+              "dependencies": [
+                "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D01-截图能力目录/方案决策草案.md"
+              ],
+              "priority": "P1",
+              "points": 5
+            },
+            {
+              "draftKey": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D03-失败位置/方案决策草案.md",
+              "type": "US",
+              "title": "导入失败格位置提示",
+              "atomicResult": "首个格子识别失败时显示1起始行列、原原因及清晰截图重试建议，当前游戏完整保持。",
+              "acceptance": [
+                "按row-major只报告首个格子的ValueError，固定文案和原因链保持。",
+                "文件、棋盘定位及Game校验错误由原owner处理，成功路径结果和执行面保持。",
+                "GUI一次错误提示、零安装；旧Game/view/notes/history/偏好保持。"
+              ],
+              "dependencies": [
+                "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D01-截图能力目录/方案决策草案.md"
+              ],
+              "priority": "P1",
+              "points": 2
+            },
+            {
+              "draftKey": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D04-设置弹层回归/方案决策草案.md",
+              "type": "BUG",
+              "title": "设置焦点生命周期与全部测试修复",
+              "atomicResult": "设置菜单内部焦点瞬变保持、真实失焦按原规则关闭，修复首轮测试问题并通过全部测试。",
+              "acceptance": [
+                "after_idle单pending及合并事件，内部焦点保持，稳定外部/None焦点按原规则关闭。",
+                "close幂等并取消自有pending，回调/自有grab/窗口资源各清理一次；原连续设置与命令保持。",
+                "追踪原失败并取得修复证据；原269项及新增行为在最终集成版本同环境连续三轮完整通过。"
+              ],
+              "dependencies": [],
+              "priority": "P1",
+              "points": 5
+            }
+          ]
+        }
+      }
+    },
+    "error": {
+      "code": "ISSUE_REGISTER_INPUT_MODE_CONFLICT",
+      "message": "ISSUE_REGISTER_INPUT_MODE_CONFLICT"
+    }
+  },
+  "completed_at": "2026-10-07T11:12:19.849Z"
+}

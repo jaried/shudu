@@ -1,0 +1,100 @@
+{
+  "dependency": {
+    "status": "success",
+    "outcome": "pass",
+    "continue": true,
+    "nextAction": "run_tool",
+    "verified": true,
+    "toolRequest": {
+      "kind": "auto_commit"
+    },
+    "action": "update_priority",
+    "issueId": "S1-06",
+    "sprintPath": "docs/00_待办列表/Sprint待办列表/Sprint01.md",
+    "changedPaths": [
+      "docs/00_待办列表/Sprint待办列表/Sprint01.md"
+    ],
+    "stats": {
+      "totalIssues": 8,
+      "totalPoints": 41,
+      "statusCounts": {
+        "待办": 4,
+        "方案已决策": 0,
+        "方案未设计": 0,
+        "方案设计中": 0,
+        "方案已设计": 0,
+        "实施中": 0,
+        "待验收": 4,
+        "已完成": 0,
+        "已取消": 0
+      }
+    },
+    "caller": "solution-decision",
+    "remoteSyncRequest": {
+      "source": "update-backlog",
+      "businessKey": "docs/00_待办列表/Sprint待办列表/Sprint01.md|update_priority|S1-06",
+      "direction": "outbound"
+    },
+    "writeResult": {
+      "outcome": "pass",
+      "verified": true,
+      "mode": "replace_whole",
+      "path": "docs/00_待办列表/Sprint待办列表/Sprint01.md",
+      "changed": true,
+      "baselineToken": "551199d799972a86bfdf6bfdc6180ad40c999df09b5b30e4160064a566c759a4",
+      "resultToken": "a5ca0efd70799e63f1167d4f5b354a41980fc875115c852a1fc58201cd971793",
+      "resultEnvelope": {
+        "bom": "none",
+        "eol": "lf",
+        "trailingNewline": true
+      }
+    }
+  },
+  "status": {
+    "status": "success",
+    "verified": true,
+    "sprintPath": "docs/00_待办列表/Sprint待办列表/Sprint01.md",
+    "changedPaths": [
+      "docs/00_待办列表/Sprint待办列表/Sprint01.md"
+    ],
+    "stats": {
+      "totalIssues": 8,
+      "totalPoints": 41,
+      "statusCounts": {
+        "待办": 0,
+        "方案已决策": 1,
+        "方案未设计": 0,
+        "方案设计中": 0,
+        "方案已设计": 0,
+        "实施中": 0,
+        "待验收": 4,
+        "已完成": 0,
+        "已取消": 3
+      }
+    },
+    "issueIds": [
+      "S1-05",
+      "S1-06",
+      "S1-07",
+      "S1-08"
+    ],
+    "remoteSyncRequest": {
+      "source": "update-backlog",
+      "businessKey": "docs/00_待办列表/Sprint待办列表/Sprint01.md|update_status_batch|S1-05,S1-06,S1-07,S1-08",
+      "direction": "outbound"
+    }
+  },
+  "active_issue": "S1-06",
+  "cancelled": [
+    "S1-05",
+    "S1-07",
+    "S1-08"
+  ],
+  "historical_preserved": [
+    "S1-01",
+    "S1-02",
+    "S1-03",
+    "S1-04"
+  ],
+  "completed_at": "2026-10-07T11:38:43.269Z"
+}

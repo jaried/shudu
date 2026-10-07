@@ -905,5 +905,8 @@
     "source_and_existing_tests_unchanged": true,
     "adr_revision_digest_verified": true,
     "issue_function_ownership_unchanged": true
-  }
+  },
+  "historical_report": true,
+  "validated_candidate_commit": "c7b5f6631ea5c3bbe2784e361814583cd1437554",
+  "current_publication_validation_locator": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/证据/发布结构校验.json"
 }

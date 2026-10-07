@@ -1,0 +1,606 @@
+{
+  "root": "D:\\Tony\\Documents\\invest2026\\projects\\shudu",
+  "head": "c7b5f6631ea5c3bbe2784e361814583cd1437554",
+  "branch": "Sprint01",
+  "approval": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/发布批准记录.md",
+  "snapshot": [
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/截图导入联合方案决策草案.md",
+      "sha256": "ba4c6c93e7094b7a54f793309388b81515fcfa1ad4afa971427581a282438809",
+      "git_blob": "65f13bbc0d7613cadcda4432b5f1781bbbd6422a"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/Issue-DAG.md",
+      "sha256": "e7f32bb5c9be2590ad7ca6ef112d1145cc6519232ecc7ec0030be6cc083e7442",
+      "git_blob": "7262a3d1ef0424b96de4fac123f94ccdd58b16a2"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/待确认问题.md",
+      "sha256": "b60a37c10dfaf6ec1be883ef3c830b2a2fb3bdc1707867105291246e5c389dcf",
+      "git_blob": "c35450f1306639952ccde7435c5432e6c75831d3"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D01-截图能力目录/方案决策草案.md",
+      "sha256": "5309607eb0a01f81b53336426c0826145de9e8586d11524c92188306c69fd739",
+      "git_blob": "42c7ad0840ea51605323c5776e2170913d06c974"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D02-背景与数字识别/方案决策草案.md",
+      "sha256": "717298f3af019ed80440a8bc37bd26427cf8e37ac674886d689d646058054ed5",
+      "git_blob": "fc211ca2a905075846d675dcec90d8c089d6feb7"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D03-失败位置/方案决策草案.md",
+      "sha256": "a034a82700484d8797dc1c4dbfa7d95f8b34fefb5cabfa04485f43a7972d8dbf",
+      "git_blob": "254cb764a2352ba4ef84002a3e3ddb312712151b"
+    },
+    {
+      "path": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D04-设置弹层回归/方案决策草案.md",
+      "sha256": "5f0dba9e5338b01f7fb7e4f79eeb744d734dc9a3988f34aff3a8835d5dc3d1e1",
+      "git_blob": "6cfc92196a10fbb3f3805545b2368b78f178f2c2"
+    }
+  ],
+  "batch": {
+    "sprint": 1,
+    "routeKind": "semantic",
+    "requestBinding": "6908321a-f7a1-4e66-b542-3d0d3aad1b5a",
+    "declaredIssueCount": 4,
+    "approvedDraftHandoff": {
+      "requestBinding": "6908321a-f7a1-4e66-b542-3d0d3aad1b5a",
+      "approvalFrameId": "8c4e6692-66b4-4de4-8383-f2a00d6f6d46",
+      "approvalLocator": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/发布批准记录.md",
+      "draftSetVersion": "517b3d7756d4be0299cee06bc03bafc1a7b8e4825b48e5941697b661ea465673",
+      "solutionVersion": "517b3d7756d4be0299cee06bc03bafc1a7b8e4825b48e5941697b661ea465673",
+      "drafts": [
+        {
+          "draftKey": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D01-截图能力目录/方案决策草案.md",
+          "type": "OPT",
+          "title": "截图输入能力目录与按需加载",
+          "atomicResult": "截图恢复能力迁入一个目录、唯一公开入口及内部知识文件，现有行为保持，纯导入依赖缩小。",
+          "acceptance": [
+            "公开loader、不可变结果及note_map复制语义保持；原截图有效行为完整回归。",
+            "纯导入不加载图像、规则Numba、Game、Hint和solver；实际请求执行面按批准合同。",
+            "旧物理路径架构测试同步迁移，原有效验收语义保持。"
+          ],
+          "dependencies": [],
+          "priority": "P1",
+          "points": 3
+        },
+        {
+          "draftKey": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D02-背景与数字识别/方案决策草案.md",
+          "type": "BUG",
+          "title": "截图背景噪声与数字笔记恢复",
+          "atomicResult": "用户原图全部81格准确恢复，24个正式数字、57个空格及空笔记，原候选位置和有效字形保持。",
+          "acceptance": [
+            "原图字节hash和独立人工标签一致，公开loader与Game恢复全部题面及空笔记。",
+            "前景计算执行相对Otsu、四边条件及噪声门槛8，原0.50模板门槛和3×3笔记语义保持。",
+            "成功/失败/中文路径/高亮/浅色值及读取计算执行面防回归通过。"
+          ],
+          "dependencies": [
+            "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D01-截图能力目录/方案决策草案.md"
+          ],
+          "priority": "P1",
+          "points": 5
+        },
+        {
+          "draftKey": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D03-失败位置/方案决策草案.md",
+          "type": "US",
+          "title": "导入失败格位置提示",
+          "atomicResult": "首个格子识别失败时显示1起始行列、原原因及清晰截图重试建议，当前游戏完整保持。",
+          "acceptance": [
+            "按row-major只报告首个格子的ValueError，固定文案和原因链保持。",
+            "文件、棋盘定位及Game校验错误由原owner处理，成功路径结果和执行面保持。",
+            "GUI一次错误提示、零安装；旧Game/view/notes/history/偏好保持。"
+          ],
+          "dependencies": [
+            "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D01-截图能力目录/方案决策草案.md"
+          ],
+          "priority": "P1",
+          "points": 2
+        },
+        {
+          "draftKey": "docs/01_Sprint记录/sprint01/00-联合方案决策/2026-10-07/01-原子Issue草案/IMG-D04-设置弹层回归/方案决策草案.md",
+          "type": "BUG",
+          "title": "设置焦点生命周期与全部测试修复",
+          "atomicResult": "设置菜单内部焦点瞬变保持、真实失焦按原规则关闭，修复首轮测试问题并通过全部测试。",
+          "acceptance": [
+            "after_idle单pending及合并事件，内部焦点保持，稳定外部/None焦点按原规则关闭。",
+            "close幂等并取消自有pending，回调/自有grab/窗口资源各清理一次；原连续设置与命令保持。",
+            "追踪原失败并取得修复证据；原269项及新增行为在最终集成版本同环境连续三轮完整通过。"
+          ],
+          "dependencies": [],
+          "priority": "P1",
+          "points": 5
+        }
+      ]
+    }
+  },
+  "baseline": [
+    {
+      "path": "docs/01_sprint记录/sprint01/00-联合方案决策/2026-10-06/证据/shudu-execution-surface-baseline-20261006.py",
+      "sha256": "ee57b752a80f26958388a196bae731726d2a762a2c31937c6ebe447ac82d7822"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-01/S1-01_代码库优化候选.html",
+      "sha256": "f32950136fb4044d29de1da32d8eecf342fbcb2c292769066725382c479f0a47"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-01/S1-01_代码库优化候选.md",
+      "sha256": "cee01a9478e30cf7516a4da193408a40e7ddd8b88ca80957cc3f89aaa127e499"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-01/S1-01_关联关系.md",
+      "sha256": "4d700a7ec3403c6f32b3fe7f499a0e786f058f91ba0229983912c2b3e9a7aca4"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-01/S1-01_原始需求.md",
+      "sha256": "e22c6c144a787a42898f277874fd6f331281a926aa37bc0620f82b52a0c88eef"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-01/S1-01_方案决策.md",
+      "sha256": "215039cfa432784f29e3061ab8849c35b58f4f95fcb06610a3c46d0c7b9c3c31"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-01/S1-01_方案决策总结.md",
+      "sha256": "67af7dd447d0b6ffcc74c75422bde565d74320bde940cb7904a7561f37f17f96"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-01/S1-01_方案实施总结.md",
+      "sha256": "69b33ecac9c05a09b78b73b5b1162ac94d76688677e22d840ad852c3f677c945"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-01/S1-01_方案实施评审报告.md",
+      "sha256": "08ea0f65652e2ff44ae7559862d7476301c955738d4382426ca721f8ca8dbed4"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-01/S1-01_方案实施评审整改记录.md",
+      "sha256": "dd0ba08beb3ab261aeb700383bc5715ff9fbf3d593149a4ccadb86298bc6b9d7"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-01/S1-01_方案设计.md",
+      "sha256": "ce6f23a8d300cd81d7a433cb3fe11303983aced67f1806585088a7814b646d16"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-01/S1-01_方案设计总结.md",
+      "sha256": "a2b49f3b1fdef3490f5f98af05b04f5e03b5efe514ac414c3e52b6fb456389f3"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-01/S1-01_方案设计评审报告.md",
+      "sha256": "2d42977cae0409438eb8b8a9637ef226ed62601d8bcec71faf09ba2cc2aa2979"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-01/S1-01_方案设计评审整改记录.md",
+      "sha256": "28f3b7021278afe4c9ee15ec690430552d3ef485816b0586c5e29c616646e9ce"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-01/S1-01_测试报告.md",
+      "sha256": "0a0daf3232386620f6daf7310dbe76139457d3369124a391fe87f117bfc72ba8"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-01/S1-01_遗留问题.md",
+      "sha256": "ad85f33dabe121cec5d46e373d9d4b05af44cd08afd8ad8c3f60974a482f7367"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-01/证据/S1-01-Sprint交付读回.json",
+      "sha256": "8d27af3fee1dd8c48e5f57e927e4b1d1ea969b8b1a43f1d08bfc7d263be88081"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-01/证据/S1-01-实施门禁读回.json",
+      "sha256": "4161f7da4602ca0bf93f3bcb679f3e5b44e4eb0c54a0ed5f6c19893f00b059c7"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-02/S1-02_代码库优化候选.html",
+      "sha256": "e1ad7ee46530bbf70e525a9a3fbbcec14f2fc127a8dbd2f24dcae407dc689ef1"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-02/S1-02_代码库优化候选.md",
+      "sha256": "8bb15922e42b2a723c5b7574cd334eefdfaef311c1ccd00f6464888cf489e46e"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-02/S1-02_关联关系.md",
+      "sha256": "9249c4ca9e8729a271ed83a69eeaf243faefae1a94f3e9da34e4fa8d3166f78a"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-02/S1-02_原始需求.md",
+      "sha256": "d66c816f1731a1d2271e341314c556d10ab8e16f61516b145444c72dc22be775"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-02/S1-02_方案决策.md",
+      "sha256": "f7637bf7592b637c92d290c5a562bb73448bfc86df8009cd4e520a9d7be1d824"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-02/S1-02_方案决策总结.md",
+      "sha256": "1692df76abb57101f0d57df5c9148e61cb09c5cbc635d1a022f35d3e2fbe46e2"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-02/S1-02_方案实施总结.md",
+      "sha256": "47006c780bd64b045691e3459b7760bc04e7b013d80dfee4ceae9f085c57dd05"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-02/S1-02_方案实施评审报告.md",
+      "sha256": "04f6f8f141a7e97494e053508df4c704a02529bc06b93f133541385031fbbfd2"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-02/S1-02_方案设计.md",
+      "sha256": "04caa9fef688b433e904ade89f4f45cf588df216d20fdf3952d58cdda57e68c6"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-02/S1-02_方案设计总结.md",
+      "sha256": "3ecf28fdb6e83b3e14a214f1edf31852a17ab68e3b064dc13bf0c4df7bf899c5"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-02/S1-02_方案设计评审报告.md",
+      "sha256": "bbbfd97375269960b3fe7895a7e3638547147235b357a691b15c6226e99c2363"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-02/S1-02_方案设计评审整改记录.md",
+      "sha256": "3577f65c5eb69f113688d44d364837586d39dffd1c72d3047d0a8bd8ebeeaa2b"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-02/S1-02_测试报告.md",
+      "sha256": "9f9b7ab9eb073d9db494712e4c6de832bdddb0a613bace7e0972318547e196f3"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-02/S1-02_遗留问题.md",
+      "sha256": "ed5963a6ebbcda805fdf9490695a0ec6616c60e679a2a0231e0747936fb88a06"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-02/证据/S1-02-Sprint交付读回.json",
+      "sha256": "78f3e551122f37b36adceceae578e66e9be8c85748a2ac614453edd238db6e5a"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-02/证据/shudu-S1-02-exception-baseline-20261006.py",
+      "sha256": "efdc6b5321853f883dc8c222a1cc4b61ec2974efe75422ef2fbbfbdcb802b057"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-02/证据/shudu-S1-02-exception-baseline-readback-20261006.json",
+      "sha256": "a2ee724b08cf6d5f56f489c3c659f7074671180fb59072b05efcd8a8c983923a"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-02/证据/shudu-S1-02-execution-surface-20261006.py",
+      "sha256": "48864294ede0ce1ca92920c59f4572395c0348d9261d066d3c33ad70d825823a"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-02/证据/shudu-S1-02-execution-surface-readback-20261006.json",
+      "sha256": "6ebd514cd79cfcf2db9503c3fba4924d57a380cb031fbb815821d639f862e69c"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-02/证据/shudu-S1-02-import-surface-20261006.py",
+      "sha256": "ca67a8d5018c0a6e9d3d25e0e1226a0d52184ef327f3c4673d3ba874f2d2e3a5"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-02/证据/shudu-S1-02-import-surface-readback-20261006.json",
+      "sha256": "0d36b06648e89ef9f8d84a2c3b2045f5126f68c5588db0f0faf31f46489385c3"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-03/S1-03_代码库优化候选.html",
+      "sha256": "982cbd2f30d24a3f43fdb9c2ec8ba04d86c0e5164740ae5a80d7509b142f3f9a"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-03/S1-03_代码库优化候选.md",
+      "sha256": "f17e3e05fe832b13039b9d087afff1f61110ebe4dc74b836aca33e6f8aae5608"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-03/S1-03_关联关系.md",
+      "sha256": "7cceab91b8ef35fbe0773681bd4d42c5d2a9f572a522c8cb599b53ed1dcd90c9"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-03/S1-03_原始需求.md",
+      "sha256": "eee5cf3b4cb1e3af96b7b6f4f510498eaa859c11e913a9413e27d10ca28923db"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-03/S1-03_方案决策.md",
+      "sha256": "70e9ee734d7a276cc217238771cec3154649d11ab2092e40a3663c742ca958a4"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-03/S1-03_方案决策总结.md",
+      "sha256": "4d34b74547d62ffb371a3ae57c3349bb90ff66e0a1e768e041df8643a3a84d6f"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-03/S1-03_方案实施总结.md",
+      "sha256": "453d7195fc32ecf8f135f6ef006aed934a7a158f0cc661948a5e12ff7f1de922"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-03/S1-03_方案实施评审报告.md",
+      "sha256": "1e7aa7f4e0e1d4f12aeb62b75b51842d49a5bc506693ad2b67052b24c067aa69"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-03/S1-03_方案实施评审整改记录.md",
+      "sha256": "5c36218d177175955725109738366306384d4403f4db22160aa64cba968d5619"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-03/S1-03_方案设计.md",
+      "sha256": "1ff5678843547f7ebd3ea951674b8b0204a994c4c50edae91e7a9824551e86fb"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-03/S1-03_方案设计总结.md",
+      "sha256": "68b895fe56f565648779556bd16cff3dbf1ee0ae997c76a86d1f62b7956a2345"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-03/S1-03_方案设计评审报告.md",
+      "sha256": "00b173db679db7a450b3294295a264697aa077de2cfeb0d2a54b3c2047f98178"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-03/S1-03_方案设计评审整改记录.md",
+      "sha256": "9e922ab9faa2c9f33e13b84f9a82a46fa43184bf11e4233c1044074f83c3e163"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-03/S1-03_测试报告.md",
+      "sha256": "dd3094bd1f09caabf0c95904923aa1974b0faeefc5c8f768ec5cd04fab9e1664"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-03/S1-03_遗留问题.md",
+      "sha256": "df78c27d99705986a7f3f0bf02bcd6359054c7fbb5078c0d1ff4a912a7a04c03"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-03/证据/S1-03-Sprint交付读回.json",
+      "sha256": "46e52b4bb3e73f4fb2cdc006c5bfc5094d3c7b0af25e766c721c46b73a7cf6c2"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-03/证据/S1-03-implementation-v2-import-scope.json",
+      "sha256": "720b797cf10b749758f872761cdc9b755ed15667d591e65739e370cf10492cbd"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-04/S1-04_代码库优化候选.html",
+      "sha256": "c2ccc63b19c836bf1fc33ab7f04dcfa6ae18365f4adba8eb5b6d87234c35d320"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-04/S1-04_代码库优化候选.md",
+      "sha256": "fcb29a451ef0d0a267331992552859f745af86c7fa3a68ee7fdbbb68d777a5b4"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-04/S1-04_关联关系.md",
+      "sha256": "21e30f35fe6fb0e7443c25fbc8253eba5be32187b5f085f1c674de6641eea69e"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-04/S1-04_原始需求.md",
+      "sha256": "c201aac8466949826541a292a86aa96447a1cf7d447eae2116852acd855f02c5"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-04/S1-04_方案决策.md",
+      "sha256": "b269949d1b8344a0159a440de9039a63f2a872a700373a250697c82fbfc6e971"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-04/S1-04_方案决策总结.md",
+      "sha256": "fddccb25ce98240b175892e306c7adc1713b55a0edd8098f5c3b7da0371c648f"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-04/S1-04_方案实施总结.md",
+      "sha256": "6f1037dbe1f027d5dbdfa316b3bdd67a0dded8022b5b732de03a2e10edd13af5"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-04/S1-04_方案实施评审报告.md",
+      "sha256": "d4473f53d38a1924896b0b5fa87dadb2cd14255ddb3500ef4f2545e51395792b"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-04/S1-04_方案设计.md",
+      "sha256": "88408e951c2e881f38c4dfe85b6c3fb7980f8e927dbfd7943812de01930a5f15"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-04/S1-04_方案设计总结.md",
+      "sha256": "5cfbdce2616302935e1561762aea23662d409fe4c9468bc0a6556cb447a0eb9e"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-04/S1-04_方案设计评审报告.md",
+      "sha256": "7204583c217cc25efe97af39e69f2a66997732ba729b300e9d791f4e9829462c"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-04/S1-04_测试报告.md",
+      "sha256": "3254418fcdabeaa5650e56c5f755ec806b822aa05205ef74ed8541667a1b0ce6"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-04/S1-04_遗留问题.md",
+      "sha256": "5ed48f0cc4b06dd4f27048120c024f05dd4272eac82894c9f05d92256b33ad45"
+    },
+    {
+      "path": "docs/01_sprint记录/sprint01/S1-04/证据/S1-04-Sprint交付读回.json",
+      "sha256": "e8b24b956480ae0241cf78220c7d6d8fb849576a79dc7c7100b36eb7eda32348"
+    },
+    {
+      "path": "logical_solver.py",
+      "sha256": "486d1402610b708d39449ba102a5c03b724e997d2ce895a2e8325dcad33ea9bd"
+    },
+    {
+      "path": "shudu/__init__.py",
+      "sha256": "c85ee0162253f45b3a2e4f463229256b2bb6cde3a430d1043c3273099999037b"
+    },
+    {
+      "path": "shudu/auto_techniques.py",
+      "sha256": "766853293529f3776fd282f09ad3b2cf801f3d536ecd8fdf3de9721bbfbc4802"
+    },
+    {
+      "path": "shudu/logic_solver/__init__.py",
+      "sha256": "80b48a3705be03d280814eeb98b3b9fce1b9f2617cb5d8019a2f3b8320f03c36"
+    },
+    {
+      "path": "shudu/logic_solver/_auto.py",
+      "sha256": "4efe5e385fb65627075450b5a57984521219bcc11d110fd92c3bb677bbcdf399"
+    },
+    {
+      "path": "shudu/logic_solver/_diff.py",
+      "sha256": "00e495a34a78a2b6ba148bec1bb0334b9789de649acde65f90662090d5cda921"
+    },
+    {
+      "path": "shudu/logic_solver/_engine.py",
+      "sha256": "4ba986f04ad8bb7eb486e019dd68bac9516eded39410b1254d6cf077eee6c55b"
+    },
+    {
+      "path": "shudu/logic_solver/_evidence.py",
+      "sha256": "eb737b1c1ec32d26ac8053c7fb4454703d8f1550f192b3d4beb1338ee730b8a1"
+    },
+    {
+      "path": "shudu/logic_solver/_project.py",
+      "sha256": "83a70f5b11a5c775def5734c9a0128257a9a322fcc4de23899be018123f6a761"
+    },
+    {
+      "path": "shudu/logic_solver/_results.py",
+      "sha256": "8e6f7f929a1275b5ab62f3e5c7051c1be53fe6fa096d248dc6e2e180e46ec979"
+    },
+    {
+      "path": "shudu/logic_solver/_single.py",
+      "sha256": "06105a7d7e75110276263c737b85ca6c4b917eeb21a948556c3229909a793ece"
+    },
+    {
+      "path": "shudu/settings_menu/__init__.py",
+      "sha256": "b3d58463aaf3ef5bec70ac0d456fbc8d8ebf5b18572dcb36a030d830911ca838"
+    },
+    {
+      "path": "shudu/settings_menu/_model.py",
+      "sha256": "3017e264f7ef80d58b46543426c84ead50e83af1a6d7eb3b88e1beee48306964"
+    },
+    {
+      "path": "shudu/settings_menu/_popup.py",
+      "sha256": "9a8f277490d50779b829438fe97ebd8fa44982b6e723e4d2503aef7e1dcfece9"
+    },
+    {
+      "path": "shudu/settings_menu/_position.py",
+      "sha256": "958ae8a0a750b294788daee850ada57c1c06a347ac7c70094eafacad96391eb9"
+    },
+    {
+      "path": "shudu/sudoku_backtracking.py",
+      "sha256": "5a2c7fc879181a480c3cb61afdcec0dea75fdf4e4c9bef423ec31477a686744f"
+    },
+    {
+      "path": "shudu/sudoku_game.py",
+      "sha256": "862d3b841e7527f71200d47f4233dbf7ae4e7929385789bdadd51e90561d5039"
+    },
+    {
+      "path": "shudu/sudoku_hint_view.py",
+      "sha256": "ff546b2cd26c2d6c525401f48669dd99e9db460871825f8a724d9c44e2f0c3bf"
+    },
+    {
+      "path": "shudu/sudoku_hints.py",
+      "sha256": "ca427080bd143add7764f3cb4caa84ebe6a2a2ed832af746754f8ed91ee42c64"
+    },
+    {
+      "path": "shudu/sudoku_njit_core.py",
+      "sha256": "667ad2357b50ddfe7b1194830a7deb979dbc82227b9cf3f77756644889448a7b"
+    },
+    {
+      "path": "shudu/sudoku_puzzles.py",
+      "sha256": "660b0395bf6adc5731e327bd121bcc825e34c08ae7e8ff4abfa72987c0f21323"
+    },
+    {
+      "path": "shudu/sudoku_rules.py",
+      "sha256": "440eea1e9d9202454a9806444933f58874fed7861f5c40b5a43722534118e88b"
+    },
+    {
+      "path": "shudu/sudoku_screenshot.py",
+      "sha256": "aed91a618d4bad1246b3eafcd0db337ced310653df633821060b51843fc63167"
+    },
+    {
+      "path": "shudu/sudoku_theme.py",
+      "sha256": "94cc5f0e70fdbd09c1dcf7063fbdaf3e2301bf8d921ecc31fc2079b9ed2c3d08"
+    },
+    {
+      "path": "shudu/sudoku_view.py",
+      "sha256": "8898e5b1a3cdb4a05f825314f5e16acad8af32f1ff939e764af10f417f86d699"
+    },
+    {
+      "path": "shudu/user_settings.py",
+      "sha256": "658f3d370f7f6d7cbe8fb26f0b76ae5bd02ce63cccb1c5ebe09338902c531ef5"
+    },
+    {
+      "path": "shudu_solver.py",
+      "sha256": "5dc4d4024896bf89345a6cc4ce8a0b7a336c7c930184701deb12f84b782bff63"
+    },
+    {
+      "path": "solver.py",
+      "sha256": "681df991d45d786cffcb89d5b4d8b3ba3e81dbff758e7cb4a2d1968d8edb0b48"
+    },
+    {
+      "path": "sudoku_gui.py",
+      "sha256": "60d55c5d3a4359f39ded622431b4dc3c66b5694d712e8599e77c99718fb14040"
+    },
+    {
+      "path": "techniques.py",
+      "sha256": "a02d9d0dc27c941c840ed2b37863b11ec94d5812f54b2f72b8d52a6b63723315"
+    },
+    {
+      "path": "tests/conftest.py",
+      "sha256": "5d910163584fbc226027ffb2df8cc20f51e525253cb4f14204447817fd6c18a7"
+    },
+    {
+      "path": "tests/test_architecture.py",
+      "sha256": "f13be834de9142c287adba6b4d42975a7da522c21d7051c5ceaa1fcd0815c9ae"
+    },
+    {
+      "path": "tests/test_auto_result.py",
+      "sha256": "6b328e401f17c34de32876870a694e78469fabfe7fea026e51875d30563703b8"
+    },
+    {
+      "path": "tests/test_auto_simple.py",
+      "sha256": "8a5638800a9198e0cc63361093c175b5e18975d154dfdeb2179d979ebb1dbc23"
+    },
+    {
+      "path": "tests/test_auto_technique_settings.py",
+      "sha256": "55ba51537f4803364e64211669af6f7f9575379094c14cd8c9993578caf8f7de"
+    },
+    {
+      "path": "tests/test_completion_view.py",
+      "sha256": "0c17575b4c82b8c01173cd2d2a9cde80bfef5d46c5be2005a825580987682052"
+    },
+    {
+      "path": "tests/test_logical_solver.py",
+      "sha256": "ca34bb186b3f4a511ca2abc0169c057f0b2ac31aade6267539488583581ba536"
+    },
+    {
+      "path": "tests/test_njit_core.py",
+      "sha256": "64b7d013f8246678188188ad3afe95a147d83ce79906376978d3ff8f023a2c39"
+    },
+    {
+      "path": "tests/test_s1_02_single.py",
+      "sha256": "08b1893873db301f8e385ab2228dd85c0e4ce36081ab12e8eb3fa81efa1a7a09"
+    },
+    {
+      "path": "tests/test_screenshot_import_menu.py",
+      "sha256": "9e80187dea45dc3bd8960c24bc7a593a8915c036633db060ef0fe13aea66632e"
+    },
+    {
+      "path": "tests/test_settings_menu.py",
+      "sha256": "71d3090c9ce46f2ed4a871397bf306992110c03263630bbd936a901397a551e7"
+    },
+    {
+      "path": "tests/test_shudu_solver.py",
+      "sha256": "d9a90b42ca85f9e99c263218dce19ad806914ff3a28e4413920247c2d828a9a9"
+    },
+    {
+      "path": "tests/test_sudoku_game.py",
+      "sha256": "e275ce658f208303f640aba644ee13f8065bc839754450d858d52f5c95c82884"
+    },
+    {
+      "path": "tests/test_sudoku_gui.py",
+      "sha256": "ddc6238112421b760e453229c0c704ef93b6c7a680a32eaef8838151851058c7"
+    },
+    {
+      "path": "tests/test_sudoku_highlight.py",
+      "sha256": "345a22dcc4e0321efdc54e719b4c79b1b37bccb7a6c0d7a5c939759a1a28e9cc"
+    },
+    {
+      "path": "tests/test_sudoku_hints.py",
+      "sha256": "80e576d9cb6c95d16c5de4531de84e4bcb90b6667f248fe2d4cb75069d249477"
+    },
+    {
+      "path": "tests/test_sudoku_rules.py",
+      "sha256": "e17286efb6fcb653483853c663c6887571a8b743b393bc3e27a651a6964f71b2"
+    },
+    {
+      "path": "tests/test_sudoku_screenshot.py",
+      "sha256": "c035e77561426c784a26ca753b9f197c86bf9b78189774f8d96c2ba341349e18"
+    },
+    {
+      "path": "tests/test_user_settings.py",
+      "sha256": "3e7c6c4dc5fcfd90084bdd6994c000694c74f4e831075eeb9a87a3ac517c5904"
+    }
+  ],
+  "metadata_estimates": {
+    "priority": "P1",
+    "points": [
+      3,
+      5,
+      2,
+      5
+    ],
+    "meaning": "登记维护估算，非工期承诺；业务范围沿已批准切片。"
+  }
+}

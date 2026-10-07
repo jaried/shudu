@@ -1,0 +1,49 @@
+{
+  "source": "HOST_exact_Git_readback",
+  "commit": "92dfb3366adbc1f3573c7cb4153b31a702eb6b97",
+  "paths": [
+    "docs/00_待办列表/Sprint待办列表/Sprint01.md",
+    "docs/01_sprint记录/sprint01/S1-05/S1-05_原始需求.md",
+    "docs/01_sprint记录/sprint01/S1-06/S1-06_原始需求.md",
+    "docs/01_sprint记录/sprint01/S1-07/S1-07_原始需求.md",
+    "docs/01_sprint记录/sprint01/S1-08/S1-08_原始需求.md"
+  ],
+  "issueIds": [
+    "S1-05",
+    "S1-06",
+    "S1-07",
+    "S1-08"
+  ],
+  "requestBinding": "6908321a-f7a1-4e66-b542-3d0d3aad1b5a",
+  "requirements": [
+    {
+      "issue_id": "S1-05",
+      "actual_git_path": "docs/01_sprint记录/sprint01/S1-05/S1-05_原始需求.md",
+      "version": "S1-05-requirement-v1"
+    },
+    {
+      "issue_id": "S1-06",
+      "actual_git_path": "docs/01_sprint记录/sprint01/S1-06/S1-06_原始需求.md",
+      "version": "S1-06-requirement-v1"
+    },
+    {
+      "issue_id": "S1-07",
+      "actual_git_path": "docs/01_sprint记录/sprint01/S1-07/S1-07_原始需求.md",
+      "version": "S1-07-requirement-v1"
+    },
+    {
+      "issue_id": "S1-08",
+      "actual_git_path": "docs/01_sprint记录/sprint01/S1-08/S1-08_原始需求.md",
+      "version": "S1-08-requirement-v1"
+    }
+  ],
+  "provider_result": {
+    "status": "blocked",
+    "operationIdentity": "issue-publication:6908321a-f7a1-4e66-b542-3d0d3aad1b5a:517b3d7756d4be0299cee06bc03bafc1a7b8e4825b48e5941697b661ea465673",
+    "error": {
+      "code": "ISSUE_REGISTER_MACHINE_JSON_INVALID",
+      "message": "non_json_value:$.error.details.failures[0].observedPublicationVersion"
+    }
+  },
+  "completed_at": "2026-10-07T11:23:11.477Z"
+}
