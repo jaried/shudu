@@ -1,0 +1,26 @@
+{
+  "repository_root": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.worktrees\\S1-06",
+  "branch": "issue/s1/s1-06",
+  "tested_oid": "7dac9234585ebb82f7980a9530970d82933e1108",
+  "cwd": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.worktrees\\S1-06",
+  "argv": [
+    ".\\.venv\\Scripts\\python.exe",
+    "-m",
+    "ruff",
+    "check",
+    "--no-cache",
+    "shudu/sudoku_screenshot.py",
+    "tests/test_screenshot_foreground.py",
+    "tests/test_screenshot_errors.py",
+    "tests/test_screenshot_import_menu.py",
+    "tests/test_auto_technique_settings.py"
+  ],
+  "started_at": "2026-10-07T12:24:35.383Z",
+  "completed_at": "2026-10-07T12:24:35.518Z",
+  "wall_seconds": 0.135,
+  "exit_code": 1,
+  "signal": null,
+  "error": null,
+  "stdout": "I001 [*] Import block is un-sorted or un-formatted\n --> tests\\test_screenshot_errors.py:3:1\n  |\n1 |   \"\"\"公开入口报告首错位置，并保留其他阶段的错误契约。\"\"\"\n2 |\n3 | / import numpy as np\n4 | | import pytest\n5 | |\n6 | | from shudu.sudoku_screenshot import load_screenshot_game\n7 | | from test_screenshot_foreground import board_image, unreadable_image, write_image\n  | |_________________________________________________________________________________^\nhelp: Organize imports\n  |\n4 | import pytest\n5 + from test_screenshot_foreground import board_image, unreadable_image, write_image\n6 |\n7 | from shudu.sudoku_screenshot import load_screenshot_game\n  - from test_screenshot_foreground import board_image, unreadable_image, write_image\n8 |\n  |\n\nI001 [*] Import block is un-sorted or un-formatted\n  --> tests\\test_screenshot_foreground.py:3:1\n   |\n 1 |   \"\"\"从公开截图入口验证背景、有效字形和真实原图。\"\"\"\n 2 |\n 3 | / import hashlib\n 4 | | import json\n 5 | | from pathlib import Path\n 6 | |\n 7 | | import cv2\n 8 | | import numpy as np\n 9 | | import pytest\n10 | |\n11 | | from shudu.sudoku_screenshot import load_screenshot_game\n12 | | from sudoku_gui import game_from_screenshot\n13 | | from test_sudoku_screenshot import _large_digit\n   | |_______________________________________________^\n14 |\n15 |   FIXTURES = Path(__file__).parent / \"fixtures\" / \"screenshots\"\n   |\nhelp: Organize imports\n   |\n9  | import pytest\n10 + from test_sudoku_screenshot import _large_digit\n11 |\n12 | from shudu.sudoku_screenshot import load_screenshot_game\n13 | from sudoku_gui import game_from_screenshot\n   - from test_sudoku_screenshot import _large_digit\n14 |\n   |\n\nFound 2 errors.\n[*] 2 fixable with the `--fix` option.\n",
+  "stderr": ""
+}

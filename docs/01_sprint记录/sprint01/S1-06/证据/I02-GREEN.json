@@ -1,0 +1,22 @@
+{
+  "repository_root": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.worktrees\\S1-06",
+  "branch": "issue/s1/s1-06",
+  "tested_oid": "7dac9234585ebb82f7980a9530970d82933e1108",
+  "cwd": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.worktrees\\S1-06",
+  "argv": [
+    ".\\.venv\\Scripts\\python.exe",
+    "-B",
+    "-m",
+    "pytest",
+    "-ra",
+    "tests/test_screenshot_errors.py"
+  ],
+  "started_at": "2026-10-07T12:23:08.641Z",
+  "completed_at": "2026-10-07T12:23:10.210Z",
+  "wall_seconds": 1.569,
+  "exit_code": 0,
+  "signal": null,
+  "error": null,
+  "stdout": "============================= test session starts =============================\r\nplatform win32 -- Python 3.12.13, pytest-9.1.1, pluggy-1.6.0\r\nrootdir: D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.worktrees\\S1-06\r\nconfigfile: pyproject.toml\r\ncollected 5 items\r\n\r\ntests\\test_screenshot_errors.py .....                                    [100%]\r\n\r\n============================== 5 passed in 0.15s ==============================\r\n",
+  "stderr": ""
+}

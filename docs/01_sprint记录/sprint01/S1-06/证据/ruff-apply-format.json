@@ -1,0 +1,27 @@
+{
+  "repository_root": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.worktrees\\S1-06",
+  "branch": "issue/s1/s1-06",
+  "tested_oid": "7dac9234585ebb82f7980a9530970d82933e1108",
+  "cwd": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.worktrees\\S1-06",
+  "argv": [
+    ".\\.venv\\Scripts\\python.exe",
+    "-m",
+    "ruff",
+    "format",
+    "--line-length",
+    "160",
+    "shudu/sudoku_screenshot.py",
+    "tests/test_screenshot_foreground.py",
+    "tests/test_screenshot_errors.py",
+    "tests/test_screenshot_import_menu.py",
+    "tests/test_auto_technique_settings.py"
+  ],
+  "started_at": "2026-10-07T12:25:21.237Z",
+  "completed_at": "2026-10-07T12:25:21.329Z",
+  "wall_seconds": 0.092,
+  "exit_code": 0,
+  "signal": null,
+  "error": null,
+  "stdout": "4 files reformatted, 1 file left unchanged\n",
+  "stderr": ""
+}

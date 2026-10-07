@@ -7,9 +7,11 @@ Linux 无显示环境时跳过本文件中的 Tk 交互测试。
 import os
 import sys
 import tkinter as tk
+from copy import deepcopy
 
 import pytest
 from sudoku_game import Game
+from test_screenshot_foreground import FIXTURES, expected_image, unreadable_image
 
 from sudoku_gui import SudokuWindow
 
@@ -33,11 +35,7 @@ def test_levels_menu_contains_screenshot_import(app, monkeypatch):
     monkeypatch.setattr(app, "_popup", lambda menu: captured.setdefault("menu", menu))
     app.show_levels()
     menu = captured["menu"]
-    labels = [
-        menu.entrycget(index, "label")
-        for index in range(menu.index("end") + 1)
-        if menu.type(index) != "separator"
-    ]
+    labels = [menu.entrycget(index, "label") for index in range(menu.index("end") + 1) if menu.type(index) != "separator"]
     assert "从截图导入…" in labels
 
 
@@ -91,6 +89,43 @@ def test_screenshot_import_failure_keeps_current_game(app, monkeypatch):
     assert errors == [("截图导入失败", "识别失败")]
 
 
+def test_real_wechat_import_installs_complete_game_and_preserves_preferences(app):
+    app.game.set_auto_technique("hidden_triple", True)
+    app.game.set_auto_solve(False)
+    app.game.auto_clean = False
+    selected = set(app.game.auto_techniques)
+    original = app.game
+    for _ in range(2):
+        app._load_screenshot(str(FIXTURES / "level120-wechat.jpg"))
+        app.root.update()
+        assert app.game is not original and app.view.game is app.game
+        assert app.game.puzzle.rows == tuple(expected_image()["rows"])
+        assert app.game.notes == {} and not app.game.notes_mode
+        assert not app.game.auto_solve and not app.game.auto_clean
+        assert app.game.auto_techniques == selected
+        original = app.game
+
+
+def test_real_unreadable_cell_keeps_entire_current_game(app, tmp_path, monkeypatch):
+    original, original_view = app.game, app.view
+    cell = next((r, c) for r in range(9) for c in range(9) if not original.given((r, c)))
+    original.notes = {cell: {1, 2}}
+    original.set_auto_solve(False)
+    original.auto_clean = False
+    before = deepcopy(original.__dict__)
+    errors, installs = [], []
+    monkeypatch.setattr("sudoku_gui.messagebox.showerror", lambda title, text, **kwargs: errors.append((title, text)))
+    monkeypatch.setattr(app, "_install_game", lambda game: installs.append(game))
+    app._load_screenshot(str(unreadable_image(tmp_path / "错误格.png")))
+    app.root.update()
+    assert app.game is original and app.view is original_view and app.view.game is original
+    assert original.__dict__ == before
+    assert installs == []
+    assert len(errors) == 1 and errors[0][0] == "截图导入失败"
+    assert errors[0][1].startswith("第3行第5列：正式大数字识别置信度不足：")
+    assert errors[0][1].endswith("。请使用清晰截图重试。")
+
+
 def _fake_loader(seen):
     def load(path, auto_techniques=None, auto_solve=True):
         techniques = frozenset(auto_techniques or ())
@@ -100,6 +135,7 @@ def _fake_loader(seen):
         game.notes_mode = True
         game.message = path
         return game
+
     return load
 
 

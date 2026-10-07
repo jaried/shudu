@@ -1,0 +1,22 @@
+{
+  "repository_root": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.worktrees\\S1-06",
+  "branch": "issue/s1/s1-06",
+  "tested_oid": "7dac9234585ebb82f7980a9530970d82933e1108",
+  "cwd": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.worktrees\\S1-06",
+  "argv": [
+    ".\\.venv\\Scripts\\python.exe",
+    "-B",
+    "-m",
+    "pytest",
+    "-ra",
+    "tests/test_screenshot_foreground.py::test_original_wechat_image_restores_every_cell_and_game"
+  ],
+  "started_at": "2026-10-07T12:21:50.135Z",
+  "completed_at": "2026-10-07T12:21:51.710Z",
+  "wall_seconds": 1.575,
+  "exit_code": 1,
+  "signal": null,
+  "error": null,
+  "stdout": "============================= test session starts =============================\r\nplatform win32 -- Python 3.12.13, pytest-9.1.1, pluggy-1.6.0\r\nrootdir: D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.worktrees\\S1-06\r\nconfigfile: pyproject.toml\r\ncollected 1 item\r\n\r\ntests\\test_screenshot_foreground.py F                                    [100%]\r\n\r\n================================== FAILURES ===================================\r\n___________ test_original_wechat_image_restores_every_cell_and_game ___________\r\n\r\n    def test_original_wechat_image_restores_every_cell_and_game():\r\n        path = FIXTURES / \"level120-wechat.jpg\"\r\n        expected = expected_image()\r\n        assert hashlib.sha256(path.read_bytes()).hexdigest() == expected[\"sha256\"]\r\n>       imported = load_screenshot_game(path)\r\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n\r\ntests\\test_screenshot_foreground.py:50: \r\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\r\nshudu\\sudoku_screenshot.py:48: in load_screenshot_game\r\n    rows, notes = _read_cells(board)\r\n                  ^^^^^^^^^^^^^^^^^^\r\nshudu\\sudoku_screenshot.py:121: in _read_cells\r\n    digit, cell_notes = _read_cell(cell)\r\n                        ^^^^^^^^^^^^^^^^\r\nshudu\\sudoku_screenshot.py:143: in _read_cell\r\n    digit = _recognize_digit(glyph)\r\n            ^^^^^^^^^^^^^^^^^^^^^^^\r\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\r\n\r\nglyph = array([[255, 255, 255, ..., 255, 255, 255],\r\n       [255, 255, 255, ...,   0,   0,   0],\r\n       [255, 255, 255, ...,   ...,\r\n       [255,   0,   0, ...,   0,   0,   0],\r\n       [255,   0,   0, ...,   0,   0,   0]], shape=(86, 86), dtype=uint8)\r\n\r\n    def _recognize_digit(glyph: np.ndarray) -> int:\r\n        normalized = _normalize_glyph(glyph)\r\n        best_digit = 0\r\n        best_score = -1.0\r\n        for digit, template in _digit_templates():\r\n            score = _dice_score(normalized, template)\r\n            if score > best_score:\r\n                best_digit = digit\r\n                best_score = score\r\n        if best_score < OCR_MIN_SCORE:\r\n>           raise ValueError(f\"正式大数字识别置信度不足：{best_score:.2f}\")\r\nE           ValueError: 正式大数字识别置信度不足：0.12\r\n\r\nshudu\\sudoku_screenshot.py:226: ValueError\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_screenshot_foreground.py::test_original_wechat_image_restores_every_cell_and_game\r\n============================== 1 failed in 0.16s ==============================\r\n",
+  "stderr": ""
+}

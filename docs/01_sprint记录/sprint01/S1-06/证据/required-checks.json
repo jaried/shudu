@@ -1,0 +1,26 @@
+{
+  "repository_root": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.worktrees\\S1-06",
+  "branch": "issue/s1/s1-06",
+  "tested_oid": "7dac9234585ebb82f7980a9530970d82933e1108",
+  "cwd": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.worktrees\\S1-06",
+  "argv": [
+    ".\\.venv\\Scripts\\python.exe",
+    "-B",
+    "-m",
+    "pytest",
+    "-ra",
+    "tests/test_sudoku_screenshot.py",
+    "tests/test_screenshot_import_menu.py",
+    "tests/test_architecture.py",
+    "tests/test_screenshot_foreground.py",
+    "tests/test_screenshot_errors.py"
+  ],
+  "started_at": "2026-10-07T12:23:47.743Z",
+  "completed_at": "2026-10-07T12:23:55.897Z",
+  "wall_seconds": 8.154,
+  "exit_code": 0,
+  "signal": null,
+  "error": null,
+  "stdout": "============================= test session starts =============================\r\nplatform win32 -- Python 3.12.13, pytest-9.1.1, pluggy-1.6.0\r\nrootdir: D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.worktrees\\S1-06\r\nconfigfile: pyproject.toml\r\ncollected 53 items\r\n\r\ntests\\test_sudoku_screenshot.py ...                                      [  5%]\r\ntests\\test_screenshot_import_menu.py .......                             [ 18%]\r\ntests\\test_architecture.py .......................                       [ 62%]\r\ntests\\test_screenshot_foreground.py ...............                      [ 90%]\r\ntests\\test_screenshot_errors.py .....                                    [100%]\r\n\r\n============================= 53 passed in 6.61s ==============================\r\n",
+  "stderr": ""
+}

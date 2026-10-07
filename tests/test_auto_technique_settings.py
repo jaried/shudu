@@ -177,12 +177,7 @@ def test_settings_menu_defaults_match_previous_simple_algorithms(monkeypatch):
         window.show_settings()
         root.update()
         popup = window._settings_popup
-        checked = {
-            name
-            for name in EXPECTED_NAMES
-            if popup.nametowidget(f"submenu.auto_technique_{name}").cget("image")
-            == (str(popup._check_icons[True]),)
-        }
+        checked = {name for name in EXPECTED_NAMES if popup.nametowidget(f"submenu.auto_technique_{name}").cget("image") == (str(popup._check_icons[True]),)}
         assert set(popup._checked) >= {"auto_solve", "auto_clean"}
         assert checked == EXPECTED_DEFAULTS
     finally:
@@ -382,7 +377,8 @@ def test_algorithm_popup_closes_on_outside_click_and_can_reopen():
         root.update()
         popup.event_generate(
             "<ButtonPress-1>",
-            x=popup.winfo_width() + 10, y=10,
+            x=popup.winfo_width() + 10,
+            y=10,
             rootx=popup.winfo_rootx() + popup.winfo_width() + 10,
             rooty=popup.winfo_rooty() + 10,
         )
@@ -407,6 +403,8 @@ def test_settings_popup_preserves_master_toggle_and_restart_command(tmp_path):
     root = tk.Tk()
     window = SudokuWindow(root, settings_store=store)
     try:
+        root.update()
+        root.focus_force()
         root.update()
         window.show_settings()
         root.update()

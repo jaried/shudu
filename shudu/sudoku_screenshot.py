@@ -26,6 +26,7 @@ NOTE_MIN_HEIGHT_RATIO = 0.07
 NOTE_MAX_HEIGHT_RATIO = 0.30
 NOTE_MIN_AREA_RATIO = 0.0008
 OCR_MIN_SCORE = 0.50
+EDGE_FOREGROUND_MIN_CONTRAST = 8
 
 
 @dataclass(frozen=True)
@@ -118,7 +119,10 @@ def _read_cells(board: np.ndarray) -> tuple[tuple[str, ...], dict[Cell, frozense
         chars: list[str] = []
         for col in range(9):
             cell = _cell_image(board, row, col)
-            digit, cell_notes = _read_cell(cell)
+            try:
+                digit, cell_notes = _read_cell(cell)
+            except ValueError as error:
+                raise ValueError(f"第{row + 1}行第{col + 1}列：{error}。请使用清晰截图重试。") from error
             chars.append(str(digit) if digit else ".")
             if digit == 0 and cell_notes:
                 notes[(row, col)] = frozenset(cell_notes)
@@ -150,18 +154,14 @@ def _cell_binary(cell: np.ndarray) -> np.ndarray:
     gray = cv2.cvtColor(cell, cv2.COLOR_BGR2GRAY)
     margin = max(6, CELL_PIXELS // 14)
     inner = gray[margin:-margin, margin:-margin]
-    _, dark_foreground = cv2.threshold(inner, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
-    _, light_foreground = cv2.threshold(inner, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-    inner_binary = _sparser_foreground(dark_foreground, light_foreground)
+    background = np.median(inner)
+    relative = np.abs(inner.astype(np.int16) - background).astype(np.uint8)
+    threshold, inner_binary = cv2.threshold(relative, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    touches_edge = np.any(inner_binary[0]) or np.any(inner_binary[-1]) or np.any(inner_binary[:, 0]) or np.any(inner_binary[:, -1])
+    if touches_edge:
+        _, inner_binary = cv2.threshold(relative, max(threshold, EDGE_FOREGROUND_MIN_CONTRAST), 255, cv2.THRESH_BINARY)
     result = np.zeros_like(gray)
     result[margin:-margin, margin:-margin] = inner_binary
-    return result
-
-
-def _sparser_foreground(first: np.ndarray, second: np.ndarray) -> np.ndarray:
-    first_count = cv2.countNonZero(first)
-    second_count = cv2.countNonZero(second)
-    result = first if first_count <= second_count else second
     return result
 
 

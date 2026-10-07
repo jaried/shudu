@@ -1,0 +1,22 @@
+{
+  "repository_root": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.worktrees\\S1-06",
+  "branch": "issue/s1/s1-06",
+  "tested_oid": "7dac9234585ebb82f7980a9530970d82933e1108",
+  "cwd": "D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.worktrees\\S1-06",
+  "argv": [
+    ".\\.venv\\Scripts\\python.exe",
+    "-B",
+    "-m",
+    "pytest",
+    "-ra",
+    "tests/test_screenshot_errors.py::test_first_unreadable_cell_reports_one_based_location_and_original_cause"
+  ],
+  "started_at": "2026-10-07T12:22:56.132Z",
+  "completed_at": "2026-10-07T12:22:57.826Z",
+  "wall_seconds": 1.694,
+  "exit_code": 1,
+  "signal": null,
+  "error": null,
+  "stdout": "============================= test session starts =============================\r\nplatform win32 -- Python 3.12.13, pytest-9.1.1, pluggy-1.6.0\r\nrootdir: D:\\Tony\\Documents\\invest2026\\projects\\shudu\\.worktrees\\S1-06\r\nconfigfile: pyproject.toml\r\ncollected 1 item\r\n\r\ntests\\test_screenshot_errors.py F                                        [100%]\r\n\r\n================================== FAILURES ===================================\r\n__ test_first_unreadable_cell_reports_one_based_location_and_original_cause ___\r\n\r\ntmp_path = WindowsPath('D:/temp/pytest-of-Tony/pytest-604/test_first_unreadable_cell_rep0')\r\nmonkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000019A15843B00>\r\n\r\n    def test_first_unreadable_cell_reports_one_based_location_and_original_cause(tmp_path, monkeypatch):\r\n        import shudu.sudoku_screenshot as screenshot\r\n    \r\n        path = unreadable_image(tmp_path / \"无法识别.png\")\r\n        cell = screenshot._read_cell\r\n        seen = []\r\n    \r\n        def read_cell(image):\r\n            seen.append(image)\r\n            return cell(image)\r\n    \r\n        monkeypatch.setattr(screenshot, \"_read_cell\", read_cell)\r\n>       with pytest.raises(ValueError, match=r\"^第3行第5列：正式大数字识别置信度不足：0\\.\\d+。请使用清晰截图重试。$\") as raised:\r\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nE       AssertionError: Regex pattern did not match.\r\nE         Expected regex: '^第3行第5列：正式大数字识别置信度不足：0\\\\.\\\\d+。请使用清晰截图重试。$'\r\nE         Actual message: '正式大数字识别置信度不足：0.35'\r\n\r\ntests\\test_screenshot_errors.py:22: AssertionError\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_screenshot_errors.py::test_first_unreadable_cell_reports_one_based_location_and_original_cause\r\n============================== 1 failed in 0.16s ==============================\r\n",
+  "stderr": ""
+}
