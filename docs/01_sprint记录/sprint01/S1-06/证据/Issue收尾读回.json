@@ -1,0 +1,29 @@
+{
+  "repository_root": "D:\\Tony\\Documents\\invest2026\\projects\\shudu",
+  "issue_id": "S1-06",
+  "logical_target": "D:\\Tony\\Documents\\invest2026\\projects\\shudu/.worktrees/S1-06",
+  "worktree_exists": false,
+  "branch_exists": false,
+  "post_issue_closeout": {
+    "status": "success",
+    "nextAction": "done",
+    "issueId": "S1-06",
+    "canonicalIssueBranch": "issue/s1/s1-06",
+    "tipInventory": [
+      {
+        "branch": "issue/s1/s1-06",
+        "kind": "issue",
+        "canonical": true,
+        "disposition": "accepted",
+        "tipOid": "80b9522693ea596c06e4511c20f7029ad1a10032"
+      }
+    ],
+    "cleanupTargets": {
+      "branches": [],
+      "worktrees": []
+    }
+  },
+  "remaining_worktrees": "worktree D:/Tony/Documents/invest2026/projects/shudu\nHEAD 0da6ec41346309b963b1ce107861dda56da1014f\nbranch refs/heads/Sprint01",
+  "sprint_head": "0da6ec41346309b963b1ce107861dda56da1014f",
+  "status": ""
+}
