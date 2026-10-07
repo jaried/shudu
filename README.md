@@ -170,6 +170,10 @@ sudoku_screenshot → Puzzle + notes → GUI/Game
 
 详细结构审查见 [`docs/codebase-design-review.md`](docs/codebase-design-review.md)。架构决策见 [`docs/02_架构决策记录/`](docs/02_架构决策记录/)。
 
+## 预研
+
+[iOS 数独双向同步预研](docs/05_预研/iOS数独双向同步/2026-10-07/README.md)记录免费设备接入、现有 Shudu 能力、手机操作与双向同步的决策路径和待验证事项。
+
 ## 测试
 
 ```bash

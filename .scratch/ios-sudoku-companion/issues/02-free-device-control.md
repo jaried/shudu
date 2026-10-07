@@ -20,6 +20,6 @@ Blocked by:
 
 ## Answer
 
-研究已完成，见 [免费设备接入研究](../research/free-device-control.md)。本轮新增明确 Windows 候选 SideTap，固定 commit `bc43e6f56b199a28c44ca6f696fba42e5f2194a4`：免费流程从 Sideloadly 本机证书/私钥和手机 profile 取得资产，通过 go-ios 深签 WDA；作者记录 iOS26.6、Sideloadly0.60 的安装失败、重签恢复和 WDA 响应。许可证、真实调用源码、官方 WDA 发布产物与作者报告案例已分别核验。
+研究已完成，见 [免费设备接入研究](../../../docs/05_预研/iOS数独双向同步/2026-10-07/免费设备接入研究.md)。本轮新增明确 Windows 候选 SideTap，固定 commit `bc43e6f56b199a28c44ca6f696fba42e5f2194a4`：免费流程从 Sideloadly 本机证书/私钥和手机 profile 取得资产，通过 go-ios 深签 WDA；作者记录 iOS26.6、Sideloadly0.60 的安装失败、重签恢复和 WDA 响应。许可证、真实调用源码、官方 WDA 发布产物与作者报告案例已分别核验。
 
 当前官方 WDA 真机 ZIP 与 SideTap 文档预期 IPA 存在准备缺口；新版 Sideloadly、当前手机、目标数独 App、Ubuntu免费首次签名全链均未验证。Status resolved 表示研究问题已回答和证据缺口已定位；普通 Apple 账户侧载仍待用户决定，设备接入和双向同步尚未实施或验收。保留软件免费条件，后续按所选候选执行设备技术验证。

@@ -18,6 +18,7 @@ Created: 2026-10-07
 - 每次继续先读本地图、开放票状态及当前 Git/ADR。研究调用 engineering:research、anysearch（沿用当前系统代理）、evidence-calibrated-reasoning；人工决策调用 productivity:grilling、engineering:domain-modeling、engineering:codebase-design。实施规格形成后再进入对应实施流程。
 - 电脑求解和界面控制是不同能力。现有截图与 solver 的成功不能作为手机控制或双向同步已成功的证据。
 - 研究票答案和细节仅保存在各票的 Answer 与其资产中；本地图保留摘要索引。
+- 研究正文见[项目预研资料入口](../../docs/05_预研/iOS数独双向同步/2026-10-07/README.md)，日期快照与当前工作票分别保存。
 
 ## Decisions so far
 
