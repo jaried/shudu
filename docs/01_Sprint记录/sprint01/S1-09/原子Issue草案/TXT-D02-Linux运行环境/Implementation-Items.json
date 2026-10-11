@@ -1,0 +1,45 @@
+{
+  "stage": "approval_draft",
+  "draft_issue": "TXT-D02",
+  "dependency_level": "issue",
+  "implementation_items": [
+    {
+      "objective": "在用户现有Ubuntu26.04提供锁保持的系统CPython3.14/Xft Tk项目环境资格。",
+      "owner_surface": "宿主指定系统包和项目.venv-linux；README Linux启动/测试段。",
+      "allowed_scope": "Q1最终推荐分支的系统python3.14-tk、Noto/DejaVu与uv环境；环境覆盖/替换按真实目标、范围、保全和专门授权执行；不改uv.lock或产品计算代码。",
+      "completion_evidence": "实际发行版/架构/解释器/Tk/Xft、锁定包版本和系统字体可见性读回，原应用正常启动；README仅写真实通过的组合。",
+      "required_behavior_checks": [
+        "常规GIL CPython3.14，Tk8.6.17，Ubuntu26.04 x86_64及GNOME Wayland/XWayland真实读回。",
+        "uv sync --locked --python /usr/bin/python3.14 --no-managed-python --no-python-downloads；四个包版本与当前锁一致。",
+        "原环境替换前保全及授权边界成立，未影响其他环境或并行工作。",
+        "系统字体对实际Tk可见；生产启动新增安装/网络/字体文件扫描/子进程为0。"
+      ],
+      "item_dependencies": []
+    },
+    {
+      "objective": "通过独立同进程Tk资格工具输出真实能力结果并正确处理失败。",
+      "owner_surface": "scripts/check_tk_runtime.py与tests/test_tk_runtime_check.py。",
+      "allowed_scope": "仅独立CLI及其测试；公开结果含实际版本、窗口系统、fontsystem、family、固定字符实际查询/测量和tk scaling；产品不导入。",
+      "completion_evidence": "CLI在实际项目解释器运行，Linux xft通过；缺Tk/非xft等非零退出与真实诊断通过；所有创建root均销毁；ruff通过。",
+      "required_behavior_checks": [
+        "tk::pkgconfig get fontsystem在同一Tk进程读回xft，无系统库扫描或探测子进程。",
+        "成功/缺Tk/非xft/不适用平台与清理路径用行为测试核验。",
+        "测量宽度仅作为定位，不能替代真实无缺字判断。"
+      ],
+      "item_dependencies": []
+    },
+    {
+      "objective": "验证系统解释器变化下原数值/OCR/GUI完整行为并形成独立可验收结果。",
+      "owner_surface": "实际Linux全部原pytest及资格脚本测试；本票测试/结果总结。",
+      "allowed_scope": "Linux required_full；真实桌面正常/放大页面；原数据、断言、截止条件保持；不接管字体或Windows生产函数。",
+      "completion_evidence": "实际版本python -B -m pytest -ra完整通过、Numba nopython与原OCR结果通过；Xvfb自动与GNOME实际画面分别记结果；B1/B2/B3/review/Delivery成立。",
+      "required_behavior_checks": [
+        "原solver/njit数值与锁定四包导入均通过，原Puzzle/notes与截图失败保全语义保持。",
+        "GUI/Hint/菜单bounds/偏好/完成/架构适用节点真实执行，相关skip不是通过。",
+        "失败保留真实值，批准范围内修复后重新执行规定完整门禁；路线/锁变化返回决策。",
+        "Git只保存结果总结，原始日志/截图保留于授权本机目录并按存续范围清理。"
+      ],
+      "item_dependencies": []
+    }
+  ]
+}

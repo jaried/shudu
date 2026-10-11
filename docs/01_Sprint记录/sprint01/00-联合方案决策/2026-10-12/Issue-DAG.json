@@ -1,0 +1,20 @@
+{
+  "stage": "approval_draft",
+  "source_issue": "S1-09",
+  "branch": "recommended_pending_Q1_Q2_Q3",
+  "dependency_level": "issue",
+  "nodes": [
+    {"draft_issue": "TXT-D01", "title": "字体角色与缺失提示", "blocked_by": [], "canonical_action_after_approval": "register_new"},
+    {"draft_issue": "TXT-D02", "title": "Linux系统运行环境资格", "blocked_by": [], "canonical_action_after_approval": "register_new"},
+    {"draft_issue": "TXT-D03", "title": "Windows启动显示比例", "blocked_by": [], "canonical_action_after_approval": "register_new"},
+    {"draft_issue": "TXT-D04", "title": "跨平台文字回归验收", "blocked_by": ["TXT-D01", "TXT-D02", "TXT-D03"], "canonical_action_after_approval": "redecide_S1-09"}
+  ],
+  "parallel_groups": [["TXT-D01", "TXT-D02", "TXT-D03"], ["TXT-D04"]],
+  "critical_path_candidates": [["TXT-D01", "TXT-D04"], ["TXT-D02", "TXT-D04"], ["TXT-D03", "TXT-D04"]],
+  "critical_path_statement": "无实际工时估计；结构深度2，实际最长路径为前三票交付耗时最大者加TXT-D04。",
+  "edge_reasons": [
+    {"from": "TXT-D01", "to": "TXT-D04", "reason": "总验收需要已集成的字体角色、合法默认字体和缺失展示行为"},
+    {"from": "TXT-D02", "to": "TXT-D04", "reason": "总验收需要合格的实际Linux项目解释器与Xft Tk环境"},
+    {"from": "TXT-D03", "to": "TXT-D04", "reason": "总验收需要已集成的实际Windows启动显示上下文和比例结果"}
+  ]
+}

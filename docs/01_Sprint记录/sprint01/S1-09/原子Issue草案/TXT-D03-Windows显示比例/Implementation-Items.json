@@ -1,0 +1,33 @@
+{
+  "stage": "approval_draft",
+  "draft_issue": "TXT-D03",
+  "dependency_level": "issue",
+  "implementation_items": [
+    {
+      "objective": "使GUI在首次Tk前一次性建立批准的Windows显示上下文，结果保留真实状态。",
+      "owner_surface": "shudu/window_display公开prepare及DisplayState；GUI.main的Tk前调用和诊断。",
+      "allowed_scope": "唯一入口与_prepare.py/_windows.py，ctypes标准库；GUI.main所需调用；tests/test_window_display.py。其他Window字体函数归TXT-D01。",
+      "completion_evidence": "独立进程prepare→Tk读回system-aware；重复初始化最多1次；ready/inherited/failed/not_applicable分支及真实诊断通过。",
+      "required_behavior_checks": [
+        "初始化早于Tk/DPI查询；ctypes签名/错误读取保持，结果不可变。",
+        "已存在system-aware为ready；其他上下文inherited；设置失败failed保留首次错误；不重设、不切线程、不循环重试。",
+        "非Windows零Win32调用；其他CLI/solver/OCR/导入零prepare调用。",
+        "继承/失败保留原启动行为并一次诊断，资格按实际上下文，缓存不得掩盖错误。"
+      ],
+      "item_dependencies": []
+    },
+    {
+      "objective": "在真实Windows项目进程验证四个启动显示比例和原布局/输入/菜单行为。",
+      "owner_surface": "本票Windows高DPI场景及test_window_display和原GUI/Menu/设置/截图/完成/架构affected。",
+      "allowed_scope": "Q2推荐system-aware范围：100/125/150/200%、原窗口缩放及同DPI显示器；OS测试变更/恢复限于对应授权对象；不实现动态跨DPI。",
+      "completion_evidence": "四个比例项目真实重启、DPI/scaling/尺寸/画面/点击结果齐全；required affected tests及ruff、B1/B2/B3/review/Delivery通过。",
+      "required_behavior_checks": [
+        "正常/放大/最大化、Hint Text、菜单工作区/滚动、鼠标命中、截图错误弹窗和完成页可用。",
+        "原View命中、Hint重建/只读、设置和完成测试保留；LinuxXlib模拟不冒充Windows证据。",
+        "同DPI跨屏有设备真实执行；无设备记录事实，动态跨DPI范围由最终Q2冻结。",
+        "真实失败在批准范围修复并复测；不临场启用PMv2或改Tk；结果只记录总结不提交原图/日志。"
+      ],
+      "item_dependencies": []
+    }
+  ]
+}
