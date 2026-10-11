@@ -11,6 +11,15 @@ uv run python sudoku_gui.py
 
 Windows 也可以运行 `run_gui.bat`。项目要求 Python 3.12 或更高版本，GUI 环境需要 `tkinter`。
 
+Linux 使用独立的 `.venv-linux`，当前验证版本为 Python 3.12.15：
+
+```bash
+UV_PROJECT_ENVIRONMENT=.venv-linux uv sync --locked --python 3.12.15
+.venv-linux/bin/python sudoku_gui.py
+```
+
+Linux 设置菜单通过 X11 和 XRandR 查询鼠标所在显示器的工作区，需要系统提供 `libX11.so.6` 和 `libXrandr.so.2`。
+
 可以直接把游戏截图作为启动输入：
 
 ```bash
@@ -40,6 +49,8 @@ GUI 不接触 OpenCV 阈值、模板或单格识别细节。
 设置 → **自动解决算法** 中，每种算法可以独立勾选：
 
 鼠标移到“自动解决算法”即展开子菜单，启用项以“✓”标记。勾选或取消算法后，设置菜单和算法子菜单保持展开，可以继续选择；每次选择立即保存。按 `Esc` 或点击菜单外部关闭。
+
+高 DPI 下，菜单保持字号并限制在当前显示器工作区内；内容超出时显示横向、纵向滚动条。Linux 可用滚轮纵向滚动，按住 `Shift` 滚轮横向滚动；键盘焦点会自动滚入可见区域。
 
 | 算法 | 默认 |
 | --- | --- |
@@ -188,3 +199,5 @@ xvfb-run -a -s "-screen 0 1400x1200x24" uv run python -m pytest -q
 ```
 
 完整回归包含架构依赖、Numba nopython、GUI、截图导入和提示行为门禁。
+
+Linux 独立环境使用 `.venv-linux/bin/python -m pytest -q`；使用虚拟显示时运行 `xvfb-run -a -s "-screen 0 1400x1200x24" .venv-linux/bin/python -m pytest -q`。

@@ -25,7 +25,11 @@ def open_settings(
     font: tuple[str, int] = ("TkDefaultFont", 11),
 ) -> SettingsPopup:
     popup = SettingsPopup(root, state, on_setting, on_command, on_close, font=font)
-    popup.post(*pointer)
+    try:
+        popup.post(*pointer)
+    except Exception:
+        popup.close()
+        raise
     return popup
 
 

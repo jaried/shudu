@@ -43,22 +43,53 @@ class SettingsPopup(tk.Toplevel):
         }
         self._submenu: ttk.Frame | None = None
         self._submenu_row: ttk.Button | None = None
+        self._submenu_visible = False
+        self._bounds: tuple[int, int, int, int] | None = None
         self._opens_left = False
-        self._check_icons = [tk.PhotoImage(master=self, width=16, height=16) for _ in range(2)]
-        foreground = "#" + "".join(f"{channel // 257:02x}" for channel in self.winfo_rgb("#000000"))
+        self._check_icons = [
+            tk.PhotoImage(master=self, width=16, height=16) for _ in range(2)
+        ]
+        foreground = "#" + "".join(
+            f"{channel // 257:02x}" for channel in self.winfo_rgb("#000000")
+        )
         for offset in range(4):
-            self._check_icons[1].put(foreground, to=(2 + offset, 7 + offset, 4 + offset, 9 + offset))
+            self._check_icons[1].put(
+                foreground, to=(2 + offset, 7 + offset, 4 + offset, 9 + offset)
+            )
         for offset in range(8):
-            self._check_icons[1].put(foreground, to=(5 + offset, 10 - offset, 7 + offset, 12 - offset))
-        ttk.Style(self).configure("Settings.Toolbutton", font=font, padding=(6, 3), anchor=tk.W)
+            self._check_icons[1].put(
+                foreground, to=(5 + offset, 10 - offset, 7 + offset, 12 - offset)
+            )
+        ttk.Style(self).configure(
+            "Settings.Toolbutton", font=font, padding=(6, 3), anchor=tk.W
+        )
+        self._viewport = tk.Canvas(self, highlightthickness=0, borderwidth=0)
+        self._viewport.grid(row=0, column=0, sticky=tk.NSEW)
+        self.rowconfigure(0, weight=1)
+        self.columnconfigure(0, weight=1)
         self._menu = ttk.Frame(self, name="menu")
-        self._menu.grid(row=0, column=0, sticky=tk.NW)
+        self._menu_window = self._viewport.create_window(
+            0, 0, window=self._menu, anchor=tk.NW
+        )
         self._build_settings(self._menu, state)
+        self._horizontal = ttk.Scrollbar(
+            self, orient=tk.HORIZONTAL, command=self._viewport.xview
+        )
+        self._vertical = ttk.Scrollbar(
+            self, orient=tk.VERTICAL, command=self._viewport.yview
+        )
+        self._viewport.configure(
+            xscrollcommand=self._horizontal.set, yscrollcommand=self._vertical.set
+        )
         self.bind("<Escape>", lambda event: self.close())
         self.bind("<ButtonPress-1>", self._outside_click)
         self.bind("<FocusOut>", self._focus_out)
+        self.bind("<Button-4>", lambda event: self._scroll(event, -3))
+        self.bind("<Button-5>", lambda event: self._scroll(event, 3))
 
-    def _button(self, frame: ttk.Frame, name: str, text: str, command: Callable[[], None]) -> ttk.Button:
+    def _button(
+        self, frame: ttk.Frame, name: str, text: str, command: Callable[[], None]
+    ) -> ttk.Button:
         entry = ttk.Button(
             frame,
             name=name,
@@ -70,16 +101,28 @@ class SettingsPopup(tk.Toplevel):
         )
         entry.bind("<Return>", self._keyboard_invoke)
         entry.bind("<ButtonRelease-1>", self._button_release)
+        entry.bind("<FocusIn>", self._reveal_entry)
         entry.pack(fill=tk.X)
         return entry
 
     def _build_settings(self, frame: ttk.Frame, state: SettingsMenuState) -> None:
-        solve = self._button(frame, "auto_solve", "自动求解", lambda: self._toggle("auto_solve"))
+        solve = self._button(
+            frame, "auto_solve", "自动求解", lambda: self._toggle("auto_solve")
+        )
         solve.configure(image=self._check_icons[int(state.auto_solve)])
         solve.bind("<Enter>", lambda event: self._hide_submenu())
 
         self._submenu = ttk.Frame(self, name="submenu")
-        self._submenu_row = self._button(frame, "auto_technique", "自动解决算法  ▶", self._show_submenu)
+        self._submenu_window = self._viewport.create_window(
+            0,
+            0,
+            window=self._submenu,
+            anchor=tk.NW,
+            state=tk.HIDDEN,
+        )
+        self._submenu_row = self._button(
+            frame, "auto_technique", "自动解决算法  ▶", self._show_submenu
+        )
         self._submenu_row.bind("<Enter>", lambda event: self._show_submenu())
         self._submenu_row.bind("<Right>", lambda event: self._show_submenu())
         for item in state.techniques:
@@ -138,17 +181,29 @@ class SettingsPopup(tk.Toplevel):
         if self._closed:
             return
         self.update_idletasks()
-        left, top, right, bottom = monitor_bounds(self.master, x, y)
-        height = self.winfo_reqheight()
+        self._bounds = monitor_bounds(self.master, x, y)
+        left, top, right, bottom = self._bounds
+        self._x = max(left, min(x, right - self._menu.winfo_reqwidth()))
+        width = self._menu.winfo_reqwidth()
+        height = self._menu.winfo_reqheight()
         if self._submenu is not None and self._submenu_row is not None:
-            height = max(height, self._submenu_row.winfo_y() + self._submenu.winfo_reqheight() + 2 * int(self.cget("borderwidth")))
-        self._x = max(left, min(x, right - self.winfo_reqwidth()))
+            width += self._submenu.winfo_reqwidth()
+            height = max(
+                height, self._submenu_row.winfo_y() + self._submenu.winfo_reqheight()
+            )
+        border = 2 * int(self.cget("borderwidth"))
+        height += border
+        available_width = right - left - border
+        if height > bottom - top:
+            available_width -= self._vertical.winfo_reqwidth()
+        if width > available_width:
+            height += self._horizontal.winfo_reqheight()
         self._y = max(top, min(y, bottom - height))
         self._opens_left = (
             self._submenu is not None
-            and self._x + self.winfo_reqwidth() + self._submenu.winfo_reqwidth() > right
+            and self._x + self._menu.winfo_reqwidth() + self._submenu.winfo_reqwidth()
+            > right
         )
-        self._menu.grid_configure(column=1 if self._opens_left else 0)
         self._place()
         self.deiconify()
         self.update_idletasks()
@@ -156,27 +211,88 @@ class SettingsPopup(tk.Toplevel):
         self.focus_force()
 
     def _place(self) -> None:
+        if self._bounds is None:
+            return
         self.update_idletasks()
-        x = self._x
-        if self._opens_left and self._submenu is not None and self._submenu.winfo_manager():
-            x -= self._submenu.winfo_reqwidth()
-        self.geometry(f"+{x}+{self._y}")
+        left, top, right, bottom = self._bounds
+        width = self._menu.winfo_reqwidth()
+        height = self._menu.winfo_reqheight()
+        submenu_width = 0
+        if (
+            self._submenu_visible
+            and self._submenu is not None
+            and self._submenu_row is not None
+        ):
+            submenu_width = self._submenu.winfo_reqwidth()
+            height = max(
+                height, self._submenu_row.winfo_y() + self._submenu.winfo_reqheight()
+            )
+            self._viewport.coords(
+                self._submenu_window,
+                0 if self._opens_left else width,
+                self._submenu_row.winfo_y(),
+            )
+        self._viewport.coords(
+            self._menu_window, submenu_width if self._opens_left else 0, 0
+        )
+        width += submenu_width
+        border = 2 * int(self.cget("borderwidth"))
+        available_width, available_height = right - left - border, bottom - top - border
+        vertical_width = self._vertical.winfo_reqwidth()
+        horizontal_height = self._horizontal.winfo_reqheight()
+        scroll_x, scroll_y = width > available_width, height > available_height
+        for _ in range(2):
+            scroll_x = width > available_width - (vertical_width if scroll_y else 0)
+            scroll_y = height > available_height - (
+                horizontal_height if scroll_x else 0
+            )
+        popup_width = min(
+            right - left, width + border + (vertical_width if scroll_y else 0)
+        )
+        popup_height = min(
+            bottom - top, height + border + (horizontal_height if scroll_x else 0)
+        )
+        self._viewport.configure(
+            width=max(1, popup_width - border - (vertical_width if scroll_y else 0)),
+            height=max(
+                1, popup_height - border - (horizontal_height if scroll_x else 0)
+            ),
+            scrollregion=(0, 0, width, height),
+        )
+        if scroll_x:
+            self._horizontal.grid(row=1, column=0, sticky=tk.EW)
+            self._horizontal.lift()
+        else:
+            self._horizontal.grid_remove()
+        if scroll_y:
+            self._vertical.grid(row=0, column=1, sticky=tk.NS)
+            self._vertical.lift()
+        else:
+            self._vertical.grid_remove()
+        x = max(
+            left,
+            min(
+                self._x - (submenu_width if self._opens_left else 0),
+                right - popup_width,
+            ),
+        )
+        y = max(top, min(self._y, bottom - popup_height))
+        self.geometry(f"{popup_width}x{popup_height}+{x}+{y}")
 
     def _show_submenu(self) -> None:
         if self._closed or self._submenu is None or self._submenu_row is None:
             return
-        self._submenu.grid(
-            row=0,
-            column=0 if self._opens_left else 1,
-            sticky=tk.NW,
-            pady=(self._submenu_row.winfo_y(), 0),
-        )
+        self._submenu_visible = True
+        self._viewport.itemconfigure(self._submenu_window, state=tk.NORMAL)
         self._place()
+        self._viewport.xview_moveto(0 if self._opens_left else 1)
 
     def _hide_submenu(self) -> None:
-        if self._submenu is not None:
+        if self._submenu_visible and self._submenu is not None:
             focused = self.focus_displayof()
-            self._submenu.grid_remove()
+            self._submenu_visible = False
+            self._viewport.itemconfigure(self._submenu_window, state=tk.HIDDEN)
+            self._viewport.xview_moveto(0)
             if focused in self._submenu.winfo_children():
                 self.focus_set()
             self._place()
@@ -185,8 +301,54 @@ class SettingsPopup(tk.Toplevel):
         event.widget.invoke()
         return "break"
 
+    def _reveal_entry(self, event: tk.Event) -> None:
+        self.update_idletasks()
+        viewport = self._viewport
+        left, top, right, bottom = map(
+            float, self.tk.splitlist(viewport.cget("scrollregion"))
+        )
+        for origin, extent, entry_origin, entry_extent, start, end, move in (
+            (
+                viewport.canvasx(0),
+                viewport.winfo_width(),
+                event.widget.winfo_rootx() - viewport.winfo_rootx(),
+                event.widget.winfo_width(),
+                left,
+                right,
+                viewport.xview_moveto,
+            ),
+            (
+                viewport.canvasy(0),
+                viewport.winfo_height(),
+                event.widget.winfo_rooty() - viewport.winfo_rooty(),
+                event.widget.winfo_height(),
+                top,
+                bottom,
+                viewport.yview_moveto,
+            ),
+        ):
+            if entry_origin < 0:
+                move((origin + entry_origin - start) / (end - start))
+            elif entry_origin + entry_extent > extent:
+                move(
+                    (origin + entry_origin + entry_extent - extent - start)
+                    / (end - start)
+                )
+
+    def _scroll(self, event: tk.Event, units: int) -> str:
+        scroll = (
+            self._viewport.xview_scroll
+            if event.state & 0x1
+            else self._viewport.yview_scroll
+        )
+        scroll(units, "units")
+        return "break"
+
     def _button_release(self, event: tk.Event) -> str | None:
-        if not (0 <= event.x < event.widget.winfo_width() and 0 <= event.y < event.widget.winfo_height()):
+        if not (
+            0 <= event.x < event.widget.winfo_width()
+            and 0 <= event.y < event.widget.winfo_height()
+        ):
             event.widget.state(["!pressed"])
             return "break"
         return None
