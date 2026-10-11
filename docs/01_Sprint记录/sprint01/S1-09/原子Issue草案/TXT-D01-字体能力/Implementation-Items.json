@@ -1,0 +1,46 @@
+{
+  "stage": "approval_draft",
+  "draft_issue": "TXT-D01",
+  "dependency_level": "issue",
+  "implementation_items": [
+    {
+      "objective": "在真实Tk上按两个业务文字角色提供合法字体并一次初始化，修正named font被当作family的错误。",
+      "owner_surface": "shudu/text_fonts公开能力；sudoku_view.py字体初始化与font/text；sudoku_hint_view.py的description_text。",
+      "allowed_scope": "新增text_fonts目录的唯一入口/_selection.py/_specs.py；上述字体函数和必要导入；tests/test_text_fonts.py及相关架构检查。",
+      "completion_evidence": "真实Tk公开能力测试和View/Hint渲染结果通过；初始化family枚举1次，其余绘制/resize/timer/设置枚举0；目标Python局部能力迁移及依赖缩小读回。",
+      "required_behavior_checks": [
+        "两角色候选与首选缺失名称按平台闭集选择，保留Tk实际family及大小写无关匹配。",
+        "候选全缺失时解析TkDefaultFont实际family；合法元组、非法role/size/weight ValueError，零新增named Font。",
+        "Canvas原负像素字号、Hint Text原负像素字号与normal/bold语义保留。",
+        "Font能力的Game/solver/OCR/Store访问及资产IO/子进程/网络次数为0。"
+      ],
+      "item_dependencies": []
+    },
+    {
+      "objective": "全部菜单默认路径与缺失展示形成用户可继续游戏的闭环。",
+      "owner_surface": "sudoku_gui.py的Window.__init__/字体提示创建关闭/_menu/show_settings；settings_menu.open_settings及Popup对应默认参数。",
+      "allowed_scope": "Q3最终选定的提示条分支；显式菜单使用View.font；默认入口用system_font一次解析；匹配本票UI测试。GUI.main归TXT-D03。",
+      "completion_evidence": "普通/Hint/暂停/完成页缺失名称可见并可关闭；游戏输入正常；菜单默认实际family正确；资源/状态/IO预算真实通过。",
+      "required_behavior_checks": [
+        "提示条去重名称、固定文案、键盘关闭、本次运行保持关闭、下次启动检测。",
+        "提示不获取grab/抢焦点/写Game.message或配置；最小高度补足且原Canvas区域保留，关闭恢复。",
+        "显示/关闭不主动draw或求解，真实几何变化只沿原Configure绘制。",
+        "显式font菜单零查询；standalone默认system_font实际family读取1次、family枚举0；Menu/ttk +11点。"
+      ],
+      "item_dependencies": []
+    },
+    {
+      "objective": "迁移原行为保障，验证执行面并删除本票淘汰的旧错误路径及失效引用。",
+      "owner_surface": "本票新测试；test_sudoku_gui/settings_menu/auto_technique_settings/completion_view/screenshot_import_menu/user_settings/architecture及Linux适用bounds；旧choose_font/属性/错误默认。",
+      "allowed_scope": "按实际changed paths形成完整related范围；保留旧有效断言，补Hint设置状态测试；全部消费者迁移与新测试通过后删除旧对象。",
+      "completion_evidence": "旧→行为→新Interface→新测试映射成立；required tests及ruff通过；rg失效引用为0；B1/B2/B3、review与精确Delivery/readback成立。",
+      "required_behavior_checks": [
+        "设置期间Hint Text身份、内容、滚动、pending step保持；保存次数与原失败语义保持。",
+        "Footer/timer item保持，设置0draw/solver/候选/完成区域扫描；resize仍销毁旧Text并重建。",
+        "菜单工作区/滚动/关闭资源、截图失败原引用、完成状态、原架构断言保留。",
+        "旧函数/角色直接消费/错误默认仅在替代测试通过后物理退出；相关GUI skip按真实适用性判定。"
+      ],
+      "item_dependencies": []
+    }
+  ]
+}

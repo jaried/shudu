@@ -1,0 +1,41 @@
+{
+  "stage": "approval_draft",
+  "draft_issue": "TXT-D04",
+  "dependency_level": "issue",
+  "implementation_items": [
+    {
+      "objective": "在包含三个前置真实交付的同一版本补足联合UI行为防回归。",
+      "owner_surface": "tests/test_text_rendering_acceptance.py；原公开GUI启动/View/Hint/Menu seam。",
+      "allowed_scope": "新增本票联合行为测试与报告；只引用前置能力/资格工具，不修改其生产函数；原pytest数据和有效断言保留。",
+      "completion_evidence": "祖先包含与环境输入读回；新联合断言及两平台完整python -B -m pytest -ra通过，适用GUI真实执行，相关ruff通过。",
+      "required_behavior_checks": [
+        "前置TXT-D01/02/03实际交付存在，代码版本、环境和最终选择一致。",
+        "公开真实启动链、页面/菜单文本、布局/点击、Hint设置身份及resize重建两场景均覆盖。",
+        "原求解/njit/截图/偏好/完成/架构与错误保全断言保持，未注入绕过真实生产链的通过结果。",
+        "required fail/missing修根因后转真实pass，scope/changed paths/impact集双向核对；原始证据不入Git。"
+      ],
+      "item_dependencies": [
+        "TXT-D01",
+        "TXT-D02",
+        "TXT-D03"
+      ]
+    },
+    {
+      "objective": "完成原S1-09实际清晰度、字形和乱码对照，准备用户可判断的验收结果。",
+      "owner_surface": "本票两平台实际桌面矩阵、S1-09测试结果/验收说明及状态读回。",
+      "allowed_scope": "批准的Linux环境、Windows100/125/150/200%比例、正常/1.5/2倍可容纳/最大化、10轮缩放；实际页面文本及缺失提示。",
+      "completion_evidence": "AC1～6逐项绑定当前真实结果与用户画面判断定位；原Linux乱码前后对应完成；review/Delivery到待验收，用户最终acceptance另取得明确判断。",
+      "required_behavior_checks": [
+        "实际中文/数字/字母/既有符号及普通/Hint/暂停/完成/Menu/错误页完整，无替代方框/错字；合法问号图标保留。",
+        "原Linux乱码页面/字符先实际定位，再同位置候选核验；未取得对照时该AC保持未完成，继续其他可验证节点。",
+        "连续缩放后层级/无裁切重叠/命中与缺失继续游戏成立；画面由真实桌面获得，Xvfb不替代。",
+        "前置生产根因由其Issue owner修复并更新交付，本票复测新版本；不关闭未真实修复的Runtime Legacy。"
+      ],
+      "item_dependencies": [
+        "TXT-D01",
+        "TXT-D02",
+        "TXT-D03"
+      ]
+    }
+  ]
+}
