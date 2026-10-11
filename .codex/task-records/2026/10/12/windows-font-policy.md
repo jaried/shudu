@@ -25,4 +25,11 @@
 - 当前任务记录：.codex/task-records/2026/10/12/windows-font-policy.md。
 - 生产代码与正式 ADR 由后续批准工程阶段承接。S1-09 的真实修复与业务验收尚未完成。
 - Git 仅保存结果文档和当前任务记录。原始输出在会话中消费，备份与 writer 恢复数据留在 Git 外。
-- 精确提交集合为以上四个文件。提交 hash、消息、实际路径与剩余状态由提交后的 Git 直接读回确认。
+- 路线与 Windows 结果摘要已精确提交为 0bcbf51，实际提交仅含上述四个文件，Git 与 AutoCommit readback 成功。
+- 当前遗留收尾集合为本任务记录与 docs/01_Sprint记录/sprint01/S1-09/S1-09_遗留问题.md；提交结果由 Git 直接读回确认。
+
+## 遗留与处理
+
+- LEG-S1-09-004：自动远端同步返回 rejected / run_binding_required。本地交付已确认，远端发布尚未完成；由全局 AutoCommit / RemoteSync Runtime 后续承接。
+- LEG-S1-09-005：Legacy Record authority producer 返回 invalid_locator。按同一正式合同语义等效完成记录，复用 TypeScript 的 TOML 解析、ID 分配与验证能力；全局 Runtime 定位问题保持 open。
+- 已读回同一 machine block 中的五个 open 条目；既有三项保留。原始回执和执行输入保留在 Git 外。
