@@ -16,15 +16,17 @@ Created: 2026-10-11
 - 每次继续先读本地图和当前开放子票。研究使用 engineering:research 与 evidence-calibrated-reasoning；人工决策使用 productivity:grilling、engineering:domain-modeling 和 engineering:codebase-design；最终产物使用 no-negative-echo。
 - 沿用[领域词汇](../../CONTEXT.md)区分正式数字与候选笔记。架构服从[现行 ADR](../../docs/02_架构决策记录/README.md)，尤其是设置菜单的 Tk Adapter 与资源生命周期要求；架构取舍在后续批准时处理。
 - 分别核验字形轮廓的可缩放性、屏幕抗锯齿、字符覆盖与字符串编码，以实际显示满足清晰度和字符完整性要求。
+- Windows 当前字体、DPI 与独立解释器核验见[Windows 字体与 DPI 核验](../../docs/05_预研/界面文字清晰度与乱码/2026-10-12/Windows字体与DPI核验.md)；本轮已确认的路线见下方决策票。
 - 研究资产位于 `docs/05_预研/界面文字清晰度与乱码/2026-10-11/`；原始日志和截图保留在本次系统临时目录，Git 只保存研究结果和必要来源定位。
 
 ## Decisions so far
 
 - [核验现有文字渲染链与字体字符覆盖](issues/01-rendering-and-glyph-research.md)：已取得 Linux 字体后端与默认字体选择的实测结果；优先验证原生 Tk 路线，Windows 与原乱码场景继续按报告中的边界核验。
+- [选择文字渲染路线与字体交付策略](issues/02-rendering-and-font-policy.md)：已确认原生 Tk 与系统字体路线；首选字体缺失时列出名称并回退，保持正常使用。
 
 ## Not yet specified
 
-- 原乱码对应的具体字符、页面和运行环境尚未明确；补齐场景后，判断是否需要独立的编码或缺字诊断。
+- 原乱码发生在 Linux；具体字符与页面由原型核验补齐，随后判断是否需要独立的编码或缺字诊断。
 - 后续验证若发现特定符号或原生控件存在独立限制，再细化专项决策。
 - 两平台候选路线的实际缩放表现和 DPI 差异，可能提出额外的跨显示器验证问题。
 
